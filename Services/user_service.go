@@ -1,8 +1,13 @@
-package services
+package userservice
 
-func list() {
-	users := []User{
-		{"Meow"},
-		{"Hi!"},
+import (
+	usermodel "github.com/AlmazDefourten/goapp/models"
+)
+
+func List() []usermodel.User {
+	users := []usermodel.User{
+		{"Meow", 18},
+		{"Hi!", 20},
 	}
+	return users
 }

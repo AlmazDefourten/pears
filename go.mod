@@ -1,6 +1,6 @@
-module goapp
+module github.com/AlmazDefourten/goapp
 
-go 1.18
+replace github.com/AlmazDefourten/goapp => ../goapp
 
 require github.com/kataras/iris/v12 v12.2.0-beta4.0.20220801113225-c026ab9241ce
 
@@ -50,3 +50,5 @@ require (
 	gopkg.in/ini.v1 v1.66.6 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+go 1.18

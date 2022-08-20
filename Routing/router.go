@@ -1,14 +1,16 @@
 package routing
 
 import (
+	"github.com/AlmazDefourten/goapp/handlers"
+
 	"github.com/kataras/iris/v12"
 )
 
-func use_routes(app *iris.Application) {
+func UseRoutes(app *iris.Application) {
 	userAPI := app.Party("/user")
 	{
 		userAPI.Use(iris.Compression)
 
-		userAPI.Get("/list", list)
+		userAPI.Get("/list", handlers.List)
 	}
 }

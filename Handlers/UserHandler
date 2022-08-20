@@ -1,9 +1,0 @@
-package handlers
-
-import (
-	models
-)
-
-func (user *User) CreateUser(name string) int {
-	
-}
