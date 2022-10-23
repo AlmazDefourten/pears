@@ -6,6 +6,7 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
+// There are all api routes for app
 func UseRoutes(app *iris.Application) {
 	userAPI := app.Party("/user")
 	{
