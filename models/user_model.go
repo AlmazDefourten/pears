@@ -1,7 +1,7 @@
-package usermodel
+package models
 
 import (
-	"gorm.io/gorm"
+	gorm "gorm.io/gorm"
 )
 
 // Struct for User entity

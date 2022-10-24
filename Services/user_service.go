@@ -1,18 +1,25 @@
-package userservice
+package services
 
 import (
-	usermodel "github.com/AlmazDefourten/goapp/models"
+	models "github.com/AlmazDefourten/goapp/models"
 )
 
-// Service for operations with Users
-type UserService interface {
+type UserService struct {
+	Container *models.Container
+}
+
+func NewUserService(container *models.Container) UserService {
+	return UserService{
+		Container: container,
+	}
 }
 
 // Get a List of Users
-func List() []usermodel.User {
-	users := []usermodel.User{
-		{Name: "Meow", Age: 18},
-		{Name: "Hi!", Age: 20},
-	}
-	return users
+func (service *UserService) List() []models.User {
+	var users []models.User
+	result := service.Container.AppConnection.Find(&users)
+
+	rows := result.RowsAffected
+	rows++
+	return nil
 }

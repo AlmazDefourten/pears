@@ -3,21 +3,16 @@ package container
 import (
 	"fmt"
 
+	models "github.com/AlmazDefourten/goapp/models"
 	log "github.com/sirupsen/logrus"
 	viper "github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-// Struct for store global variables for app
-type Container struct {
-	AppConnection  *gorm.DB
-	ConfigProvider *viper.Viper
-}
-
 // Constructor for Container
-func NewContainer(db *gorm.DB, configurator *viper.Viper) Container {
-	return Container{
+func NewContainer(db *gorm.DB, configurator *viper.Viper) models.Container {
+	return models.Container{
 		AppConnection:  db,
 		ConfigProvider: configurator,
 	}
