@@ -15,11 +15,11 @@ func NewUserService(container *models.Container) UserService {
 }
 
 // Get a List of Users
-func (service *UserService) List() []models.User {
+func (service UserService) List() []models.User {
 	var users []models.User
 	result := service.Container.AppConnection.Find(&users)
 
 	rows := result.RowsAffected
 	rows++
-	return nil
+	return []models.User{}
 }

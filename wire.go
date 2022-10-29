@@ -18,7 +18,7 @@ func InitializeContainer() models.Container {
 }
 
 // Initialize services examples
-func InitializeServiceContainer() models.Services {
+func InitializeServiceContainer(container_init *models.Container) models.Services {
 	wire.Build(
 		wire.NewSet(
 			services.NewUserService,

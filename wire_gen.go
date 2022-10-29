@@ -8,13 +8,24 @@ package main
 
 import (
 	"github.com/AlmazDefourten/goapp/container"
+	"github.com/AlmazDefourten/goapp/models"
+	"github.com/AlmazDefourten/goapp/services"
 )
 
 // Injectors from wire.go:
 
-func InitializeContainer() container.Container {
+// Initialize container with global app dependencies -
+// Connection, configurator, etc...
+func InitializeContainer() models.Container {
 	viper := container.NewViperConfigurator()
 	db := container.NewConnection(viper)
-	containerContainer := container.NewContainer(db, viper)
-	return containerContainer
+	modelsContainer := container.NewContainer(db, viper)
+	return modelsContainer
+}
+
+// Initialize services examples
+func InitializeServiceContainer(container_init *models.Container) models.Services {
+	userService := services.NewUserService(container_init)
+	modelsServices := container.NewServices(userService)
+	return modelsServices
 }
