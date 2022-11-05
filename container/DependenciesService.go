@@ -2,47 +2,47 @@ package container
 
 import (
 	"fmt"
-
+	models "github.com/AlmazDefourten/goapp/models"
 	log "github.com/sirupsen/logrus"
 	viper "github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-// Struct for store global variables for app
-type Container struct {
-	AppConnection  *gorm.DB
-	ConfigProvider *viper.Viper
-}
-
-// Constructor for Container
-func NewContainer(db *gorm.DB, configurator *viper.Viper) Container {
-	return Container{
+// NewContainer Constructor for Container
+func NewContainer(db *gorm.DB, configurator *viper.Viper) models.Container {
+	return models.Container{
 		AppConnection:  db,
 		ConfigProvider: configurator,
 	}
 }
 
-// Constructor that initialize new viper configurator
+func NewServiceContainer(userService models.IUserService) models.ServiceContainer {
+	return models.ServiceContainer{
+		UserService: userService,
+	}
+}
+
+// NewViperConfigurator Constructor that initialize new viper configurator
 func NewViperConfigurator() *viper.Viper {
-	viper_init := viper.New()
+	viperInit := viper.New()
 
-	viper_init.SetConfigName("appconfig") // name of config file (without extension)
-	viper_init.SetConfigType("json")      // REQUIRED if the config file does not have the extension in the name
-	viper_init.AddConfigPath(".")         // optionally look for config in the working directory
+	viperInit.SetConfigName("appconfig") // name of config file (without extension)
+	viperInit.SetConfigType("json")      // REQUIRED if the config file does not have the extension in the name
+	viperInit.AddConfigPath(".")         // optionally look for config in the working directory
 
-	err := viper_init.ReadInConfig() // Find and read the config file
-	if err != nil {                  // Handle errors reading the config file
+	err := viperInit.ReadInConfig() // Find and read the config file
+	if err != nil {                 // Handle errors reading the config file
 		panic(fmt.Errorf("fatal error config file: %w", err))
 	}
 
-	return viper_init
+	return viperInit
 }
 
-// Constructor that initialize new connection
-func NewConnection(viper_init *viper.Viper) *gorm.DB {
+// NewConnection Constructor that initialize new connection
+func NewConnection(viperInit *viper.Viper) *gorm.DB {
 	// Get a connstring from config
-	connstring := viper_init.GetString("connection")
+	connstring := viperInit.GetString("connection")
 
 	// Open new connection
 	db, err := gorm.Open(postgres.Open(connstring), &gorm.Config{})

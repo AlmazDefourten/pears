@@ -1,16 +1,23 @@
-package userservice
+package services
 
 import (
-	usermodel "github.com/AlmazDefourten/goapp/models"
+	models "github.com/AlmazDefourten/goapp/models"
 )
 
-// Service for operations with Users
-type UserService interface {
+// UserService struct of service that works with Users
+type UserService struct {
+	Container *models.Container
 }
 
-// Get a List of Users
-func List() []usermodel.User {
-	users := []usermodel.User{
+func NewUserService(container *models.Container) *UserService {
+	return &UserService{
+		Container: container,
+	}
+}
+
+// List Get a List of Users
+func (userService *UserService) List() []models.User {
+	users := []models.User{
 		{Name: "Meow", Age: 18},
 		{Name: "Hi!", Age: 20},
 	}
