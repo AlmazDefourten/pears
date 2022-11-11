@@ -17,9 +17,7 @@ func NewUserService(container *models.Container) *UserService {
 
 // List Get a List of Users
 func (userService *UserService) List() []models.User {
-	users := []models.User{
-		{Name: "Meow", Age: 18},
-		{Name: "Hi!", Age: 20},
-	}
+	var users []models.User
+	userService.Container.AppConnection.Find(&users)
 	return users
 }

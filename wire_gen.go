@@ -8,6 +8,7 @@ package main
 
 import (
 	"github.com/AlmazDefourten/goapp/container"
+	"github.com/AlmazDefourten/goapp/handlers"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/AlmazDefourten/goapp/services"
 )
@@ -28,4 +29,20 @@ func InitServiceDependency(container_inited *models.Container) models.ServiceCon
 	userService := services.NewUserService(container_inited)
 	serviceContainer := container.NewServiceContainer(userService)
 	return serviceContainer
+}
+
+// Initialize dependencies for handlers
+func InitHandlerDependency(userService models.IUserService) container.HandlerContainer {
+	userInfoHandler := handlers.NewUserInfoHandler(userService)
+	handlerContainer := container.NewHandlerContainer(userInfoHandler)
+	return handlerContainer
+}
+
+// wire.go:
+
+// RegisterServices - decomposition ServiceContainer to services
+func RegisterServices(serviceContainer *models.ServiceContainer) container.HandlerContainer {
+	return InitHandlerDependency(
+		serviceContainer.UserService,
+	)
 }

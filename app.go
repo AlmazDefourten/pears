@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	iris "github.com/kataras/iris/v12"
 
 	migration "github.com/AlmazDefourten/goapp/migrations"
@@ -15,11 +14,13 @@ func main() {
 	container := InitializeContainer()
 	containerService := InitServiceDependency(&container)
 
-	fmt.Println(containerService.UserService.List) // TODO: debug, delete this and create using of container
-
 	migration.RunBaseMigration(container.AppConnection)
 
-	routing.UseRoutes(app)
+	containerHandler := RegisterServices(&containerService)
+
+	router := routing.NewRouter(&containerHandler)
+
+	router.UseRoutes(app)
 
 	app.Listen(":8080")
 }

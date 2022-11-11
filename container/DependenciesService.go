@@ -2,6 +2,7 @@ package container
 
 import (
 	"fmt"
+	"github.com/AlmazDefourten/goapp/handlers"
 	models "github.com/AlmazDefourten/goapp/models"
 	log "github.com/sirupsen/logrus"
 	viper "github.com/spf13/viper"
@@ -55,4 +56,14 @@ func NewConnection(viperInit *viper.Viper) *gorm.DB {
 	}
 
 	return db
+}
+
+type HandlerContainer struct {
+	UserInfoHandler *handlers.UserInfoHandler
+}
+
+func NewHandlerContainer(userHandler *handlers.UserInfoHandler) HandlerContainer {
+	return HandlerContainer{
+		UserInfoHandler: userHandler,
+	}
 }
