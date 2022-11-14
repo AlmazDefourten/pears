@@ -1,0 +1,2 @@
+time="2022-11-14T18:02:51+03:00" level=info msg=start func="main.main()" file="app.go:13"
+time="2022-11-14T18:12:42+03:00" level=info msg=start func="main.main()" file="app.go:13"
