@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/AlmazDefourten/goapp/handlers"
 	models "github.com/AlmazDefourten/goapp/models"
+	"github.com/AlmazDefourten/goapp/pkg/logging"
 	log "github.com/sirupsen/logrus"
 	viper "github.com/spf13/viper"
 	"gorm.io/driver/postgres"
@@ -66,4 +67,9 @@ func NewHandlerContainer(userHandler *handlers.UserInfoHandler) HandlerContainer
 	return HandlerContainer{
 		UserInfoHandler: userHandler,
 	}
+}
+
+func NewLoggerContainer(nameOfDirLog string, nameOfNameLog string) logging.LoggerInterface {
+	loggerMain := logging.GetInstanceLogger(nameOfDirLog, nameOfNameLog)
+	return loggerMain
 }
