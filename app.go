@@ -1,14 +1,15 @@
 package main
 
 import (
-	iris "github.com/kataras/iris/v12"
-
 	migration "github.com/AlmazDefourten/goapp/migrations"
 	routing "github.com/AlmazDefourten/goapp/routing"
+	iris "github.com/kataras/iris/v12"
 )
 
 func main() {
 	app := iris.New()
+	//logger := logging.GetLoggerLorgus()
+	//logger.Info("start")
 
 	// initialize global dependencies
 	container := InitializeContainer()
