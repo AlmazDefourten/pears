@@ -7,8 +7,17 @@ import (
 // User Struct for User entity
 type User struct {
 	gorm.Model
-	Name string
-	Age  int
+	Id       int
+	Login    string
+	Password string
+	Name     string
+	Age      int
+}
+
+// Claims Struct for JWT Claims
+type Claims struct {
+	jwt.StandardClaims
+	Username string `json:"username"`
 }
 
 // IUserService interface for operations with Users
