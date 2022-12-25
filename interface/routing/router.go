@@ -1,7 +1,7 @@
 package routing
 
 import (
-	"github.com/AlmazDefourten/goapp/container"
+	"github.com/AlmazDefourten/goapp/infrastructure/container"
 	"github.com/kataras/iris/v12"
 )
 
@@ -23,4 +23,10 @@ func (router *Router) UseRoutes(app *iris.Application) {
 
 		userAPI.Get("/list", router.HandlerContainer.UserInfoHandler.List)
 	}
+}
+
+func InitializeRoutes(app *iris.Application, containerHandler container.HandlerContainer) {
+	router := NewRouter(&containerHandler)
+
+	router.UseRoutes(app)
 }

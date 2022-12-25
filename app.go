@@ -1,26 +1,19 @@
 package main
 
 import (
+	"github.com/AlmazDefourten/goapp/infrastructure/migrations"
+	"github.com/AlmazDefourten/goapp/interface/routing"
 	iris "github.com/kataras/iris/v12"
-
-	migration "github.com/AlmazDefourten/goapp/migrations"
-	routing "github.com/AlmazDefourten/goapp/routing"
 )
 
 func main() {
 	app := iris.New()
+	_container := InitializeContainer()
+	containerService := InitServiceDependency(&_container)
 
-	// initialize global dependencies
-	container := InitializeContainer()
-	containerService := InitServiceDependency(&container)
-
-	migration.RunBaseMigration(container.AppConnection)
+	migrations.RunBaseMigration(_container.AppConnection)
 
 	containerHandler := RegisterServices(&containerService)
-
-	router := routing.NewRouter(&containerHandler)
-
-	router.UseRoutes(app)
-
+	routing.InitializeRoutes(app, containerHandler)
 	app.Listen(":8080")
 }
