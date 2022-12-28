@@ -2,7 +2,7 @@ package container
 
 import (
 	"fmt"
-	"github.com/AlmazDefourten/goapp/handlers"
+	"github.com/AlmazDefourten/goapp/interface/handler"
 	models "github.com/AlmazDefourten/goapp/models"
 	log "github.com/sirupsen/logrus"
 	viper "github.com/spf13/viper"
@@ -30,7 +30,7 @@ func NewViperConfigurator() *viper.Viper {
 
 	viperInit.SetConfigName("appconfig") // name of config file (without extension)
 	viperInit.SetConfigType("json")      // REQUIRED if the config file does not have the extension in the name
-	viperInit.AddConfigPath(".")         // optionally look for config in the working directory
+	viperInit.AddConfigPath("./api")     // optionally look for config in the working directory
 
 	err := viperInit.ReadInConfig() // Find and read the config file
 	if err != nil {                 // Handle errors reading the config file
@@ -59,10 +59,10 @@ func NewConnection(viperInit *viper.Viper) *gorm.DB {
 }
 
 type HandlerContainer struct {
-	UserInfoHandler *handlers.UserInfoHandler
+	UserInfoHandler *handler.UserInfoHandler
 }
 
-func NewHandlerContainer(userHandler *handlers.UserInfoHandler) HandlerContainer {
+func NewHandlerContainer(userHandler *handler.UserInfoHandler) HandlerContainer {
 	return HandlerContainer{
 		UserInfoHandler: userHandler,
 	}

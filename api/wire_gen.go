@@ -7,8 +7,8 @@
 package main
 
 import (
-	"github.com/AlmazDefourten/goapp/container"
-	"github.com/AlmazDefourten/goapp/handlers"
+	"github.com/AlmazDefourten/goapp/infrastructure/container"
+	"github.com/AlmazDefourten/goapp/interface/handler"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/AlmazDefourten/goapp/services"
 )
@@ -33,7 +33,7 @@ func InitServiceDependency(container_inited *models.Container) models.ServiceCon
 
 // Initialize dependencies for handlers
 func InitHandlerDependency(userService models.IUserService) container.HandlerContainer {
-	userInfoHandler := handlers.NewUserInfoHandler(userService)
+	userInfoHandler := handler.NewUserInfoHandler(userService)
 	handlerContainer := container.NewHandlerContainer(userInfoHandler)
 	return handlerContainer
 }

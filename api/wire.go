@@ -4,8 +4,8 @@
 package main
 
 import (
-	"github.com/AlmazDefourten/goapp/container"
-	"github.com/AlmazDefourten/goapp/handlers"
+	"github.com/AlmazDefourten/goapp/infrastructure/container"
+	"github.com/AlmazDefourten/goapp/interface/handler"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/AlmazDefourten/goapp/services"
 	"github.com/google/wire"
@@ -33,6 +33,6 @@ func RegisterServices(serviceContainer *models.ServiceContainer) container.Handl
 
 // Initialize dependencies for handlers
 func InitHandlerDependency(userService models.IUserService) container.HandlerContainer {
-	wire.Build(container.NewHandlerContainer, handlers.NewUserInfoHandler)
+	wire.Build(container.NewHandlerContainer, handler.NewUserInfoHandler)
 	return container.HandlerContainer{}
 }

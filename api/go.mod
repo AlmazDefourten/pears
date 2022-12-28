@@ -1,6 +1,6 @@
 module github.com/AlmazDefourten/goapp
 
-replace github.com/AlmazDefourten/goapp => ../goapp
+replace github.com/AlmazDefourten/goapp => ../goapp/api
 
 require github.com/kataras/iris/v12 v12.2.0-beta5
 
@@ -26,7 +26,6 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.4.1 // indirect
-	go.uber.org/dig v1.15.0 // indirect
 	golang.org/x/mod v0.4.1 // indirect
 	golang.org/x/tools v0.1.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220517211312-f3a8303e98df // indirect
@@ -66,7 +65,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/schollz/closestmatch v2.1.0+incompatible // indirect
-	github.com/sirupsen/logrus v1.9.0 // indirect
+	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/viper v1.13.0
 	github.com/tdewolff/minify/v2 v2.12.1 // indirect
 	github.com/tdewolff/parse/v2 v2.6.3 // indirect
@@ -83,7 +82,7 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/postgres v1.3.9
-	gorm.io/gorm v1.23.8 // indirect
+	gorm.io/gorm v1.23.8
 )
 
 go 1.18
