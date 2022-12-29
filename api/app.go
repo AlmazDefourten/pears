@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/AlmazDefourten/goapp/infrastructure/container"
 	"github.com/AlmazDefourten/goapp/infrastructure/migrations"
 	"github.com/AlmazDefourten/goapp/interface/routing"
 	iris "github.com/kataras/iris/v12"
@@ -8,12 +9,16 @@ import (
 
 func main() {
 	app := iris.New()
-	_container := InitializeContainer()
-	containerService := InitServiceDependency(&_container)
+	_container := container.InitializeContainer()
+	containerService := container.InitServiceDependency(&_container)
 
 	migrations.RunBaseMigration(_container.AppConnection)
 
-	containerHandler := RegisterServices(&containerService)
+	containerHandler := container.RegisterServices(&containerService)
 	routing.InitializeRoutes(app, containerHandler)
-	app.Listen(":8080")
+	err := app.Listen(":8080")
+	if err != nil {
+		// there is logging
+		panic(err)
+	}
 }

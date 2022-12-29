@@ -1,10 +1,9 @@
 //go:build wireinject
 // +build wireinject
 
-package main
+package container
 
 import (
-	"github.com/AlmazDefourten/goapp/infrastructure/container"
 	"github.com/AlmazDefourten/goapp/interface/handler"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/AlmazDefourten/goapp/services"
@@ -14,25 +13,25 @@ import (
 // Initialize container with global app dependencies -
 // Connection, configurator, etc...
 func InitializeContainer() models.Container {
-	wire.Build(container.NewContainer, container.NewConnection, container.NewViperConfigurator)
+	wire.Build(NewContainer, NewConnection, NewViperConfigurator)
 	return models.Container{}
 }
 
 // Initialize dependencies for services
 func InitServiceDependency(container_inited *models.Container) models.ServiceContainer {
-	wire.Build(container.NewServiceContainer, services.NewUserService, wire.Bind(new(models.IUserService), new(*services.UserService)))
+	wire.Build(NewServiceContainer, services.NewUserService, wire.Bind(new(models.IUserService), new(*services.UserService)))
 	return models.ServiceContainer{}
 }
 
 // RegisterServices - decomposition ServiceContainer to services
-func RegisterServices(serviceContainer *models.ServiceContainer) container.HandlerContainer {
+func RegisterServices(serviceContainer *models.ServiceContainer) HandlerContainer {
 	return InitHandlerDependency(
 		serviceContainer.UserService,
 	)
 }
 
 // Initialize dependencies for handlers
-func InitHandlerDependency(userService models.IUserService) container.HandlerContainer {
-	wire.Build(container.NewHandlerContainer, handler.NewUserInfoHandler)
-	return container.HandlerContainer{}
+func InitHandlerDependency(userService models.IUserService) HandlerContainer {
+	wire.Build(NewHandlerContainer, handler.NewUserInfoHandler)
+	return HandlerContainer{}
 }
