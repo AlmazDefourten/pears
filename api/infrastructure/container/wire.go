@@ -8,12 +8,13 @@ import (
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/AlmazDefourten/goapp/services"
 	"github.com/google/wire"
+	"github.com/spf13/viper"
 )
 
 // Initialize container with global app dependencies -
 // Connection, configurator, etc...
 func InitializeContainer() models.Container {
-	wire.Build(NewContainer, NewConnection, NewViperConfigurator)
+	wire.Build(NewContainer, NewConnection, NewViperConfigurator, wire.Bind(new(models.Configurator), new(*viper.Viper)))
 	return models.Container{}
 }
 

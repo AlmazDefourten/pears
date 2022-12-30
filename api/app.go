@@ -16,7 +16,7 @@ func main() {
 
 	containerHandler := container.RegisterServices(&containerService)
 	routing.InitializeRoutes(app, containerHandler)
-	err := app.Listen(":8080")
+	err := app.Listen(":" + _container.ConfigProvider.GetString("host_port"))
 	if err != nil {
 		// there is logging
 		panic(err)
