@@ -5,7 +5,11 @@ import (
 	"gorm.io/gorm"
 )
 
-// Function for migrate all ORM entities only
+// RunBaseMigration for migrate all ORM entities only
 func RunBaseMigration(db *gorm.DB) {
-	db.AutoMigrate(&model.User{})
+	err := db.AutoMigrate(&model.User{})
+	if err != nil {
+		// there is logging
+		panic(err)
+	}
 }
