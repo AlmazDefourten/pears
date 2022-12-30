@@ -4,6 +4,7 @@
 package container
 
 import (
+	"github.com/AlmazDefourten/goapp/infrastructure/configurator"
 	"github.com/AlmazDefourten/goapp/interface/handler"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/AlmazDefourten/goapp/services"
@@ -14,7 +15,7 @@ import (
 // Initialize container with global app dependencies -
 // Connection, configurator, etc...
 func InitializeContainer() models.Container {
-	wire.Build(NewContainer, NewConnection, NewViperConfigurator, wire.Bind(new(models.Configurator), new(*viper.Viper)))
+	wire.Build(NewContainer, NewConnection, configurator.NewViperConfigurator, wire.Bind(new(models.Configurator), new(*viper.Viper)))
 	return models.Container{}
 }
 

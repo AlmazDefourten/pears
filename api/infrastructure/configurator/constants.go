@@ -1,4 +1,4 @@
-package container
+package configurator
 
 const ConfigName = "appconfig"
 const ConfigType = "json"
