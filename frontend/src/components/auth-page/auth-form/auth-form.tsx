@@ -3,11 +3,10 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useForm, Controller, SubmitHandler, useFormState } from 'react-hook-form';
-import './reg-form.css';
-import { loginValidation, passwordValidation, nickValidation } from './validation';
+import '../auth-page.css';
+import { loginValidation, passwordValidation } from '../validation';
 
-interface ISignUpForm {
-    nick: string;
+interface ISignInForm {
     login: string;
     password: string;
 }
@@ -16,9 +15,9 @@ interface IComp{
     setRender: React.Dispatch<React.SetStateAction<string>>
 }
 
-export const RegForm = ({setRender}:  IComp) => {
-    const { handleSubmit, control} = useForm<ISignUpForm>();
-    const onSubmit: SubmitHandler<ISignUpForm> = data => console.log(data);
+export const AuthForm = ({setRender}:  IComp) => {
+    const { handleSubmit, control} = useForm<ISignInForm>();
+    const onSubmit: SubmitHandler<ISignInForm> = data => console.log(data);
     const { errors } = useFormState({ 
         control
     })
@@ -26,39 +25,21 @@ export const RegForm = ({setRender}:  IComp) => {
     return (
         <div className='auth-form'>
             <Typography variant="h4" gutterBottom>
-                Регистрация
+                Вход
             </Typography>
             <Typography variant="subtitle1" gutterBottom className="auth-form__subtitle">
                 Прикоснись к будущему
             </Typography>
+            {/* handleSubmit - This function will receive the form data if form validation is successful */}
             <form className="auth-form__form" onSubmit={handleSubmit(onSubmit)}>
                 <Controller
-                    control={ control }
-                    name="nick"
-                    rules={nickValidation}
-                    render={({ field }) => (
-                        <TextField
-                            label="Ник"
-                            size="small"
-                            margin="normal"
-                            className="auth-form__input"
-                            fullWidth={ true }
-                            onChange={(e) => field.onChange(e)}
-                            value={ field.value }
-                            error={ !!errors.login?.message }
-                            helperText={ errors?.login?.message }
-                        />
-                    )}
-                />
-                <Controller
-                    control={ control }
-                    name="login"
+                    control={ control } // This object contains methods for registering components into React Hook Form
+                    name="login" 
                     rules={loginValidation}
-                    render={({ field }) => (
+                    render={({ field }) => ( // render - A function that returns a React element and provides the ability to attach events and value into the component
                         <TextField
-                            label="Почта"
+                            label="Логин"
                             size="small"
-                            margin="normal"
                             className="auth-form__input"
                             fullWidth={ true }
                             onChange={(e) => field.onChange(e)}
@@ -89,23 +70,23 @@ export const RegForm = ({setRender}:  IComp) => {
                 />
                 
                 <Button
-                    type="submit"
+                    type="submit" // вызов события отправки формы
                     variant='contained'
                     fullWidth={ true }
-                    disableElevation={ true }
-                    sx={{
+                    disableElevation={ true } // отключение теней
+                    sx={{ // The system prop that allows defining system overrides as well as additional CSS styles
                         marginTop: 2
-                    }}
+                    }} 
                 >
-                    Зарегистрироваться
+                    Войти
                 </Button>
             </form>
             <div className="auth-form__footer">
                 <Typography variant="subtitle1" component="span">
-                    Есть аккаунт?{" "}
+                    Нету аккаунта?{" "}
                 </Typography>
-                <Typography variant="subtitle1" component="span" className='link'onClick={() => setRender("auth")}>
-                    Войдите
+                <Typography variant="subtitle1" component="span" className='link' onClick={() => setRender("reg")}>
+                    Зарегистрируйтесь
                 </Typography>
             </div>
         </div>

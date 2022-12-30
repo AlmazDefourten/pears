@@ -2,7 +2,7 @@
 import React from 'react';
 import './App.css';
 import Swipes from './components/swipes/swipes';
-import { AuthPage } from './pages/auth-page';
+import { AuthPage } from './components/auth-page';
 
 function App() {
   return (

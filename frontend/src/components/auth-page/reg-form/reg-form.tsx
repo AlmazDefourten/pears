@@ -3,10 +3,11 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useForm, Controller, SubmitHandler, useFormState } from 'react-hook-form';
-import './auth-form.css';
-import { loginValidation, passwordValidation } from './validation';
+import '../auth-page.css';
+import { loginValidation, passwordValidation, nickValidation } from '../validation';
 
-interface ISignInForm {
+interface ISignUpForm {
+    nick: string;
     login: string;
     password: string;
 }
@@ -15,19 +16,17 @@ interface IComp{
     setRender: React.Dispatch<React.SetStateAction<string>>
 }
 
-export const AuthForm = ({setRender}:  IComp) => {
-    const { handleSubmit, control} = useForm<ISignInForm>();
-    const onSubmit: SubmitHandler<ISignInForm> = data => console.log(data);
+export const RegForm = ({setRender}:  IComp) => {
+    const { handleSubmit, control} = useForm<ISignUpForm>();
+    const onSubmit: SubmitHandler<ISignUpForm> = data => console.log(data);
     const { errors } = useFormState({ 
         control
     })
 
-    
-
     return (
         <div className='auth-form'>
             <Typography variant="h4" gutterBottom>
-                Вход
+                Регистрация
             </Typography>
             <Typography variant="subtitle1" gutterBottom className="auth-form__subtitle">
                 Прикоснись к будущему
@@ -35,11 +34,28 @@ export const AuthForm = ({setRender}:  IComp) => {
             <form className="auth-form__form" onSubmit={handleSubmit(onSubmit)}>
                 <Controller
                     control={ control }
+                    name="nick"
+                    rules={nickValidation}
+                    render={({ field }) => (
+                        <TextField
+                            label="Ник"
+                            size="small"
+                            className="auth-form__input"
+                            fullWidth={ true }
+                            onChange={(e) => field.onChange(e)}
+                            value={ field.value }
+                            error={ !!errors.login?.message }
+                            helperText={ errors?.login?.message }
+                        />
+                    )}
+                />
+                <Controller
+                    control={ control }
                     name="login"
                     rules={loginValidation}
                     render={({ field }) => (
                         <TextField
-                            label="Логин"
+                            label="Почта"
                             size="small"
                             margin="normal"
                             className="auth-form__input"
@@ -80,15 +96,15 @@ export const AuthForm = ({setRender}:  IComp) => {
                         marginTop: 2
                     }}
                 >
-                    Войти
+                    Зарегистрироваться
                 </Button>
             </form>
             <div className="auth-form__footer">
                 <Typography variant="subtitle1" component="span">
-                    Нету аккаунта?{" "}
+                    Есть аккаунт?{" "}
                 </Typography>
-                <Typography variant="subtitle1" component="span" className='link' onClick={() => setRender("reg")}>
-                    Зарегистрируйтесь
+                <Typography variant="subtitle1" component="span" className='link' onClick={() => setRender("auth")}>
+                    Войдите
                 </Typography>
             </div>
         </div>
