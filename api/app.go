@@ -9,6 +9,11 @@ import (
 
 func main() {
 	app := iris.New()
+
+	initializeApp(app)
+}
+
+func initializeApp(app *iris.Application) {
 	_container := container.InitializeContainer()
 	containerService := container.InitServiceDependency(&_container)
 
