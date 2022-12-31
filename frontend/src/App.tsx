@@ -1,9 +1,14 @@
 // import logo from './logo.svg';
+import React from 'react';
 import './App.css';
 import Swipes from './components/swipes/swipes';
+import { AuthPage } from './components/auth-page';
+
 function App() {
   return (
-    <Swipes />
+    // <Swipes />
+    <AuthPage />
+    
     // <div className="App">
     //   <header className="App-header">
     //     <img src={logo} className="App-logo" alt="logo" />
