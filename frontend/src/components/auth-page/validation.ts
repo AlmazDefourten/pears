@@ -1,8 +1,8 @@
 const REQUIRED_FIELD = 'Обязательно для заполнения';
 
 export const loginValidation = {
-    required: REQUIRED_FIELD, // обязательный для дополнения
-    validate: (value: string) => { // доп. условия
+    required: REQUIRED_FIELD,
+    validate: (value: string) => {
         if(value.match(/[а-яА-Я]/)) {
             return 'Логин не может содержать русские буквы'
         }

@@ -17,15 +17,19 @@ interface IComp{
 }
 
 export const RegForm = ({setRender}:  IComp) => {
-    const { handleSubmit, control} = useForm<ISignUpForm>();
-    const onSubmit: SubmitHandler<ISignUpForm> = data => console.log(data);
-    const { errors } = useFormState({ 
+    const { handleSubmit, control} = useForm<ISignUpForm>(); // useForm is a custom hook for managing forms with ease. It takes one object as optional argument
+    const onSubmit: SubmitHandler<ISignUpForm> = data => console.log(data); // Validation will trigger on the submit event and inputs will attach onChange event listeners to re-validate them.
+    const { errors } = useFormState({ // This custom hook allows you to subscribe to each form state, and isolate the re-render at the custom hook level
         control
     })
 
     return (
+        // Typography - Tag for text from MUI
+        // Controller - Avoids problems with external controlled components. In our case with MUI
+        // TextField - Text Fields let users enter and edit text
+
         <div className='auth-form'>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom> 
                 Регистрация
             </Typography>
             <Typography variant="subtitle1" gutterBottom className="auth-form__subtitle">
@@ -33,10 +37,10 @@ export const RegForm = ({setRender}:  IComp) => {
             </Typography>
             <form className="auth-form__form" onSubmit={handleSubmit(onSubmit)}>
                 <Controller
-                    control={ control }
+                    control={ control } // This object contains methods for registering components into React Hook Form
                     name="nick"
-                    rules={nickValidation}
-                    render={({ field }) => (
+                    rules={nickValidation} // The rules for validation are in the validation.ts file
+                    render={({ field }) => ( // render - A function that returns a React element and provides the ability to attach events and value into the component
                         <TextField
                             label="Ник"
                             size="small"
@@ -52,7 +56,7 @@ export const RegForm = ({setRender}:  IComp) => {
                 <Controller
                     control={ control }
                     name="login"
-                    rules={loginValidation}
+                    rules={loginValidation} // The rules for validation are in the validation.ts file
                     render={({ field }) => (
                         <TextField
                             label="Почта"
@@ -70,7 +74,7 @@ export const RegForm = ({setRender}:  IComp) => {
                 <Controller
                     control={ control }
                     name="password"
-                    rules={passwordValidation}
+                    rules={passwordValidation} // The rules for validation are in the validation.ts file
                     render={({ field }) => (
                         <TextField
                             label="Пароль"
@@ -92,7 +96,7 @@ export const RegForm = ({setRender}:  IComp) => {
                     variant='contained'
                     fullWidth={ true }
                     disableElevation={ true }
-                    sx={{
+                    sx={{ // The system prop that allows defining system overrides as well as additional CSS styles
                         marginTop: 2
                     }}
                 >
