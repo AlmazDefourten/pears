@@ -4,10 +4,10 @@
 //go:build !wireinject
 // +build !wireinject
 
-package main
+package container
 
 import (
-	"github.com/AlmazDefourten/goapp/infrastructure/container"
+	"github.com/AlmazDefourten/goapp/infrastructure/configurator"
 	"github.com/AlmazDefourten/goapp/interface/handler"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/AlmazDefourten/goapp/services"
@@ -18,30 +18,30 @@ import (
 // Initialize container with global app dependencies -
 // Connection, configurator, etc...
 func InitializeContainer() models.Container {
-	viper := container.NewViperConfigurator()
-	db := container.NewConnection(viper)
-	modelsContainer := container.NewContainer(db, viper)
-	return modelsContainer
+	viper := configurator.NewViperConfigurator()
+	db := NewConnection(viper)
+	container := NewContainer(db, viper)
+	return container
 }
 
 // Initialize dependencies for services
 func InitServiceDependency(container_inited *models.Container) models.ServiceContainer {
 	userService := services.NewUserService(container_inited)
-	serviceContainer := container.NewServiceContainer(userService)
+	serviceContainer := NewServiceContainer(userService)
 	return serviceContainer
 }
 
 // Initialize dependencies for handlers
-func InitHandlerDependency(userService models.IUserService) container.HandlerContainer {
+func InitHandlerDependency(userService models.IUserService) HandlerContainer {
 	userInfoHandler := handler.NewUserInfoHandler(userService)
-	handlerContainer := container.NewHandlerContainer(userInfoHandler)
+	handlerContainer := NewHandlerContainer(userInfoHandler)
 	return handlerContainer
 }
 
 // wire.go:
 
 // RegisterServices - decomposition ServiceContainer to services
-func RegisterServices(serviceContainer *models.ServiceContainer) container.HandlerContainer {
+func RegisterServices(serviceContainer *models.ServiceContainer) HandlerContainer {
 	return InitHandlerDependency(
 		serviceContainer.UserService,
 	)

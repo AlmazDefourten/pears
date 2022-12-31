@@ -19,5 +19,9 @@ func NewUserInfoHandler(userService models.IUserService) *UserInfoHandler {
 // List Endpoint for a List of Users
 func (userInfoHandler *UserInfoHandler) List(ctx iris.Context) {
 	data := userInfoHandler.UserService.List()
-	ctx.JSON(data)
+	err := ctx.JSON(data)
+	if err != nil {
+		// there is logging
+		panic(err)
+	}
 }
