@@ -1,7 +1,5 @@
 package logging
 
-import "github.com/AlmazDefourten/goapp/pkg/logging/loggers"
-
 type LoggerInterface interface {
 	Trace(args ...interface{})
 	Debug(args ...interface{})
@@ -13,7 +11,34 @@ type LoggerInterface interface {
 	Fatal(args ...interface{})
 	Panic(args ...interface{})
 }
+type TypeLogger int
 
-func GetInstanceLogger(nameOfLogDir string, nameOfLog string) LoggerInterface {
-	return loggers.GetLoggerLorgus(nameOfLogDir, nameOfLog).Entry
+const (
+	GlobalLogger  TypeLogger = 1
+	ServiceLogger            = 2
+)
+
+type LoggerPathUtil struct {
+	TypeLogger TypeLogger
+}
+
+type PathLogger struct {
+	Dir      string
+	FileName string
+}
+
+func (loggerPathHelper *LoggerPathUtil) GetPath() (*PathLogger, error) {
+	switch loggerPathHelper.TypeLogger {
+	case 1:
+		return &PathLogger{"logs/global", "global.log"}, nil
+	case 2:
+		return &PathLogger{"logs/service", "service.log"}, nil
+	}
+	return &PathLogger{}, &ErrorTypeLogger{}
+}
+
+type ErrorTypeLogger struct{}
+
+func (*ErrorTypeLogger) Error() string {
+	return "don't supported this type of Logger"
 }

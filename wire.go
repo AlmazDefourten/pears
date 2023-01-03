@@ -7,6 +7,7 @@ import (
 	"github.com/AlmazDefourten/goapp/container"
 	"github.com/AlmazDefourten/goapp/handlers"
 	"github.com/AlmazDefourten/goapp/models"
+	"github.com/AlmazDefourten/goapp/pkg/logging"
 	"github.com/AlmazDefourten/goapp/services"
 	"github.com/google/wire"
 )
@@ -35,4 +36,8 @@ func RegisterServices(serviceContainer *models.ServiceContainer) container.Handl
 func InitHandlerDependency(userService models.IUserService) container.HandlerContainer {
 	wire.Build(container.NewHandlerContainer, handlers.NewUserInfoHandler)
 	return container.HandlerContainer{}
+}
+
+func InitLogrusLogger(typeLogger logging.TypeLogger) logging.LoggerInterface {
+	return container.NewLoggerLogrus(typeLogger)
 }

@@ -2,6 +2,7 @@ package loggers
 
 import (
 	"fmt"
+	"github.com/AlmazDefourten/goapp/pkg/logging"
 	"github.com/sirupsen/logrus"
 	"io"
 	"os"
@@ -36,8 +37,8 @@ type Logger struct {
 	*logrus.Entry
 }
 
-func GetLoggerLorgus(nameOfLogDir string, nameOfLog string) Logger {
-	var entry = Init(nameOfLogDir, nameOfLog)
+func GetLoggerLogrus(typeLogger logging.TypeLogger) Logger {
+	var entry = Init(typeLogger)
 	return Logger{entry}
 }
 
@@ -60,8 +61,12 @@ const (
 	access0640 typePermission = 0640 // -rw-r-----
 )
 
+const (
+	serverLogDir string = "summer"
+)
+
 // Init options of logrus
-func Init(nameOfLogDir string, nameOfLog string) *logrus.Entry {
+func Init(typeLogger logging.TypeLogger) *logrus.Entry {
 	logger := logrus.New()
 	logger.SetReportCaller(true)
 	logger.Formatter = &logrus.TextFormatter{
@@ -72,12 +77,17 @@ func Init(nameOfLogDir string, nameOfLog string) *logrus.Entry {
 		DisableColors: false,
 		FullTimestamp: true,
 	}
-	err := os.MkdirAll(nameOfLogDir, os.FileMode(access0644))
+	pathUtil := logging.LoggerPathUtil{TypeLogger: typeLogger} //utils for getting dir and name of logger's file
+	path, err := pathUtil.GetPath()
+	if err != nil {
+		panic(err.Error())
+	}
+	err = os.MkdirAll(path.Dir, os.FileMode(access0644))
 	if err != nil {
 		panic(err)
 	}
 
-	allFile, err := os.OpenFile(nameOfLogDir+"/"+nameOfLog, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.FileMode(access0640))
+	allFile, err := os.OpenFile(path.Dir+"/"+path.FileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, os.FileMode(access0640))
 	if err != nil {
 		panic(fmt.Sprintf("{"))
 	}
