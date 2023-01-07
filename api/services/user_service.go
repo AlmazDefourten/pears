@@ -2,14 +2,15 @@ package services
 
 import (
 	models "github.com/AlmazDefourten/goapp/models"
+	"github.com/AlmazDefourten/goapp/models/container_models"
 )
 
 // UserService struct of service that works with Users
 type UserService struct {
-	Container *models.Container
+	Container *container_models.Container
 }
 
-func NewUserService(container *models.Container) *UserService {
+func NewUserService(container *container_models.Container) *UserService {
 	return &UserService{
 		Container: container,
 	}

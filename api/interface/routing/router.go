@@ -1,15 +1,15 @@
 package routing
 
 import (
-	"github.com/AlmazDefourten/goapp/infrastructure/container"
+	"github.com/AlmazDefourten/goapp/models/container_models"
 	"github.com/kataras/iris/v12"
 )
 
 type Router struct {
-	HandlerContainer *container.HandlerContainer
+	HandlerContainer *container_models.HandlerContainer
 }
 
-func NewRouter(handlerContainer *container.HandlerContainer) *Router {
+func NewRouter(handlerContainer *container_models.HandlerContainer) *Router {
 	return &Router{
 		HandlerContainer: handlerContainer,
 	}
@@ -25,7 +25,7 @@ func (router *Router) UseRoutes(app *iris.Application) {
 	}
 }
 
-func InitializeRoutes(app *iris.Application, containerHandler container.HandlerContainer) {
+func InitializeRoutes(app *iris.Application, containerHandler container_models.HandlerContainer) {
 	router := NewRouter(&containerHandler)
 
 	router.UseRoutes(app)
