@@ -1,4 +1,4 @@
-package jwt
+package services
 
 import (
 	"fmt"
@@ -12,6 +12,12 @@ import (
 // JWTService struct of service for authorization
 type JWTService struct {
 	Container *models.Container
+}
+
+func NewJWTService(container *models.Container) *JWTService {
+	return &JWTService{
+		Container: container,
+	}
 }
 
 //Signin - authorization method

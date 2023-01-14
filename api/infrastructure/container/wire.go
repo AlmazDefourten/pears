@@ -22,6 +22,7 @@ func InitializeContainer() models.Container {
 // Initialize dependencies for services
 func InitServiceDependency(container_inited *models.Container) models.ServiceContainer {
 	wire.Build(NewServiceContainer, services.NewUserService, wire.Bind(new(models.IUserService), new(*services.UserService)))
+	wire.Build(NewServiceContainer, services.NewJWTService, wire.Bind(new(models.IJWTService), new(*services.JWTService)))
 	return models.ServiceContainer{}
 }
 
@@ -34,7 +35,7 @@ func RegisterServices(serviceContainer *models.ServiceContainer) HandlerContaine
 }
 
 // Initialize dependencies for handlers
-func InitHandlerDependency(userService models.IUserService) HandlerContainer {
+func InitHandlerDependency(userService models.IUserService, jwtService models.IJWTService) HandlerContainer {
 	wire.Build(NewHandlerContainer, handler.NewUserInfoHandler)
 	return HandlerContainer{}
 }

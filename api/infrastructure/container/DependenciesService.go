@@ -17,9 +17,10 @@ func NewContainer(db *gorm.DB, configurator *viper.Viper) models.Container {
 	}
 }
 
-func NewServiceContainer(userService models.IUserService) models.ServiceContainer {
+func NewServiceContainer(userService models.IUserService, jwtService models.IJWTService) models.ServiceContainer {
 	return models.ServiceContainer{
 		UserService: userService,
+		JWTService:  jwtService,
 	}
 }
 
