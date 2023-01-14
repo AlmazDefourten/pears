@@ -5,21 +5,20 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-    "github.com/kataras/iris"
-	"github.com/zhashkevych/auth/pkg/parser"
+	iris "github.com/kataras/iris/v12"
 	"..\models"
+	"..\infrastructure\container"
 )
-
+// JWTService struct of service for authorization
+type JWTService struct {
+	Container *models.Container
+}
 
 //Signin - authorization method
-func (a *Authorizer) SignIn(username, password string) (string, error) {
+func (a *Authorizer) SignIn(username, password string) (string, error) *JWTService {
 	//check if user exists and password is correct
 	//connect to db
-	dsn := "host=localhost user=postgres password=mypas dbname=pears port=5432 sslmode=disable"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
+	db := container.NewConnection()
 
 	//get user from db
 	var user models.User
@@ -62,8 +61,8 @@ func ParseToken(accessToken string, signingKey []byte) (string, error){
 	return "", fmt.Errorf("invalid token")
 }
 
-//Middleware - method for checking token
-func Middleware (c iris.Context) {
+//CheckToken - method for checking token
+func CheckToken (c iris.Context) {
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
 		c.AbortWithStatus(http.StatusUnauthorized)

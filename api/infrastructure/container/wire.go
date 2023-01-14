@@ -29,6 +29,7 @@ func InitServiceDependency(container_inited *models.Container) models.ServiceCon
 func RegisterServices(serviceContainer *models.ServiceContainer) HandlerContainer {
 	return InitHandlerDependency(
 		serviceContainer.UserService,
+		serviceContainer.JWTService,
 	)
 }
 
