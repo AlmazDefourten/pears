@@ -2,8 +2,9 @@ package services
 
 import (
 	"fmt"
-	"time"
+	"github.com/AlmazDefourten/goapp/models/container_models"
 	jwt "github.com/dgrijalva/jwt-go"
+	"time"
 	// iris "github.com/kataras/iris/v12"
 	"github.com/AlmazDefourten/goapp/models"
 )
@@ -13,10 +14,10 @@ var SIGNING_KEY string = "secret"
 
 // JWTService struct of service for authorization
 type JWTService struct {
-	Container *models.Container
+	Container *container_models.Container
 }
 
-func NewJWTService(container *models.Container) *JWTService {
+func NewJWTService(container *container_models.Container) *JWTService {
 	return &JWTService{
 		Container: container,
 	}
@@ -89,5 +90,3 @@ func ParseToken(accessToken string, signingKey []byte) (string, error) {
 // 		return
 // 	}
 // }
-
-
