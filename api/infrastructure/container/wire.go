@@ -23,7 +23,7 @@ func InitializeContainer() container_models.Container {
 
 // Initialize dependencies for services
 func InitServiceDependency(container_inited *container_models.Container) container_models.ServiceContainer {
-	wire.Build(NewServiceContainer, services.NewUserService, wire.Bind(new(models.IUserService), new(*services.UserService)))
+	wire.Build(NewServiceContainer, services.NewUserService, wire.Bind(new(models.IUserService), new(*services.UserService)), services.NewJWTService, wire.Bind(new(models.IJWTService), new(*services.JWTService)))
 	return container_models.ServiceContainer{}
 }
 

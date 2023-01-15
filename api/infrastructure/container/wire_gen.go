@@ -29,7 +29,8 @@ func InitializeContainer() container_models.Container {
 // Initialize dependencies for services
 func InitServiceDependency(container_inited *container_models.Container) container_models.ServiceContainer {
 	userService := services.NewUserService(container_inited)
-	serviceContainer := NewServiceContainer(userService)
+	jwtService := services.NewJWTService(container_inited)
+	serviceContainer := NewServiceContainer(userService, jwtService)
 	return serviceContainer
 }
 

@@ -19,4 +19,5 @@ type Container struct {
 // ServiceContainer for store services singleton
 type ServiceContainer struct {
 	UserService models.IUserService
+	JWTService  models.IJWTService
 }

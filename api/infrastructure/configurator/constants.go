@@ -2,4 +2,4 @@ package configurator
 
 const ConfigName = "appconfig"
 const ConfigType = "json"
-const ConfigPath = "./"
+const ConfigPath = "./api"
