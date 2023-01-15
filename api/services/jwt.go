@@ -6,9 +6,12 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	iris "github.com/kataras/iris/v12"
-	"..\models"
-	"..\infrastructure\container"
+	"github.com/AlmazDefourten/goapp/models"
 )
+
+// SIGNING_KEY - key for signing token
+var SIGNING_KEY string = "secret"
+
 // JWTService struct of service for authorization
 type JWTService struct {
 	Container *models.Container
@@ -21,14 +24,11 @@ func NewJWTService(container *models.Container) *JWTService {
 }
 
 //Signin - authorization method
-func (a *Authorizer) SignIn(username, password string) (string, error) *JWTService {
+func (jwtService *JWTService) SignIn(username, password string) (string, error) {
 	//check if user exists and password is correct
-	//connect to db
-	db := container.NewConnection()
-
 	//get user from db
 	var user models.User
-	db.Where("login = ?", username).First(&user)
+	jwtService.Container.AppConnection.Where("login = ?", username).First(&user)
 	if user.password != password {
 		return "", fmt.Errorf("invalid username or password")
 	}
@@ -36,7 +36,7 @@ func (a *Authorizer) SignIn(username, password string) (string, error) *JWTServi
 	//create token
 	claims := models.Claims{
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: jwt.At(time.Now().Add(a.expireDuration)),
+			ExpiresAt: jwt.At(time.Now().Add(time.Hour)),
 			IssueAt:   jwt.At(time.Now()),
 		},
 		Username: username,
@@ -44,7 +44,7 @@ func (a *Authorizer) SignIn(username, password string) (string, error) *JWTServi
 
 	//return token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(a.signingkey)
+	return token.SignedString(SIGNING_KEY)
 }
 
 //ParseToken - parse token method
@@ -68,7 +68,7 @@ func ParseToken(accessToken string, signingKey []byte) (string, error){
 }
 
 //CheckToken - method for checking token
-func CheckToken (c iris.Context) {
+func CheckToken(c iris.Context) {
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
 		c.AbortWithStatus(http.StatusUnauthorized)

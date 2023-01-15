@@ -27,12 +27,13 @@ func InitializeContainer() models.Container {
 // Initialize dependencies for services
 func InitServiceDependency(container_inited *models.Container) models.ServiceContainer {
 	userService := services.NewUserService(container_inited)
-	serviceContainer := NewServiceContainer(userService)
+	jwtService := services.NewJWTService(container_inited)
+	serviceContainer := NewServiceContainer(userService, jwtService)
 	return serviceContainer
 }
 
 // Initialize dependencies for handlers
-func InitHandlerDependency(userService models.IUserService) HandlerContainer {
+func InitHandlerDependency(userService models.IUserService, jwtService models.IJWTService) HandlerContainer {
 	userInfoHandler := handler.NewUserInfoHandler(userService)
 	handlerContainer := NewHandlerContainer(userInfoHandler)
 	return handlerContainer
@@ -44,5 +45,6 @@ func InitHandlerDependency(userService models.IUserService) HandlerContainer {
 func RegisterServices(serviceContainer *models.ServiceContainer) HandlerContainer {
 	return InitHandlerDependency(
 		serviceContainer.UserService,
+		serviceContainer.JWTService,
 	)
 }
