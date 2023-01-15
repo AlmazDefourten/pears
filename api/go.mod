@@ -5,6 +5,7 @@ replace github.com/AlmazDefourten/goapp => ../goapp/api
 require github.com/kataras/iris/v12 v12.2.0-beta5
 
 require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/google/subcommands v1.0.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
