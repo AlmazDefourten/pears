@@ -19,7 +19,7 @@ func initializeApp(app *iris.Application) {
 
 	migrations.RunBaseMigration(_container.AppConnection)
 
-	containerHandler := container.RegisterServices(&containerService)
+	containerHandler := container.RegisterServices(containerService)
 	routing.InitializeRoutes(app, containerHandler)
 	err := app.Listen(":" + _container.ConfigProvider.GetString("host_port"))
 	if err != nil {

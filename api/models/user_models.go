@@ -8,11 +8,12 @@ import (
 // User Struct for User entity
 type User struct {
 	gorm.Model
-	Id       int
-	Login    string
-	Password string
-	Name     string
-	Age      int
+	Id       int    `json:"id"`
+	Login    string `json:"login"`
+	Nick     string `json:"nick"`
+	Password string `json:"password"`
+	Name     string `json:"name"`
+	Age      int    `json:"age"`
 }
 
 // Claims Struct for JWT Claims

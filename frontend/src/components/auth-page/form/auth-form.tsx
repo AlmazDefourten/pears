@@ -17,7 +17,26 @@ interface IComp{
 
 export const AuthForm = ({setRender}:  IComp) => {
     const { handleSubmit, control} = useForm<ISignInForm>(); // useForm is a custom hook for managing forms with ease. It takes one object as optional argument
-    const onSubmit: SubmitHandler<ISignInForm> = data => console.log(data); // Validation will trigger on the submit event and inputs will attach onChange event listeners to re-validate them.
+    const onSubmit: SubmitHandler<ISignInForm> = data => fetch("http://localhost:8080/user/authorization",
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                    login: data.login,
+                    password: data.password,
+                }
+            )
+        })
+        .then(res => res.json())
+        .then(
+            (result) => {
+                console.log(result);
+            },
+            (error) => {
+                console.log(error);
+            }); // Validation will trigger on the submit event and inputs will attach onChange event listeners to re-validate them.
     const { errors } = useFormState({ // This custom hook allows you to subscribe to each form state, and isolate the re-render at the custom hook level
         control
     })

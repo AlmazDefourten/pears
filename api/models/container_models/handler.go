@@ -8,6 +8,7 @@ import (
 
 type HandlerContainer struct {
 	UserInfoHandler *handler.UserInfoHandler
+	AuthHandler     *handler.AuthHandler
 }
 
 // Container Struct for store global variables for app
@@ -20,4 +21,5 @@ type Container struct {
 type ServiceContainer struct {
 	UserService models.IUserService
 	JWTService  models.IJWTService
+	AuthService models.IAuthService
 }

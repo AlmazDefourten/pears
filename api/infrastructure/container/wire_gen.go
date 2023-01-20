@@ -30,22 +30,25 @@ func InitializeContainer() container_models.Container {
 func InitServiceDependency(container_inited *container_models.Container) container_models.ServiceContainer {
 	userService := services.NewUserService(container_inited)
 	jwtService := services.NewJWTService(container_inited)
-	serviceContainer := NewServiceContainer(userService, jwtService)
+	authService := services.NewAuthService(container_inited)
+	serviceContainer := NewServiceContainer(userService, jwtService, authService)
 	return serviceContainer
 }
 
 // Initialize dependencies for handlers
-func InitHandlerDependency(userService models.IUserService) container_models.HandlerContainer {
+func InitHandlerDependency(userService models.IUserService, authService models.IAuthService) container_models.HandlerContainer {
 	userInfoHandler := handler.NewUserInfoHandler(userService)
-	handlerContainer := NewHandlerContainer(userInfoHandler)
+	authHandler := handler.NewAuthHandler(authService)
+	handlerContainer := NewHandlerContainer(userInfoHandler, authHandler)
 	return handlerContainer
 }
 
 // wire.go:
 
 // RegisterServices - decomposition ServiceContainer to services
-func RegisterServices(serviceContainer *container_models.ServiceContainer) container_models.HandlerContainer {
+func RegisterServices(serviceContainer container_models.ServiceContainer) container_models.HandlerContainer {
 	return InitHandlerDependency(
 		serviceContainer.UserService,
+		serviceContainer.AuthService,
 	)
 }

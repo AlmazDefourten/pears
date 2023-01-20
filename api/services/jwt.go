@@ -10,7 +10,7 @@ import (
 )
 
 // SIGNING_KEY - key for signing token
-var SIGNING_KEY string = "secret"
+var SIGNING_KEY string = "absolutely-random-secret-key-alkdsjfqiewramdlfasdlfadskfrqwerqwerqewr" // TODO: вынести в конст
 
 // JWTService struct of service for authorization
 type JWTService struct {
@@ -36,7 +36,7 @@ func (jwtService *JWTService) SignIn(username, password string) (string, error) 
 	//create token
 	claims := models.Claims{
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour).Unix(), // TODO: вынести time.hour в конст
 		},
 		Username: username,
 	}
