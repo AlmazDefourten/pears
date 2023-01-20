@@ -25,7 +25,6 @@ func (router *Router) UseRoutes(app *iris.Application) {
 		userAPI.Get("/list", router.HandlerContainer.UserInfoHandler.List)
 		userAPI.Post("/registration", router.HandlerContainer.AuthHandler.Registration)
 		userAPI.Post("/authorization", router.HandlerContainer.AuthHandler.Authorization)
-		userAPI.Options("/authorization", router.HandlerContainer.AuthHandler.Authorization)
 	}
 }
 
