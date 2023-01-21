@@ -17,15 +17,17 @@ func NewRouter(handlerContainer *container_models.HandlerContainer) *Router {
 
 // UseRoutes main API router
 func (router *Router) UseRoutes(app *iris.Application) {
+	app.UseRouter(CorsHandler)
 	userAPI := app.Party("/user")
 	{
 		userAPI.Use(iris.Compression)
-		app.UseRouter(CorsHandler)
-		app.Use(router.HandlerContainer.AuthHandler.AuthMiddleware)
-
-		userAPI.Get("/list", router.HandlerContainer.UserInfoHandler.List)
 		userAPI.Post("/registration", router.HandlerContainer.AuthHandler.Registration)
 		userAPI.Post("/authorization", router.HandlerContainer.AuthHandler.Authorization)
+	}
+	userInfoAPI := app.Party("/userinfo")
+	{
+		userInfoAPI.UseRouter(router.HandlerContainer.AuthHandler.AuthMiddleware)
+		userInfoAPI.Get("/list", router.HandlerContainer.UserInfoHandler.List)
 	}
 }
 

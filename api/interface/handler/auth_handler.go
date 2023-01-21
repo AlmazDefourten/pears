@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/kataras/iris/v12"
 )
@@ -51,14 +52,12 @@ func (authHandler *AuthHandler) AuthMiddleware(ctx iris.Context) {
 	token := ctx.GetHeader("Token")
 	ok, username := authHandler.AuthService.AuthCheck(token)
 	if ok == false {
-		err := ctx.JSON(models.Response{Ok: false, Message: username})
+		err := ctx.JSON(models.Response{Ok: false, Message: "Пользователь не авторизован"})
 		if err != nil {
 			// logging here lol
+			fmt.Println(username)
 		}
 	} else {
-		err := ctx.JSON(models.Response{Ok: true, Message: username})
-		if err != nil {
-			// logging here lol
-		}
+		ctx.Next()
 	}
 }
