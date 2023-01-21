@@ -38,11 +38,27 @@ func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 		println(err)
 		// logging here
 	}
-	ok := authHandler.AuthService.Authorization(user.Login, user.Password)
-	response := map[string]interface{}{"result": ok}
+	ok, token := authHandler.AuthService.Authorization(user.Login, user.Password)
+	response := map[string]interface{}{"result": ok, "token": token}
 	err = ctx.JSON(response)
 	if err != nil {
 		println(err)
 		// logging here
+	}
+}
+
+func (authHandler *AuthHandler) AuthMiddleware(ctx iris.Context) {
+	token := ctx.GetHeader("Token")
+	ok, username := authHandler.AuthService.AuthCheck(token)
+	if ok == false {
+		err := ctx.JSON(models.Response{Ok: false, Message: username})
+		if err != nil {
+			// logging here lol
+		}
+	} else {
+		err := ctx.JSON(models.Response{Ok: true, Message: username})
+		if err != nil {
+			// logging here lol
+		}
 	}
 }

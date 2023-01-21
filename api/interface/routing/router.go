@@ -21,6 +21,7 @@ func (router *Router) UseRoutes(app *iris.Application) {
 	{
 		userAPI.Use(iris.Compression)
 		app.UseRouter(CorsHandler)
+		app.Use(router.HandlerContainer.AuthHandler.AuthMiddleware)
 
 		userAPI.Get("/list", router.HandlerContainer.UserInfoHandler.List)
 		userAPI.Post("/registration", router.HandlerContainer.AuthHandler.Registration)

@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/AlmazDefourten/goapp/models/container_models"
 	"github.com/kataras/iris/v12/x/errors"
@@ -9,17 +10,19 @@ import (
 )
 
 const (
-	passwordSalt = "ASdlamsdpqwekAvnaQRIBFQHYWI1523hjsdhASHDSUDQWEklasdaousdgBVIVQOPWE"
+	passwordSalt = "ASdlamsdpqwekAvnaQRIBFQHYWI1523hjsdhASHDSUDQWEklasdaousdgBVIVQOPWE" // TODO: вынести оба в настройки
 	hashingCost  = 14
 )
 
 type AuthService struct {
-	Container *container_models.Container
+	Container  *container_models.Container
+	JWTService models.IJWTService
 }
 
-func NewAuthService(container *container_models.Container) *AuthService {
+func NewAuthService(container *container_models.Container, jwtService models.IJWTService) *AuthService {
 	return &AuthService{
-		Container: container,
+		Container:  container,
+		JWTService: jwtService,
 	}
 }
 
@@ -50,19 +53,34 @@ func (authService *AuthService) Registration(user *models.User) bool {
 	return true
 }
 
-func (authService *AuthService) Authorization(login string, password string) bool {
+func (authService *AuthService) Authorization(login string, password string) (bool, string) {
 	var user models.User
 	err := authService.Container.AppConnection.First(&user, "login = ?", login).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return false
+			return false, ""
 		}
 	}
 	if checkPasswordHash(password, user.Password) {
-		return true
+		jwtToken, err := authService.JWTService.SignIn(login)
+		if err != nil {
+			fmt.Println(err)
+			// logging here lol
+		}
+		return true, jwtToken
 	} else {
-		return false
+		return false, ""
 	}
+}
+
+func (authService *AuthService) AuthCheck(token string) (bool, string) {
+	username, err := ParseToken(token, []byte(SIGNING_KEY))
+	if err != nil {
+		fmt.Println(err)
+		// logging here lol
+		return false, ""
+	}
+	return true, username
 }
 
 func hashPassword(password string) string {

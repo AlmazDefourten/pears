@@ -30,7 +30,7 @@ func InitializeContainer() container_models.Container {
 func InitServiceDependency(container_inited *container_models.Container) container_models.ServiceContainer {
 	userService := services.NewUserService(container_inited)
 	jwtService := services.NewJWTService(container_inited)
-	authService := services.NewAuthService(container_inited)
+	authService := services.NewAuthService(container_inited, jwtService)
 	serviceContainer := NewServiceContainer(userService, jwtService, authService)
 	return serviceContainer
 }

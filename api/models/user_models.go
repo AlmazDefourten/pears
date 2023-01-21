@@ -24,7 +24,7 @@ type Claims struct {
 
 // IJWTService interface for operations with JWT
 type IJWTService interface {
-	SignIn(username, password string) (string, error)
+	SignIn(username string) (string, error)
 }
 
 // IUserService interface for operations with Users

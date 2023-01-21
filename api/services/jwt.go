@@ -10,7 +10,7 @@ import (
 )
 
 // SIGNING_KEY - key for signing token
-var SIGNING_KEY string = "absolutely-random-secret-key-alkdsjfqiewramdlfasdlfadskfrqwerqwerqewr" // TODO: вынести в конст
+var SIGNING_KEY = "iewramdlfasdlfadskfrqwerqwerqewr" // TODO: вынести в файл с настройками
 
 // JWTService struct of service for authorization
 type JWTService struct {
@@ -24,15 +24,7 @@ func NewJWTService(container *container_models.Container) *JWTService {
 }
 
 // Signin - authorization method
-func (jwtService *JWTService) SignIn(username, password string) (string, error) {
-	//check if user exists and password is correct
-	//get user from db
-	var user models.User
-	jwtService.Container.AppConnection.Where("login = ?", username).First(&user)
-	if user.Password != password {
-		return "", fmt.Errorf("invalid username or password")
-	}
-
+func (jwtService *JWTService) SignIn(username string) (string, error) {
 	//create token
 	claims := models.Claims{
 		StandardClaims: jwt.StandardClaims{
@@ -43,7 +35,7 @@ func (jwtService *JWTService) SignIn(username, password string) (string, error) 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	//return token
-	return token.SignedString(SIGNING_KEY)
+	return token.SignedString([]byte(SIGNING_KEY))
 }
 
 // ParseToken - parse token method
