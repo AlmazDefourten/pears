@@ -1,6 +1,6 @@
 package logging
 
-type LoggerInterface interface {
+type Logger interface {
 	Trace(args ...interface{})
 	Debug(args ...interface{})
 	Print(args ...interface{})
@@ -29,9 +29,9 @@ type PathLogger struct {
 
 func (loggerPathHelper *LoggerPathUtil) GetPath() (*PathLogger, error) {
 	switch loggerPathHelper.TypeLogger {
-	case 1:
+	case GlobalLogger:
 		return &PathLogger{"logs/global", "global.log"}, nil
-	case 2:
+	case ServiceLogger:
 		return &PathLogger{"logs/service", "service.log"}, nil
 	}
 	return &PathLogger{}, &ErrorTypeLogger{}

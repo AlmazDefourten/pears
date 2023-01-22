@@ -51,7 +51,6 @@ func GetLoggerLogrus(typeLogger logging.TypeLogger) Logger {
 type typePermission uint32
 
 const (
-	//todo
 	access0777 typePermission = 0777 // -rwxrwxrwx
 	access0755 typePermission = 0755 // -rwxr-xr-x
 	access0644 typePermission = 0644 // -rw-r–r–
@@ -59,10 +58,6 @@ const (
 	access0750 typePermission = 0750 // -rwx-r-x—
 	access0700 typePermission = 0700 // -rwx——
 	access0640 typePermission = 0640 // -rw-r-----
-)
-
-const (
-	serverLogDir string = "summer"
 )
 
 // Init options of logrus
