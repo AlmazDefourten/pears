@@ -9,9 +9,6 @@ import (
 	"github.com/AlmazDefourten/goapp/models"
 )
 
-// SIGNING_KEY - key for signing token
-var SIGNING_KEY string = "secret"
-
 // JWTService struct of service for authorization
 type JWTService struct {
 	Container *container_models.Container
@@ -24,26 +21,21 @@ func NewJWTService(container *container_models.Container) *JWTService {
 }
 
 // Signin - authorization method
-func (jwtService *JWTService) SignIn(username, password string) (string, error) {
-	//check if user exists and password is correct
-	//get user from db
-	var user models.User
-	jwtService.Container.AppConnection.Where("login = ?", username).First(&user)
-	if user.Password != password {
-		return "", fmt.Errorf("invalid username or password")
-	}
-
+func (jwtService *JWTService) SignIn(username string) (string, error) {
 	//create token
+	token_time := jwtService.Container.ConfigProvider.GetString("jwt.token_time")
 	claims := models.Claims{
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour).Unix(),
+			ExpiresAt: time.Now().Add(time.ParseDuration(token_time)).Unix(),
 		},
 		Username: username,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
+	//SIGNING_KEY - key for signing token
+	SIGNING_KEY := jwtService.Container.ConfigProvider.GetString("jwt.signing_key")
 	//return token
-	return token.SignedString(SIGNING_KEY)
+	return token.SignedString([]byte(SIGNING_KEY))
 }
 
 // ParseToken - parse token method
