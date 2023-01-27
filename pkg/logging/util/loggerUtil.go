@@ -1,17 +1,6 @@
-package logging
+package util
 
-/*type Logger interface {
-	Trace(args ...interface{})
-	Debug(args ...interface{})
-	Print(args ...interface{})
-	Info(args ...interface{})
-	Warn(args ...interface{})
-	Warning(args ...interface{})
-	Error(args ...interface{})
-	Fatal(args ...interface{})
-	Panic(args ...interface{})
-}*/
-/*type TypeLogger int
+type TypeLogger int
 
 const (
 	GlobalLogger  TypeLogger = 1
@@ -41,4 +30,4 @@ type ErrorTypeLogger struct{}
 
 func (*ErrorTypeLogger) Error() string {
 	return "don't supported this type of Logger"
-}*/
+}
