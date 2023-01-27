@@ -25,6 +25,9 @@ func (jwtService *JWTService) SignIn(username string) (string, error) {
 	//create token
 	token_time := jwtService.Container.ConfigProvider.GetString("jwt.token_time")
 	add_time, err := time.ParseDuration(token_time)
+	if err != nil {
+		return "", err
+	}
 	claims := models.Claims{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(add_time).Unix(),
