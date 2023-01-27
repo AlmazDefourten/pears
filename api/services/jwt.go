@@ -9,9 +9,6 @@ import (
 	"github.com/AlmazDefourten/goapp/models"
 )
 
-// SIGNING_KEY - key for signing token
-var SIGNING_KEY = "iewramdlfasdlfadskfrqwerqwerqewr" // TODO: вынести в файл с настройками
-
 // JWTService struct of service for authorization
 type JWTService struct {
 	Container *container_models.Container
@@ -26,14 +23,17 @@ func NewJWTService(container *container_models.Container) *JWTService {
 // Signin - authorization method
 func (jwtService *JWTService) SignIn(username string) (string, error) {
 	//create token
+	token_time := jwtService.Container.ConfigProvider.GetString("jwt.token_time")
 	claims := models.Claims{
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour).Unix(), // TODO: вынести time.hour в конст
+			ExpiresAt: time.Now().Add(time.ParseDuration(token_time)).Unix(),
 		},
 		Username: username,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
+	//SIGNING_KEY - key for signing token
+	SIGNING_KEY := jwtService.Container.ConfigProvider.GetString("jwt.signing_key")
 	//return token
 	return token.SignedString([]byte(SIGNING_KEY))
 }
