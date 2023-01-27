@@ -9,11 +9,6 @@ import (
 	"gorm.io/gorm"
 )
 
-const (
-	passwordSalt = "ASdlamsdpqwekAvnaQRIBFQHYWI1523hjsdhASHDSUDQWEklasdaousdgBVIVQOPWE" // TODO: вынести оба в настройки
-	hashingCost  = 14
-)
-
 type AuthService struct {
 	Container  *container_models.Container
 	JWTService models.IJWTService
@@ -43,7 +38,9 @@ func (authService *AuthService) Registration(user *models.User) bool {
 		// some info in callback idk that user already exists
 		return false
 	} else {
-		user.Password = hashPassword(user.Password)
+		user.Password = hashPassword(user.Password,
+			authService.Container.ConfigProvider.GetString("passwordSalt"),
+			authService.Container.ConfigProvider.GetInt("hashingCost"))
 		request := authService.Container.AppConnection.Create(&user)
 		if request.Error != nil {
 			// log error lol
@@ -61,7 +58,7 @@ func (authService *AuthService) Authorization(login string, password string) (bo
 			return false, ""
 		}
 	}
-	if checkPasswordHash(password, user.Password) {
+	if checkPasswordHash(password, user.Password, authService.Container.ConfigProvider.GetString("passwordSalt")) {
 		jwtToken, err := authService.JWTService.SignIn(login)
 		if err != nil {
 			fmt.Println(err)
@@ -74,7 +71,7 @@ func (authService *AuthService) Authorization(login string, password string) (bo
 }
 
 func (authService *AuthService) AuthCheck(token string) (bool, string) {
-	username, err := ParseToken(token, []byte(SIGNING_KEY))
+	username, err := ParseToken(token, []byte(authService.Container.ConfigProvider.GetString("jwt.signing_key")))
 	if err != nil {
 		fmt.Println(err)
 		// logging here lol
@@ -83,7 +80,7 @@ func (authService *AuthService) AuthCheck(token string) (bool, string) {
 	return true, username
 }
 
-func hashPassword(password string) string {
+func hashPassword(password string, passwordSalt string, hashingCost int) string {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password+passwordSalt), hashingCost)
 	if err != nil {
 		println(err)
@@ -92,7 +89,7 @@ func hashPassword(password string) string {
 	return string(bytes)
 }
 
-func checkPasswordHash(password, hash string) bool {
+func checkPasswordHash(password, hash string, passwordSalt string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password+passwordSalt))
 	return err == nil
 }
