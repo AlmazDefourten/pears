@@ -24,9 +24,10 @@ func NewJWTService(container *container_models.Container) *JWTService {
 func (jwtService *JWTService) SignIn(username string) (string, error) {
 	//create token
 	token_time := jwtService.Container.ConfigProvider.GetString("jwt.token_time")
+	add_time, err := time.ParseDuration(token_time)
 	claims := models.Claims{
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.ParseDuration(token_time)).Unix(),
+			ExpiresAt: time.Now().Add(add_time).Unix(),
 		},
 		Username: username,
 	}
