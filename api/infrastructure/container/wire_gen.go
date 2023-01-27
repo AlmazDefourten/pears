@@ -8,10 +8,10 @@ package container
 
 import (
 	"github.com/AlmazDefourten/goapp/infrastructure/configurator"
+	"github.com/AlmazDefourten/goapp/infrastructure/data_adapter/connection"
 	"github.com/AlmazDefourten/goapp/interface/handler"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/AlmazDefourten/goapp/models/container_models"
-	"github.com/AlmazDefourten/goapp/pkg/connection"
 	"github.com/AlmazDefourten/goapp/services"
 )
 
