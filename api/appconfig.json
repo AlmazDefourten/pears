@@ -5,5 +5,7 @@
     "jwt":{
         "signing_key": "iewramdlfasdlfadskfrqwerqwerqewr",
         "token_time": "1h"
-    }
+    },
+    "passwordSalt": "ASdlamsdpqwekAvnaQRIBFQHYWI1523hjsdhASHDSUDQWEklasdaousdgBVIVQOPWE",
+    "hashingCost": 14
 }
