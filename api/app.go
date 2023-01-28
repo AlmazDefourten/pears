@@ -4,7 +4,7 @@ import (
 	"github.com/AlmazDefourten/goapp/infrastructure/container"
 	"github.com/AlmazDefourten/goapp/infrastructure/migrations"
 	"github.com/AlmazDefourten/goapp/interface/routing"
-	iris "github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12"
 )
 
 func main() {
