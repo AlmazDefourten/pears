@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/kataras/iris/v12"
+	"net/http"
 )
 
 type AuthHandler struct {
 	AuthService models.IAuthService
 }
+
+const ()
 
 func NewAuthHandler(authService models.IAuthService) *AuthHandler {
 	return &AuthHandler{
@@ -40,7 +43,10 @@ func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 		// logging here
 	}
 	ok, token := authHandler.AuthService.Authorization(user.Login, user.Password)
-	response := map[string]interface{}{"result": ok, "token": token}
+	if !ok {
+		ctx.StatusCode(http.StatusUnauthorized)
+	}
+	response := map[string]interface{}{"ok": ok, "token": token}
 	err = ctx.JSON(response)
 	if err != nil {
 		println(err)
@@ -52,6 +58,7 @@ func (authHandler *AuthHandler) AuthMiddleware(ctx iris.Context) {
 	token := ctx.GetHeader("Token")
 	ok, username := authHandler.AuthService.AuthCheck(token)
 	if ok == false {
+		ctx.StopWithStatus(http.StatusUnauthorized)
 		err := ctx.JSON(models.Response{Ok: false, Message: "Пользователь не авторизован"})
 		if err != nil {
 			// logging here lol
