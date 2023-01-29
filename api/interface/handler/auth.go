@@ -11,14 +11,23 @@ type AuthHandler struct {
 	AuthService models.IAuthService
 }
 
-const ()
-
 func NewAuthHandler(authService models.IAuthService) *AuthHandler {
 	return &AuthHandler{
 		AuthService: authService,
 	}
 }
 
+// Registration ShowAccount godoc
+//
+//	@Summary		Registration
+//	@Description	add new user to the database
+//	@Accept			json
+//	@Produce		json
+//	@Param			body		body		models.User		true	"request body with info about user"
+//	@Failure		401	{object}	models.Response
+//	@Success		200	{object}	models.Response
+//	@Router			/user/registration [post]
+//  swagger: example
 func (authHandler *AuthHandler) Registration(ctx iris.Context) {
 	var user models.User
 	err := ctx.ReadJSON(&user)
@@ -27,7 +36,7 @@ func (authHandler *AuthHandler) Registration(ctx iris.Context) {
 		// logging here
 	}
 	ok := authHandler.AuthService.Registration(&user)
-	response := map[string]interface{}{"result": ok}
+	response := models.Response{Ok: ok, Message: ""}
 	err = ctx.JSON(response)
 	if err != nil {
 		println(err)

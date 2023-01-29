@@ -7,6 +7,17 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
+// @title Pears auto documentation
+// @version 1.0
+// @description Pears API, specification and description
+
+// @host localhost:8080
+// @BasePath /api
+
+// @securityDefinitions.apikey	JWTToken
+// @in							header
+// @name						token
+// @description				Access token only
 func main() {
 	app := iris.New()
 

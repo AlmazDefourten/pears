@@ -2,18 +2,16 @@ package models
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"gorm.io/gorm"
 )
 
 // User Struct for User entity
 type User struct {
-	gorm.Model
 	Id       int    `json:"id"`
-	Login    string `json:"login"`
-	Nick     string `json:"nick"`
-	Password string `json:"password"`
-	Name     string `json:"name"`
-	Age      int    `json:"age"`
+	Login    string `json:"login" example:"ivan.petrov@mail.ru"`
+	Nick     string `json:"nick" example:"PedanticCow"`
+	Password string `json:"password" example:"mypaSSword123876"`
+	Name     string `json:"name" example:"Andrey"`
+	Age      int    `json:"age" example:"24"`
 }
 
 // Claims Struct for JWT Claims

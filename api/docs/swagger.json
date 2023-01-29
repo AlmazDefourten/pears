@@ -1,0 +1,99 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Pears API, specification and description",
+        "title": "Pears auto documentation",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api",
+    "paths": {
+        "/user/registration": {
+            "post": {
+                "description": "add new user to the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Registration",
+                "parameters": [
+                    {
+                        "description": "request body with info about user",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Response": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "ok": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "models.User": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer",
+                    "example": 24
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "login": {
+                    "type": "string",
+                    "example": "ivan.petrov@mail.ru"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Andrey"
+                },
+                "nick": {
+                    "type": "string",
+                    "example": "PedanticCow"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "mypaSSword123876"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "JWTToken": {
+            "description": "Access token only",
+            "type": "apiKey",
+            "name": "token",
+            "in": "header"
+        }
+    }
+}

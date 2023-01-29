@@ -1,8 +1,16 @@
 package routing
 
 import (
+	_ "github.com/AlmazDefourten/goapp/docs"
+	"github.com/AlmazDefourten/goapp/infrastructure/configurator"
 	"github.com/AlmazDefourten/goapp/models/container_models"
+	"github.com/iris-contrib/swagger"
+	"github.com/iris-contrib/swagger/v12/swaggerFiles"
 	"github.com/kataras/iris/v12"
+)
+
+const (
+	apiPath = "/api"
 )
 
 type Router struct {
@@ -18,7 +26,10 @@ func NewRouter(handlerContainer *container_models.HandlerContainer) *Router {
 // UseRoutes main API router
 func (router *Router) UseRoutes(app *iris.Application) {
 	app.UseRouter(CorsHandler)
-	userAPI := app.Party("/user")
+
+	AutoDocHandleInit(app)
+
+	userAPI := app.Party(apiPath + "/user")
 	{
 		userAPI.Use(iris.Compression)
 		userAPI.Post("/registration", router.HandlerContainer.AuthHandler.Registration)
@@ -51,4 +62,16 @@ func CorsHandler(ctx iris.Context) {
 		return
 	}
 	ctx.Next()
+}
+
+// AutoDocHandleInit is routing and initializing autodocs
+func AutoDocHandleInit(app *iris.Application) {
+	// Configure the swagger UI page.
+	config := configurator.SwaggerConfig
+	swaggerUI := swagger.Handler(swaggerFiles.Handler, config)
+
+	// Register on domain:port/swagger
+	app.Get("/swagger", swaggerUI)
+	// And the wildcard one for index.html, *.js, *.css and e.t.c.
+	app.Get("/swagger/{any:path}", swaggerUI)
 }
