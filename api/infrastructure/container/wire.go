@@ -9,7 +9,6 @@ import (
 	"github.com/AlmazDefourten/goapp/interface/handler"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/AlmazDefourten/goapp/models/container_models"
-	"github.com/AlmazDefourten/goapp/pkg/logging/resolvers"
 	"github.com/AlmazDefourten/goapp/services"
 	"github.com/google/wire"
 	"github.com/spf13/viper"
@@ -43,8 +42,4 @@ func RegisterServices(serviceContainer container_models.ServiceContainer) contai
 func InitHandlerDependency(userService models.IUserService, authService models.IAuthService) container_models.HandlerContainer {
 	wire.Build(NewHandlerContainer, handler.NewUserInfoHandler, handler.NewAuthHandler)
 	return container_models.HandlerContainer{}
-}
-
-func InitLogrusLogger(typeLogger resolvers.TypeLogger) models.Logger {
-	return loggers.GetLoggerLogrus(typeLogger).Entry
 }

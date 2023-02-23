@@ -1,0 +1,67 @@
+basePath: /api
+definitions:
+  models.Response:
+    properties:
+      message:
+        type: string
+      ok:
+        type: boolean
+    type: object
+  models.User:
+    properties:
+      age:
+        example: 24
+        type: integer
+      id:
+        type: integer
+      login:
+        example: ivan.petrov@mail.ru
+        type: string
+      name:
+        example: Andrey
+        type: string
+      nick:
+        example: PedanticCow
+        type: string
+      password:
+        example: mypaSSword123876
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Pears API, specification and description
+  title: Pears auto documentation
+  version: "1.0"
+paths:
+  /user/registration:
+    post:
+      consumes:
+      - application/json
+      description: add new user to the database
+      parameters:
+      - description: request body with info about user
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Registration
+securityDefinitions:
+  JWTToken:
+    description: Access token only
+    in: header
+    name: token
+    type: apiKey
+swagger: "2.0"
