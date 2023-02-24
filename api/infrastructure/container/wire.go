@@ -9,6 +9,7 @@ import (
 	"github.com/AlmazDefourten/goapp/interface/handler"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/AlmazDefourten/goapp/models/container_models"
+	"github.com/AlmazDefourten/goapp/pkg/logging/loggers"
 	"github.com/AlmazDefourten/goapp/pkg/logging/resolvers"
 	"github.com/AlmazDefourten/goapp/services"
 	"github.com/google/wire"
@@ -46,5 +47,6 @@ func InitHandlerDependency(userService models.IUserService, authService models.I
 }
 
 func InitLogrusLogger(typeLogger resolvers.TypeLogger) models.Logger {
-	return loggers.GetLoggerLogrus(typeLogger).Entry
+	wire.Build(wire.Bind(new(models.Logger), loggers.InitLogrus(typeLogger)))
+	return loggers.InitLogrus(typeLogger)
 }

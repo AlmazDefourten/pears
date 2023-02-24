@@ -12,6 +12,8 @@ import (
 	"github.com/AlmazDefourten/goapp/interface/handler"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/AlmazDefourten/goapp/models/container_models"
+	"github.com/AlmazDefourten/goapp/pkg/logging/loggers"
+	"github.com/AlmazDefourten/goapp/pkg/logging/resolvers"
 	"github.com/AlmazDefourten/goapp/services"
 )
 
@@ -51,4 +53,8 @@ func RegisterServices(serviceContainer container_models.ServiceContainer) contai
 		serviceContainer.UserService,
 		serviceContainer.AuthService,
 	)
+}
+
+func InitLogrusLogger(typeLogger resolvers.TypeLogger) models.Logger {
+	return loggers.GetLoggerLogrus(typeLogger).Entry
 }

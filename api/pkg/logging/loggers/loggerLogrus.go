@@ -2,7 +2,7 @@ package loggers
 
 import (
 	"fmt"
-	"github.com/AlmazDefourten/goapp/pkg/logging/util"
+	"github.com/AlmazDefourten/goapp/pkg/logging/resolvers"
 	"github.com/sirupsen/logrus"
 	"io"
 	"os"
@@ -37,8 +37,8 @@ type Logger struct {
 	*logrus.Entry
 }
 
-func GetLoggerLogrus(typeLogger util.TypeLogger) Logger {
-	var entry = Init(typeLogger)
+func NewLoggerLogrus(typeLogger resolvers.TypeLogger) Logger {
+	var entry = InitLogrus(typeLogger)
 	return Logger{entry}
 }
 
@@ -61,7 +61,7 @@ const (
 )
 
 // Init options of logrus
-func Init(typeLogger util.TypeLogger) *logrus.Entry {
+func InitLogrus(typeLogger resolvers.TypeLogger) *logrus.Entry {
 	logger := logrus.New()
 	logger.SetReportCaller(true)
 	logger.Formatter = &logrus.TextFormatter{
@@ -72,7 +72,7 @@ func Init(typeLogger util.TypeLogger) *logrus.Entry {
 		DisableColors: false,
 		FullTimestamp: true,
 	}
-	pathUtil := util.LoggerPathUtil{TypeLogger: typeLogger} //utils for getting dir and name of logger's file
+	pathUtil := resolvers.LoggerPathUtil{TypeLogger: typeLogger} //utils for getting dir and name of logger's file
 	path, err := pathUtil.GetPath()
 	if err != nil {
 		panic(err.Error())
