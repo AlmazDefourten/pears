@@ -4,6 +4,7 @@ import (
 	"github.com/AlmazDefourten/goapp/infrastructure/container"
 	"github.com/AlmazDefourten/goapp/infrastructure/migrations"
 	"github.com/AlmazDefourten/goapp/interface/routing"
+	"github.com/AlmazDefourten/goapp/pkg/logging/resolvers"
 	"github.com/kataras/iris/v12"
 )
 
@@ -12,7 +13,7 @@ import (
 // @description Pears API, specification and description
 
 // @host localhost:8080
-// @BasePath /api
+// @BasePath /api/v1
 
 // @securityDefinitions.apikey	JWTToken
 // @in							header
@@ -25,9 +26,11 @@ func main() {
 }
 
 func initializeApp(app *iris.Application) {
-	_container := container.InitializeContainer()
+	_container := container.InitializeContainer(resolvers.GlobalLogger)
 	containerService := container.InitServiceDependency(&_container)
 
+	log := container.InitLogrusLogger(resolvers.GlobalLogger)
+	log.Info("Start app!")
 	migrations.RunBaseMigration(_container.AppConnection)
 
 	containerHandler := container.RegisterServices(containerService)
