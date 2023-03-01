@@ -50,12 +50,12 @@ func (authService *AuthService) Registration(user *models.User) bool {
 	return true
 }
 
-func (authService *AuthService) Authorization(login string, password string) (bool, string) {
+func (authService *AuthService) Authorization(login string, password string) (bool, *models.Tokens) {
 	var user models.User
 	err := authService.Container.AppConnection.First(&user, "login = ?", login).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return false, ""
+			return false, nil
 		}
 	}
 	if checkPasswordHash(password, user.Password, authService.Container.ConfigProvider.GetString("passwordSalt")) {
@@ -66,7 +66,7 @@ func (authService *AuthService) Authorization(login string, password string) (bo
 		}
 		return true, jwtToken
 	} else {
-		return false, ""
+		return false, nil
 	}
 }
 

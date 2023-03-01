@@ -4,7 +4,8 @@
     "debug_mode": true,
     "jwt":{
         "signing_key": "iewramdlfasdlfadskfrqwerqwerqewr",
-        "token_time": "1h"
+        "access_token_time": "1h",
+        "refresh_token_time": "720h"
     },
     "passwordSalt": "ASdlamsdpqwekAvnaQRIBFQHYWI1523hjsdhASHDSUDQWEklasdaousdgBVIVQOPWE",
     "hashingCost": 14

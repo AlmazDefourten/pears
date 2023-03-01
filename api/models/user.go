@@ -22,10 +22,17 @@ type Claims struct {
 
 // IJWTService interface for operations with JWT
 type IJWTService interface {
-	SignIn(username string) (string, error)
+	SignIn(username string) (*Tokens, error)
+	RefreshTokens(refresh_token string) (*Tokens, error)
 }
 
 // IUserService interface for operations with Users
 type IUserService interface {
 	List() []User
+}
+
+// tokens struct for JWT
+type Tokens struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }
