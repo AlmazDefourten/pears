@@ -12,6 +12,8 @@ import (
 	"github.com/AlmazDefourten/goapp/interface/handler"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/AlmazDefourten/goapp/models/container_models"
+	"github.com/AlmazDefourten/goapp/pkg/logging/loggers"
+	"github.com/AlmazDefourten/goapp/pkg/logging/resolvers"
 	"github.com/AlmazDefourten/goapp/services"
 )
 
@@ -19,7 +21,7 @@ import (
 
 // Initialize container with global app dependencies -
 // Connection, configurator, etc...
-func InitializeContainer() container_models.Container {
+func InitializeContainer(typeLogger resolvers.TypeLogger) container_models.Container {
 	viper := configurator.NewViperConfigurator()
 	db := connection.NewGormConnection(viper)
 	container := NewContainer(db, viper)
@@ -41,6 +43,11 @@ func InitHandlerDependency(userService models.IUserService, authService models.I
 	authHandler := handler.NewAuthHandler(authService)
 	handlerContainer := NewHandlerContainer(userInfoHandler, authHandler)
 	return handlerContainer
+}
+
+func InitLogrusLogger(typeLogger resolvers.TypeLogger) models.Logger {
+	entry := loggers.Init(typeLogger)
+	return entry
 }
 
 // wire.go:
