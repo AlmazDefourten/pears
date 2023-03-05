@@ -2,3 +2,4 @@ appconfig.js
 **/logs
 /frontend/node_modules/
 /frontend/.idea/
+/.idea/
