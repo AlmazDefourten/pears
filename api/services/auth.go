@@ -3,27 +3,29 @@ package services
 import (
 	"fmt"
 	"github.com/AlmazDefourten/goapp/models"
-	"github.com/AlmazDefourten/goapp/models/container_models"
+	"github.com/golobby/container/v3"
 	"github.com/kataras/iris/v12/x/errors"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
+//TODO: возвращать error в методах
 type AuthService struct {
-	Container  *container_models.Container
-	JWTService models.IJWTService
 }
 
-func NewAuthService(container *container_models.Container, jwtService models.IJWTService) *AuthService {
-	return &AuthService{
-		Container:  container,
-		JWTService: jwtService,
-	}
+func NewAuthService() *AuthService {
+	return &AuthService{}
 }
 
 func (authService *AuthService) CheckIfUserExist(login string) bool {
 	var res []models.User
-	request := authService.Container.AppConnection.Model(&models.User{}).First(&res, "login = ?", login)
+	var db gorm.DB
+	err := container.Resolve(&db)
+	if err != nil {
+		//logging here
+		panic(err)
+	}
+	request := db.Model(&models.User{}).First(&res, "login = ?", login)
 	if request.Error != nil {
 		// logging and debug
 	}
@@ -34,14 +36,26 @@ func (authService *AuthService) CheckIfUserExist(login string) bool {
 }
 
 func (authService *AuthService) Registration(user *models.User) bool {
+	var c models.Configurator
+	err := container.Resolve(&c)
+	if err != nil {
+		//logging here
+		panic(err)
+	}
+	var db gorm.DB
+	err = container.Resolve(&db)
+	if err != nil {
+		//logging here
+		panic(err)
+	}
 	if authService.CheckIfUserExist(user.Login) {
 		// some info in callback idk that user already exists
 		return false
 	} else {
 		user.Password = hashPassword(user.Password,
-			authService.Container.ConfigProvider.GetString("passwordSalt"),
-			authService.Container.ConfigProvider.GetInt("hashingCost"))
-		request := authService.Container.AppConnection.Create(&user)
+			c.GetString("passwordSalt"),
+			c.GetInt("hashingCost"))
+		request := db.Create(&user)
 		if request.Error != nil {
 			// log error lol
 			return false
@@ -51,15 +65,36 @@ func (authService *AuthService) Registration(user *models.User) bool {
 }
 
 func (authService *AuthService) Authorization(login string, password string) (bool, *models.Tokens) {
+	var db gorm.DB
+	err := container.Resolve(&db)
+	if err != nil {
+		//logging here
+		panic(err)
+	}
+
+	var c models.Configurator
+	err = container.Resolve(&c)
+	if err != nil {
+		//logging here
+		panic(err)
+	}
+
+	var jwtService models.IJWTService
+	err = container.Resolve(&jwtService)
+	if err != nil {
+		//logging here
+		panic(err)
+	}
+
 	var user models.User
-	err := authService.Container.AppConnection.First(&user, "login = ?", login).Error
+	err = db.First(&user, "login = ?", login).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return false, nil
 		}
 	}
-	if checkPasswordHash(password, user.Password, authService.Container.ConfigProvider.GetString("passwordSalt")) {
-		jwtToken, err := authService.JWTService.SignIn(login)
+	if checkPasswordHash(password, user.Password, c.GetString("passwordSalt")) {
+		jwtToken, err := jwtService.SignIn(login)
 		if err != nil {
 			fmt.Println(err)
 			// logging here lol
@@ -71,7 +106,10 @@ func (authService *AuthService) Authorization(login string, password string) (bo
 }
 
 func (authService *AuthService) AuthCheck(token string) (bool, string) {
-	username, err := ParseToken(token, []byte(authService.Container.ConfigProvider.GetString("jwt.signing_key")))
+	var c models.Configurator
+	err := container.Resolve(&c)
+
+	username, err := ParseToken(token, []byte(c.GetString("jwt.signing_key")))
 	if err != nil {
 		fmt.Println(err)
 		// logging here lol

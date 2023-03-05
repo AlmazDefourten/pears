@@ -3,18 +3,16 @@ package handler
 import (
 	"fmt"
 	"github.com/AlmazDefourten/goapp/models"
+	"github.com/golobby/container/v3"
 	"github.com/kataras/iris/v12"
 	"net/http"
 )
 
 type AuthHandler struct {
-	AuthService models.IAuthService
 }
 
-func NewAuthHandler(authService models.IAuthService) *AuthHandler {
-	return &AuthHandler{
-		AuthService: authService,
-	}
+func NewAuthHandler() *AuthHandler {
+	return &AuthHandler{}
 }
 
 // Registration ShowAccount godoc
@@ -27,7 +25,6 @@ func NewAuthHandler(authService models.IAuthService) *AuthHandler {
 //	@Failure		401	{object}	models.Response
 //	@Success		200	{object}	models.Response
 //	@Router			/user/registration [post]
-//  swagger: example
 func (authHandler *AuthHandler) Registration(ctx iris.Context) {
 	var user models.User
 	err := ctx.ReadJSON(&user)
@@ -35,7 +32,15 @@ func (authHandler *AuthHandler) Registration(ctx iris.Context) {
 		println(err)
 		// logging here
 	}
-	ok := authHandler.AuthService.Registration(&user)
+
+	var authService models.IAuthService
+	err = container.Resolve(&authService)
+	if err != nil {
+		//logging here
+		panic(err)
+	}
+
+	ok := authService.Registration(&user)
 	response := models.Response{Ok: ok, Message: ""}
 	err = ctx.JSON(response)
 	if err != nil {
@@ -44,6 +49,16 @@ func (authHandler *AuthHandler) Registration(ctx iris.Context) {
 	}
 }
 
+// Authorization ShowAccount godoc
+//
+//	@Summary		Authorization
+//	@Description	authorization and take a token
+//	@Accept			json
+//	@Produce		json
+//	@Param			body		body		models.UserAuthInfo		true	"request body with login and password"
+//	@Failure		401	{object}	models.AuthResponse
+//	@Success		200	{object}	models.AuthResponse
+//	@Router			/user/authorization [post]
 func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 	var user models.User
 	err := ctx.ReadJSON(&user)
@@ -51,11 +66,26 @@ func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 		println(err)
 		// logging here
 	}
-	ok, token := authHandler.AuthService.Authorization(user.Login, user.Password)
+
+	var authService models.IAuthService
+	err = container.Resolve(&authService)
+	if err != nil {
+		//logging here
+		panic(err)
+	}
+
+	ok, token := authService.Authorization(user.Login, user.Password)
 	if !ok {
 		ctx.StatusCode(http.StatusUnauthorized)
 	}
-	response := map[string]interface{}{"ok": ok, "token": token}
+	var responseMessage string
+	if ok {
+		responseMessage = "Вы успешно авторизовались"
+	} else {
+		responseMessage = "Неверный логин или пароль"
+	}
+	//TODO: возвращать токены какие-то
+	response := models.AuthResponse{Ok: ok, Message: responseMessage, Token: token.AccessToken}
 	err = ctx.JSON(response)
 	if err != nil {
 		println(err)
@@ -63,9 +93,18 @@ func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 	}
 }
 
+// AuthMiddleware it`s middleware for check if user is authorized
 func (authHandler *AuthHandler) AuthMiddleware(ctx iris.Context) {
-	token := ctx.GetHeader("Token")
-	ok, username := authHandler.AuthService.AuthCheck(token)
+	token := ctx.GetHeader("token")
+
+	var authService models.IAuthService
+	err := container.Resolve(&authService)
+	if err != nil {
+		//logging here
+		panic(err)
+	}
+
+	ok, username := authService.AuthCheck(token)
 	if ok == false {
 		ctx.StopWithStatus(http.StatusUnauthorized)
 		err := ctx.JSON(models.Response{Ok: false, Message: "Пользователь не авторизован"})

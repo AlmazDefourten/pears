@@ -1,9 +1,11 @@
 package main
 
 import (
-	"github.com/AlmazDefourten/goapp/infrastructure/container"
 	"github.com/AlmazDefourten/goapp/infrastructure/migrations"
+	"github.com/AlmazDefourten/goapp/infrastructure/resolver"
 	"github.com/AlmazDefourten/goapp/interface/routing"
+	"github.com/AlmazDefourten/goapp/models"
+	"github.com/golobby/container/v3"
 	"github.com/kataras/iris/v12"
 )
 
@@ -25,14 +27,28 @@ func main() {
 }
 
 func initializeApp(app *iris.Application) {
-	_container := container.InitializeContainer()
-	containerService := container.InitServiceDependency(&_container)
+	err := resolver.InitializeContainer()
+	if err != nil {
+		//logging here
+		panic(err)
+	}
+	err = resolver.RegisterServices()
+	if err != nil {
+		//logging here
+		panic(err)
+	}
 
-	migrations.RunBaseMigration(_container.AppConnection)
+	migrations.RunBaseMigration()
 
-	containerHandler := container.RegisterServices(containerService)
-	routing.InitializeRoutes(app, containerHandler)
-	err := app.Listen(":" + _container.ConfigProvider.GetString("host_port"))
+	routing.InitializeRoutes(app)
+
+	var c models.Configurator
+	err = container.Resolve(&c)
+	if err != nil {
+		//logging here
+		panic(err)
+	}
+	err = app.Listen(":" + c.GetString("host_port"))
 	if err != nil {
 		// there is logging
 		panic(err)
