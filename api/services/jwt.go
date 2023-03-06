@@ -3,60 +3,62 @@ package services
 import (
 	"fmt"
 	"github.com/AlmazDefourten/goapp/models"
-	"github.com/AlmazDefourten/goapp/models/container_models"
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/golobby/container/v3"
 	"time"
 )
 
 // JWTService struct of service for authorization
 type JWTService struct {
-	Container  *container_models.Container
-	JWTService models.IJWTService
 }
 
-func NewJWTService(container *container_models.Container) *JWTService {
-	return &JWTService{
-		Container: container,
-	}
+func NewJWTService() *JWTService {
+	return &JWTService{}
 }
 
 // Signin - authorization method
 func (jwtService *JWTService) SignIn(username string) (*models.Tokens, error) {
+	var c models.Configurator
+	err := container.Resolve(&c)
+	if err != nil {
+		//logging here
+		return nil, err
+	}
 	//SIGNING_KEY - key for signing token
-	SIGNING_KEY := jwtService.Container.ConfigProvider.GetString("jwt.signing_key")
+	SigningKey := c.GetString("jwt.signing_key")
 
 	//create access token
-	access_token_time := jwtService.Container.ConfigProvider.GetString("jwt.access_token_time")
-	access_add_time, err := time.ParseDuration(access_token_time)
+	accessTokenTime := c.GetString("jwt.access_token_time")
+	accessAddTime, err := time.ParseDuration(accessTokenTime)
 	if err != nil {
 		return nil, err
 	}
-	a_claims := models.Claims{
+	aClaims := models.Claims{
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(access_add_time).Unix(),
+			ExpiresAt: time.Now().Add(accessAddTime).Unix(),
 		},
 		Username: username,
 	}
-	access_token := jwt.NewWithClaims(jwt.SigningMethodHS256, a_claims)
-	access, err := access_token.SignedString([]byte(SIGNING_KEY))
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, aClaims)
+	access, err := accessToken.SignedString([]byte(SigningKey))
 	if err != nil {
 		return nil, err
 	}
 
 	//create refresh token
-	refresh_token_time := jwtService.Container.ConfigProvider.GetString("jwt.refresh_token_time")
-	refresh_add_time, err := time.ParseDuration(refresh_token_time)
+	refreshTokenTime := c.GetString("jwt.refresh_token_time")
+	refreshAddTime, err := time.ParseDuration(refreshTokenTime)
 	if err != nil {
 		return nil, err
 	}
-	refresh_claims := models.Claims{
+	refreshClaims := models.Claims{
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(refresh_add_time).Unix(),
+			ExpiresAt: time.Now().Add(refreshAddTime).Unix(),
 		},
 		Username: username,
 	}
-	refresh_token := jwt.NewWithClaims(jwt.SigningMethodHS256, refresh_claims)
-	refresh, err := refresh_token.SignedString([]byte(SIGNING_KEY))
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
+	refresh, err := refreshToken.SignedString([]byte(SigningKey))
 
 	if err != nil {
 		return nil, err
@@ -69,7 +71,14 @@ func (jwtService *JWTService) SignIn(username string) (*models.Tokens, error) {
 
 // method for refreshing tokens
 func (jwtService *JWTService) RefreshTokens(refresh_token string) (*models.Tokens, error) {
-	SIGNING_KEY := jwtService.Container.ConfigProvider.GetString("jwt.signing_key")
+	var c models.Configurator
+	err := container.Resolve(&c)
+	if err != nil {
+		//logging here
+		return nil, err
+	}
+
+	SigningKey := c.GetString("jwt.signing_key")
 
 	// Parse takes the token string and a function for looking up the key
 	token, err := jwt.Parse(refresh_token, func(token *jwt.Token) (interface{}, error) {
@@ -77,12 +86,12 @@ func (jwtService *JWTService) RefreshTokens(refresh_token string) (*models.Token
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
 
-		return SIGNING_KEY, nil
+		return SigningKey, nil
 	})
 
 	if claims, ok := token.Claims.(*models.Claims); ok && token.Valid {
 		username := claims.Username
-		newTokenPair, err := jwtService.JWTService.SignIn(username)
+		newTokenPair, err := jwtService.SignIn(username)
 		if err != nil {
 			return nil, err
 		}
