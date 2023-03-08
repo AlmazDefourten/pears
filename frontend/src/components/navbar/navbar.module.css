@@ -1,4 +1,4 @@
-.content{
+.navbar-content{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -23,9 +23,28 @@ a{
     color: black;
 }
 
-.image-profile{
+.image-profile-container{
     width: 5vw;
-    height: 10vh;
+}
+
+.profile-navigation{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: end;
+    gap: 1vw;
+}
+
+.image-profile{
+    /* width: 5vw;
+    height: 10vh; */
+    max-width: 100%;
+    min-width: 100%;
+    height: auto;
+}
+
+.logo-container{
+    width: 10vw;
 }
 
 .logo{
@@ -42,8 +61,10 @@ a{
 .image-logo{
     /* width: 5%;
     height: 5%; */
-    width: 3.5vw;
-    height: 8vh;
+    /* width: 3.5vw;
+    height: 8vh; */
     /* width: 54px;
     height: 70px; */
+    max-width: 30%;
+    height: auto;
 }
