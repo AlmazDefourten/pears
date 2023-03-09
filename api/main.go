@@ -5,7 +5,6 @@ import (
 	"github.com/AlmazDefourten/goapp/infrastructure/resolver"
 	"github.com/AlmazDefourten/goapp/interface/routing"
 	"github.com/AlmazDefourten/goapp/models"
-	"github.com/AlmazDefourten/goapp/pkg/logging/resolvers"
 	"github.com/golobby/container/v3"
 	"github.com/kataras/iris/v12"
 )
