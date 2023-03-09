@@ -5,6 +5,7 @@ import (
 	"github.com/AlmazDefourten/goapp/infrastructure/resolver"
 	"github.com/AlmazDefourten/goapp/interface/routing"
 	"github.com/AlmazDefourten/goapp/models"
+	"github.com/AlmazDefourten/goapp/pkg/logging/resolvers"
 	"github.com/golobby/container/v3"
 	"github.com/kataras/iris/v12"
 )
@@ -14,7 +15,7 @@ import (
 // @description Pears API, specification and description
 
 // @host localhost:8080
-// @BasePath /api
+// @BasePath /api/v1
 
 // @securityDefinitions.apikey	JWTToken
 // @in							header

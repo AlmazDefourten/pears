@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	apiPath = "/api"
+	apiPath = "/api/v1"
 )
 
 type Router struct {
