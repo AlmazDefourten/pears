@@ -3,7 +3,7 @@ package routing
 import (
 	_ "github.com/AlmazDefourten/goapp/docs"
 	"github.com/AlmazDefourten/goapp/infrastructure/configurator"
-	"github.com/AlmazDefourten/goapp/models/container_models"
+	"github.com/AlmazDefourten/goapp/interface/handler"
 	"github.com/iris-contrib/swagger"
 	"github.com/iris-contrib/swagger/v12/swaggerFiles"
 	"github.com/kataras/iris/v12"
@@ -14,13 +14,10 @@ const (
 )
 
 type Router struct {
-	HandlerContainer *container_models.HandlerContainer
 }
 
-func NewRouter(handlerContainer *container_models.HandlerContainer) *Router {
-	return &Router{
-		HandlerContainer: handlerContainer,
-	}
+func NewRouter() *Router {
+	return &Router{}
 }
 
 // UseRoutes main API router
@@ -29,21 +26,35 @@ func (router *Router) UseRoutes(app *iris.Application) {
 
 	AutoDocHandleInit(app)
 
+	var authHandler = handler.NewAuthHandler()
+	// TODO: refactor this by adding new party with apipath
 	userAPI := app.Party(apiPath + "/user")
 	{
 		userAPI.Use(iris.Compression)
-		userAPI.Post("/registration", router.HandlerContainer.AuthHandler.Registration)
-		userAPI.Post("/authorization", router.HandlerContainer.AuthHandler.Authorization)
+
+		userAPI.Post("/registration", authHandler.Registration)
+		userAPI.Post("/authorization", authHandler.Authorization)
 	}
-	userInfoAPI := app.Party("/userinfo")
+	userInfoAPI := app.Party(apiPath + "/userinfo")
 	{
-		userInfoAPI.UseRouter(router.HandlerContainer.AuthHandler.AuthMiddleware)
-		userInfoAPI.Get("/list", router.HandlerContainer.UserInfoHandler.List)
+		userInfoAPI.UseRouter(authHandler.AuthMiddleware)
+
+		var userInfoHandler = handler.NewUserInfoHandler()
+
+		userInfoAPI.Get("/list", userInfoHandler.List)
+	}
+	postAPI := app.Party(apiPath + "/post")
+	{
+		var postHandler = handler.NewPostHandler()
+		postAPI.UseRouter(authHandler.AuthMiddleware)
+		postAPI.Post("/create", postHandler.Create)
+		postAPI.Get("/list", postHandler.List)
+		postAPI.Get("/get", postHandler.Get)
 	}
 }
 
-func InitializeRoutes(app *iris.Application, containerHandler container_models.HandlerContainer) {
-	router := NewRouter(&containerHandler)
+func InitializeRoutes(app *iris.Application) {
+	router := NewRouter()
 
 	router.UseRoutes(app)
 }

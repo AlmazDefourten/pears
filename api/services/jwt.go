@@ -2,44 +2,104 @@ package services
 
 import (
 	"fmt"
-	"github.com/AlmazDefourten/goapp/models/container_models"
-	jwt "github.com/dgrijalva/jwt-go"
-	"time"
-	// iris "github.com/kataras/iris/v12"
 	"github.com/AlmazDefourten/goapp/models"
+	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/golobby/container/v3"
+	"time"
 )
 
 // JWTService struct of service for authorization
 type JWTService struct {
-	Container *container_models.Container
 }
 
-func NewJWTService(container *container_models.Container) *JWTService {
-	return &JWTService{
-		Container: container,
-	}
+func NewJWTService() *JWTService {
+	return &JWTService{}
 }
 
 // Signin - authorization method
-func (jwtService *JWTService) SignIn(username string) (string, error) {
-	//create token
-	token_time := jwtService.Container.ConfigProvider.GetString("jwt.token_time")
-	add_time, err := time.ParseDuration(token_time)
+func (jwtService *JWTService) SignIn(username string) (*models.Tokens, error) {
+	var c models.Configurator
+	err := container.Resolve(&c)
 	if err != nil {
-		return "", err
+		//logging here
+		return nil, err
 	}
-	claims := models.Claims{
+	//SIGNING_KEY - key for signing token
+	SigningKey := c.GetString("jwt.signing_key")
+
+	//create access token
+	accessTokenTime := c.GetString("jwt.access_token_time")
+	accessAddTime, err := time.ParseDuration(accessTokenTime)
+	if err != nil {
+		return nil, err
+	}
+	aClaims := models.Claims{
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(add_time).Unix(),
+			ExpiresAt: time.Now().Add(accessAddTime).Unix(),
 		},
 		Username: username,
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, aClaims)
+	access, err := accessToken.SignedString([]byte(SigningKey))
+	if err != nil {
+		return nil, err
+	}
 
-	//SIGNING_KEY - key for signing token
-	SIGNING_KEY := jwtService.Container.ConfigProvider.GetString("jwt.signing_key")
-	//return token
-	return token.SignedString([]byte(SIGNING_KEY))
+	//create refresh token
+	refreshTokenTime := c.GetString("jwt.refresh_token_time")
+	refreshAddTime, err := time.ParseDuration(refreshTokenTime)
+	if err != nil {
+		return nil, err
+	}
+	refreshClaims := models.Claims{
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(refreshAddTime).Unix(),
+		},
+		Username: username,
+	}
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
+	refresh, err := refreshToken.SignedString([]byte(SigningKey))
+
+	if err != nil {
+		return nil, err
+	}
+	return &models.Tokens{
+		AccessToken:  access,
+		RefreshToken: refresh,
+	}, nil
+}
+
+// method for refreshing tokens
+func (jwtService *JWTService) RefreshTokens(refresh_token string) (*models.Tokens, error) {
+	var c models.Configurator
+	err := container.Resolve(&c)
+	if err != nil {
+		//logging here
+		return nil, err
+	}
+
+	SigningKey := c.GetString("jwt.signing_key")
+
+	// Parse takes the token string and a function for looking up the key
+	token, err := jwt.Parse(refresh_token, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		return SigningKey, nil
+	})
+
+	if claims, ok := token.Claims.(*models.Claims); ok && token.Valid {
+		username := claims.Username
+		newTokenPair, err := jwtService.SignIn(username)
+		if err != nil {
+			return nil, err
+		}
+
+		return newTokenPair, err
+	}
+
+	return nil, err
 }
 
 // ParseToken - parse token method
@@ -61,28 +121,3 @@ func ParseToken(accessToken string, signingKey []byte) (string, error) {
 
 	return "", fmt.Errorf("invalid token")
 }
-
-//CheckToken - method for checking token
-// func CheckToken(c iris.Context) {
-// 	authHeader := c.GetHeader("Authorization")
-// 	if authHeader == "" {
-// 		c.AbortWithStatus(http.StatusUnauthorized)
-// 		return
-// 	}
-
-// 	headerParts := strings.Split(authHeader, " ")
-// 	if len(headerParts) != 2 || headerParts[0] != "Bearer" {
-// 		c.AbortWithStatus(http.StatusUnauthorized)
-// 		return
-// 	}
-
-// 	err := parser.ParseToken(headerParts[1], SIGNING_KEY)
-// 	if err != nil {
-// 		status := http.StatusBadRequest
-// 		if err == jwt.ErrInvalidToken {
-// 			status = http.StatusUnauthorized
-// 		}
-// 		c.AbortWithStatus(status)
-// 		return
-// 	}
-// }

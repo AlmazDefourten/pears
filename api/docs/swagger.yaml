@@ -1,5 +1,64 @@
 basePath: /api/v1
 definitions:
+  models.AuthResponse:
+    properties:
+      message:
+        type: string
+      ok:
+        type: boolean
+      token:
+        type: string
+    type: object
+  models.Post:
+    properties:
+      author_id:
+        type: integer
+      date:
+        type: string
+      id:
+        type: integer
+      likes:
+        type: integer
+      name:
+        type: string
+      postTags:
+        items:
+          $ref: '#/definitions/models.PostTags'
+        type: array
+      reposts:
+        type: integer
+      time_end:
+        type: string
+      time_start:
+        type: string
+      type:
+        $ref: '#/definitions/models.PostType'
+      views:
+        type: integer
+      where:
+        type: string
+    type: object
+  models.PostTags:
+    properties:
+      id:
+        type: integer
+      post_id:
+        type: integer
+      tag_id:
+        type: integer
+    type: object
+  models.PostType:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    type: integer
+    x-enum-varnames:
+    - Event
+    - People
+    - Community
+    - Project
   models.Response:
     properties:
       message:
@@ -27,6 +86,15 @@ definitions:
         example: mypaSSword123876
         type: string
     type: object
+  models.UserAuthInfo:
+    properties:
+      login:
+        example: ivan.petrov@mail.ru
+        type: string
+      password:
+        example: mypaSSword123876
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -34,6 +102,102 @@ info:
   title: Pears auto documentation
   version: "1.0"
 paths:
+  /post/create:
+    post:
+      consumes:
+      - application/json
+      description: creating a new post with body parameters
+      parameters:
+      - description: request body with info about post
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.Post'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - JWTToken: []
+      summary: Create new post
+  /post/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get post info
+      parameters:
+      - description: post ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - JWTToken: []
+      summary: Get a post
+  /post/list:
+    get:
+      consumes:
+      - application/json
+      description: takes array of posts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Post'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - JWTToken: []
+      summary: List of posts
+  /user/authorization:
+    post:
+      consumes:
+      - application/json
+      description: authorization and take a token
+      parameters:
+      - description: request body with login and password
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserAuthInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AuthResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.AuthResponse'
+      summary: Authorization
   /user/registration:
     post:
       consumes:
@@ -58,6 +222,27 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       summary: Registration
+  /userinfo/list:
+    get:
+      consumes:
+      - application/json
+      description: take list of all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - JWTToken: []
+      summary: List of users
 securityDefinitions:
   JWTToken:
     description: Access token only

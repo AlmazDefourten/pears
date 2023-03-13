@@ -2,23 +2,25 @@ package services
 
 import (
 	models "github.com/AlmazDefourten/goapp/models"
-	"github.com/AlmazDefourten/goapp/models/container_models"
+	"github.com/golobby/container/v3"
+	"gorm.io/gorm"
 )
 
 // UserService struct of service that works with Users
 type UserService struct {
-	Container *container_models.Container
 }
 
-func NewUserService(container *container_models.Container) *UserService {
-	return &UserService{
-		Container: container,
-	}
+func NewUserService() *UserService {
+	return &UserService{}
 }
 
-// List Get a List of Users
 func (userService *UserService) List() []models.User {
+	var db gorm.DB
+	err := container.Resolve(&db)
+	if err != nil {
+		return nil
+	}
 	var users []models.User
-	userService.Container.AppConnection.Find(&users)
+	db.Find(&users)
 	return users
 }

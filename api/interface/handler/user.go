@@ -2,26 +2,47 @@ package handler
 
 import (
 	"github.com/AlmazDefourten/goapp/models"
+	"github.com/golobby/container/v3"
 	"github.com/kataras/iris/v12"
 )
 
 // UserInfoHandler - handler for handle requests with user/s info
 type UserInfoHandler struct {
-	UserService models.IUserService
 }
 
-func NewUserInfoHandler(userService models.IUserService) *UserInfoHandler {
-	return &UserInfoHandler{
-		UserService: userService,
-	}
+func NewUserInfoHandler() *UserInfoHandler {
+	return &UserInfoHandler{}
 }
 
-// List Endpoint for a List of Users
+// List ShowAccount godoc
+//
+//	@Summary		List of users
+//	@Description	take list of all users
+//	@Accept			json
+//	@Produce		json
+//	@Failure		401	{object}	models.Response
+//	@Success		200	{object}	[]models.User
+//	@Router			/userinfo/list [get]
+//  @Security 		JWTToken
 func (userInfoHandler *UserInfoHandler) List(ctx iris.Context) {
-	data := userInfoHandler.UserService.List()
-	err := ctx.JSON(data)
+	var userService models.IUserService
+	err := container.Resolve(&userService)
 	if err != nil {
+		errRet := ctx.JSON(models.Response{Ok: false, Message: "Произошла ошибка, попробуйте позднее"})
+		if errRet != nil {
+			//logging
+			return
+		}
 		// there is logging
-		panic(err)
+	}
+	data := userService.List()
+	err = ctx.JSON(data)
+	if err != nil {
+		errRet := ctx.JSON(models.Response{Ok: false, Message: "Произошла ошибка, попробуйте позднее"})
+		if errRet != nil {
+			//logging
+			return
+		}
+		// there is logging
 	}
 }

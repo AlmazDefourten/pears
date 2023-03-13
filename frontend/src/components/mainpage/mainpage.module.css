@@ -1,0 +1,15 @@
+.main{
+    background-color: rgb(229, 229, 229);
+    /* display: flex; */
+    padding: 7vh 0 7vh 10vw;
+}
+.dgffgd{
+    width: 10vw;
+    height: 10vh;
+    border: 1px solid red;
+    border-radius: 10%;
+}
+.asdasd{
+    width: 100%;
+    height: auto;
+}
