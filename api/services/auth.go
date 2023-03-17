@@ -118,6 +118,34 @@ func (authService *AuthService) AuthCheck(token string) (bool, string) {
 	return true, username
 }
 
+func (authService *AuthService) RefreshCheck(token string) (bool, *models.Tokens) {
+	var db gorm.DB
+	err := container.Resolve(&db)
+	if err != nil {
+		panic(err)
+	}
+
+	var user models.User
+	err = db.First(&user, "refresh_token = ?", token).Error
+	if err != nil {
+		return false, nil
+	}
+
+	var jwtService models.IJWTService
+	err = container.Resolve(&jwtService)
+	if err != nil {
+		panic(err)
+	}
+
+	tokens, err := jwtService.ValidateAndRefreshTokens(token)
+
+	if err != nil {
+		return false, nil
+	}
+
+	return true, tokens
+}
+
 func hashPassword(password string, passwordSalt string, hashingCost int) string {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password+passwordSalt), hashingCost)
 	if err != nil {
