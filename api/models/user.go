@@ -5,13 +5,15 @@ import (
 )
 
 // User Struct for User entity
+//TODO: Write examople refresh token
 type User struct {
-	Id       int    `json:"id"`
-	Login    string `json:"login" example:"ivan.petrov@mail.ru"`
-	Nick     string `json:"nick" example:"PedanticCow"`
-	Password string `json:"password" example:"mypaSSword123876"`
-	Name     string `json:"name" example:"Andrey"`
-	Age      int    `json:"age" example:"24"`
+	Id            int    `json:"id"`
+	Login         string `json:"login" example:"ivan.petrov@mail.ru"`
+	Nick          string `json:"nick" example:"PedanticCow"`
+	Password      string `json:"password" example:"mypaSSword123876"`
+	Name          string `json:"name" example:"Andrey"`
+	Age           int    `json:"age" example:"24"`
+	Refresh_token string `json:"refresh_token" example:""`
 }
 
 // Claims Struct for JWT Claims
@@ -23,7 +25,7 @@ type Claims struct {
 // IJWTService interface for operations with JWT
 type IJWTService interface {
 	SignIn(username string) (*Tokens, error)
-	RefreshTokens(refresh_token string) (*Tokens, error)
+	ValidateAndRefreshTokens(refresh_token string) (*Tokens, error)
 }
 
 // IUserService interface for operations with Users

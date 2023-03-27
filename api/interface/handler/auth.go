@@ -84,8 +84,7 @@ func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 	} else {
 		responseMessage = "Неверный логин или пароль"
 	}
-	//TODO: возвращать токены какие-то
-	response := models.AuthResponse{Ok: ok, Message: responseMessage, Token: token.AccessToken}
+	response := models.AuthResponse{Ok: ok, Message: responseMessage, Access: token.AccessToken, Refresh: token.RefreshToken}
 	err = ctx.JSON(response)
 	if err != nil {
 		println(err)
@@ -95,7 +94,7 @@ func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 
 // AuthMiddleware it`s middleware for check if user is authorized
 func (authHandler *AuthHandler) AuthMiddleware(ctx iris.Context) {
-	token := ctx.GetHeader("token")
+	token := ctx.GetHeader("access_token")
 
 	var authService models.IAuthService
 	err := container.Resolve(&authService)
@@ -114,5 +113,34 @@ func (authHandler *AuthHandler) AuthMiddleware(ctx iris.Context) {
 		}
 	} else {
 		ctx.Next()
+	}
+}
+
+// RefreshTokens it`s method for check refresh token and refresh tokens
+func (authHandler *AuthHandler) RefreshTokens(ctx iris.Context) {
+	token := ctx.GetHeader("refresh_token")
+
+	var authService models.IAuthService
+	err := container.Resolve(&authService)
+	if err != nil {
+		//logging here
+		panic(err)
+	}
+
+	ok, tokens := authService.RefreshCheck(token)
+	if ok == false {
+		ctx.StopWithStatus(http.StatusUnauthorized)
+		err := ctx.JSON(models.Response{Ok: false, Message: "Пользователь не авторизован"})
+		if err != nil {
+			// logging here lol
+			fmt.Println(err)
+		}
+	} else {
+		response := models.AuthResponse{Ok: ok, Access: tokens.AccessToken, Refresh: tokens.RefreshToken}
+		err = ctx.JSON(response)
+		if err != nil {
+			println(err)
+			// logging here
+		}
 	}
 }
