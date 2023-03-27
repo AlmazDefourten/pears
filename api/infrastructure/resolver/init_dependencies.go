@@ -4,25 +4,45 @@ import (
 	"github.com/AlmazDefourten/goapp/infrastructure/configurator"
 	"github.com/AlmazDefourten/goapp/infrastructure/data_adapter/connection"
 	"github.com/AlmazDefourten/goapp/models"
+	"github.com/AlmazDefourten/goapp/pkg/logging/loggers"
+	"github.com/AlmazDefourten/goapp/pkg/logging/resolvers"
 	"github.com/AlmazDefourten/goapp/services"
 	"github.com/golobby/container/v3"
 	"gorm.io/gorm"
 )
 
+var globalLogger models.Logger
+
 // InitializeContainer with global app dependencies -
 // Connection, configurator, etc...
 func InitializeContainer() error {
-	err := container.Singleton(func() models.Configurator {
+	err := container.NamedSingleton("globalLogger", func() models.Logger {
+		return loggers.Init(resolvers.GlobalLogger)
+	})
+	err = container.NamedResolve(&globalLogger, "globalLogger")
+	if err != nil {
+		globalLogger.Error(err)
+		return err
+	}
+	err = container.NamedSingleton("serviceLogger", func() models.Logger {
+		return loggers.Init(resolvers.ServiceLogger)
+	})
+	if err != nil {
+		globalLogger.Error(err)
+		return err
+	}
+
+	err = container.Singleton(func() models.Configurator {
 		return configurator.NewViperConfigurator()
 	})
 	if err != nil {
-		//logging here
+		globalLogger.Error(err)
 		return err
 	}
 	var c models.Configurator
 	err = container.Resolve(&c)
 	if err != nil {
-		//logging here
+		globalLogger.Error(err)
 		return err
 	}
 
@@ -30,7 +50,7 @@ func InitializeContainer() error {
 		return *connection.NewGormConnection(c)
 	})
 	if err != nil {
-		//logging here
+		globalLogger.Error(err)
 		return err
 	}
 	return nil
@@ -42,7 +62,7 @@ func RegisterServices() error {
 		return services.NewUserService()
 	})
 	if err != nil {
-		//logging here
+		globalLogger.Error(err)
 		return err
 	}
 
@@ -50,7 +70,7 @@ func RegisterServices() error {
 		return services.NewJWTService()
 	})
 	if err != nil {
-		//logging here
+		globalLogger.Error(err)
 		return err
 	}
 
@@ -58,16 +78,18 @@ func RegisterServices() error {
 		return services.NewAuthService()
 	})
 	if err != nil {
-		//logging here
+		globalLogger.Error(err)
 		return err
 	}
 
 	err = container.Singleton(func() models.IPostService {
 		return services.NewPostService()
 	})
+
 	if err != nil {
-		//logging here
+		globalLogger.Error(err)
 		return err
 	}
+
 	return nil
 }

@@ -9,6 +9,8 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
+var GlobalLogger models.Logger
+
 // @title Pears auto documentation
 // @version 1.0
 // @description Pears API, specification and description
@@ -20,37 +22,37 @@ import (
 // @in							header
 // @name						token
 // @description				Access token only
+
 func main() {
 	app := iris.New()
-
 	initializeApp(app)
 }
 
 func initializeApp(app *iris.Application) {
 	err := resolver.InitializeContainer()
 	if err != nil {
-		//logging here
+		panic(err)
+	}
+	err = container.NamedResolve(&GlobalLogger, "globalLogger")
+	if err != nil {
 		panic(err)
 	}
 	err = resolver.RegisterServices()
 	if err != nil {
-		//logging here
+		GlobalLogger.Error(err)
 		panic(err)
 	}
-
 	migrations.RunBaseMigration()
-
 	routing.InitializeRoutes(app)
-
 	var c models.Configurator
 	err = container.Resolve(&c)
 	if err != nil {
-		//logging here
+		GlobalLogger.Error(err)
 		panic(err)
 	}
 	err = app.Listen(":" + c.GetString("host_port"))
 	if err != nil {
-		// there is logging
+		GlobalLogger.Error(err)
 		panic(err)
 	}
 }
