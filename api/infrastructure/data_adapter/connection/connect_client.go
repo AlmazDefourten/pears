@@ -1,6 +1,7 @@
 package connection
 
 import (
+	"github.com/AlmazDefourten/goapp/infrastructure/loggerInstance"
 	"github.com/AlmazDefourten/goapp/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -15,7 +16,7 @@ func NewGormConnection(viperInit models.Configurator) *gorm.DB {
 	db, err := gorm.Open(postgres.Open(connstring), &gorm.Config{})
 
 	if err != nil {
-		// logging there
+		loggerInstance.GlobalLogger.Error(err)
 	}
 
 	return db

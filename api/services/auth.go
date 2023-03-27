@@ -1,7 +1,7 @@
 package services
 
 import (
-	"fmt"
+	"github.com/AlmazDefourten/goapp/infrastructure/loggerInstance"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/golobby/container/v3"
 	"github.com/kataras/iris/v12/x/errors"
@@ -27,12 +27,12 @@ func (authService *AuthService) CheckIfUserExist(login string) (bool, error) {
 	var db gorm.DB
 	err := container.Resolve(&db)
 	if err != nil {
-		//logging here
+		loggerInstance.ServiceLogger.Error(err)
 		return defaultUserExistFlagValue, err
 	}
 	request := db.Model(&models.User{}).First(&res, "login = ?", login)
 	if request.Error != nil {
-		// logging and debug
+		loggerInstance.ServiceLogger.Error(request.Error)
 		return defaultUserExistFlagValue, request.Error
 	}
 	if len(res) > 0 {
@@ -45,21 +45,22 @@ func (authService *AuthService) Registration(user *models.User) (bool, error) {
 	var c models.Configurator
 	err := container.Resolve(&c)
 	if err != nil {
-		//logging here
+		loggerInstance.ServiceLogger.Error(err)
 		return false, err
 	}
 	var db gorm.DB
 	err = container.Resolve(&db)
 	if err != nil {
-		//logging here
+		loggerInstance.ServiceLogger.Error(err)
 		return false, err
 	}
 	isUserExists, err := authService.CheckIfUserExist(user.Login)
 	if err != nil {
+		loggerInstance.ServiceLogger.Error(err)
 		return false, err
 	}
 	if isUserExists {
-		// logging here
+		loggerInstance.ServiceLogger.Error(err)
 		return false, nil
 	} else {
 		user.Password = hashPassword(user.Password,
@@ -78,21 +79,21 @@ func (authService *AuthService) Authorization(login string, password string) (bo
 	var db gorm.DB
 	err := container.Resolve(&db)
 	if err != nil {
-		//logging here
+		loggerInstance.ServiceLogger.Error(err)
 		panic(err)
 	}
 
 	var c models.Configurator
 	err = container.Resolve(&c)
 	if err != nil {
-		//logging here
+		loggerInstance.ServiceLogger.Error(err)
 		panic(err)
 	}
 
 	var jwtService models.IJWTService
 	err = container.Resolve(&jwtService)
 	if err != nil {
-		//logging here
+		loggerInstance.ServiceLogger.Error(err)
 		panic(err)
 	}
 
@@ -106,8 +107,7 @@ func (authService *AuthService) Authorization(login string, password string) (bo
 	if checkPasswordHash(password, user.Password, c.GetString("passwordSalt")) {
 		jwtToken, err := jwtService.SignIn(login)
 		if err != nil {
-			fmt.Println(err)
-			// logging here lol
+			loggerInstance.ServiceLogger.Error(err)
 		}
 		return true, jwtToken
 	} else {
@@ -121,18 +121,44 @@ func (authService *AuthService) AuthCheck(token string) (bool, string) {
 
 	username, err := ParseToken(token, []byte(c.GetString("jwt.signing_key")))
 	if err != nil {
-		fmt.Println(err)
-		// logging here lol
+		loggerInstance.ServiceLogger.Error(err)
 		return false, ""
 	}
 	return true, username
 }
 
+func (authService *AuthService) RefreshCheck(token string) (bool, *models.Tokens) {
+	var db gorm.DB
+	err := container.Resolve(&db)
+	if err != nil {
+		panic(err)
+	}
+
+	var user models.User
+	err = db.First(&user, "refresh_token = ?", token).Error
+	if err != nil {
+		return false, nil
+	}
+
+	var jwtService models.IJWTService
+	err = container.Resolve(&jwtService)
+	if err != nil {
+		panic(err)
+	}
+
+	tokens, err := jwtService.ValidateAndRefreshTokens(token)
+
+	if err != nil {
+		return false, nil
+	}
+
+	return true, tokens
+}
+
 func hashPassword(password string, passwordSalt string, hashingCost int) string {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password+passwordSalt), hashingCost)
 	if err != nil {
-		println(err)
-		// logging here lol
+		loggerInstance.ServiceLogger.Error(err)
 	}
 	return string(bytes)
 }

@@ -5,11 +5,13 @@ type IAuthService interface {
 	CheckIfUserExist(login string) (bool, error)
 	Authorization(login string, password string) (bool, *Tokens)
 	AuthCheck(token string) (bool, string)
+	RefreshCheck(token string) (bool, *Tokens)
 }
 
 // Response is sent as a response with information about the success of the request
 type AuthResponse struct {
 	Ok      bool   `json:"ok"`
 	Message string `json:"message"`
-	Token   string `json:"token"`
+	Access  string `json:"access_token"`
+	Refresh string `json:"refresh_token"`
 }

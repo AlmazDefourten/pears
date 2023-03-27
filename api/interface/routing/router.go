@@ -23,9 +23,7 @@ func NewRouter() *Router {
 // UseRoutes main API router
 func (router *Router) UseRoutes(app *iris.Application) {
 	app.UseRouter(CorsHandler)
-
 	AutoDocHandleInit(app)
-
 	var authHandler = handler.NewAuthHandler()
 	// TODO: refactor this by adding new party with apipath
 	userAPI := app.Party(apiPath + "/user")
