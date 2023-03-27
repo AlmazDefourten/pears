@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"github.com/AlmazDefourten/goapp/infrastructure/loggerInstance"
 	"github.com/AlmazDefourten/goapp/models"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/golobby/container/v3"
@@ -22,14 +23,14 @@ func (jwtService *JWTService) SignIn(username string) (*models.Tokens, error) {
 	var db gorm.DB
 	err := container.Resolve(&db)
 	if err != nil {
-		//logging here
+		loggerInstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 
 	var c models.Configurator
 	err = container.Resolve(&c)
 	if err != nil {
-		//logging here
+		loggerInstance.ServiceLogger.Error(err)
 		return nil, err
 	}
 	//SIGNING_KEY - key for signing token
@@ -85,7 +86,7 @@ func (jwtService *JWTService) ValidateAndRefreshTokens(refresh_token string) (*m
 	var c models.Configurator
 	err := container.Resolve(&c)
 	if err != nil {
-		//logging here
+		loggerInstance.ServiceLogger.Error(err)
 		return nil, err
 	}
 

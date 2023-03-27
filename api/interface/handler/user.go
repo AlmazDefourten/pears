@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/AlmazDefourten/goapp/infrastructure/loggerInstance"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/golobby/container/v3"
 	"github.com/kataras/iris/v12"
@@ -30,19 +31,19 @@ func (userInfoHandler *UserInfoHandler) List(ctx iris.Context) {
 	if err != nil {
 		errRet := ctx.JSON(models.Response{Ok: false, Message: "Произошла ошибка, попробуйте позднее"})
 		if errRet != nil {
-			//logging
+			loggerInstance.GlobalLogger.Error(err)
 			return
 		}
-		// there is logging
+		loggerInstance.GlobalLogger.Error(err)
 	}
 	data := userService.List()
 	err = ctx.JSON(data)
 	if err != nil {
 		errRet := ctx.JSON(models.Response{Ok: false, Message: "Произошла ошибка, попробуйте позднее"})
 		if errRet != nil {
-			//logging
+			loggerInstance.GlobalLogger.Error(errRet)
 			return
 		}
-		// there is logging
+		loggerInstance.GlobalLogger.Error(err)
 	}
 }
