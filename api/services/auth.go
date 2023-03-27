@@ -17,40 +17,50 @@ func NewAuthService() *AuthService {
 	return &AuthService{}
 }
 
-func (authService *AuthService) CheckIfUserExist(login string) bool {
+const (
+	defaultUserExistFlagValue = false
+)
+
+func (authService *AuthService) CheckIfUserExist(login string) (bool, error) {
+
 	var res []models.User
 	var db gorm.DB
 	err := container.Resolve(&db)
 	if err != nil {
 		//logging here
-		panic(err)
+		return defaultUserExistFlagValue, err
 	}
 	request := db.Model(&models.User{}).First(&res, "login = ?", login)
 	if request.Error != nil {
 		// logging and debug
+		return defaultUserExistFlagValue, request.Error
 	}
 	if len(res) > 0 {
-		return true
+		return true, nil
 	}
-	return false
+	return false, nil
 }
 
-func (authService *AuthService) Registration(user *models.User) bool {
+func (authService *AuthService) Registration(user *models.User) (bool, error) {
 	var c models.Configurator
 	err := container.Resolve(&c)
 	if err != nil {
 		//logging here
-		panic(err)
+		return false, err
 	}
 	var db gorm.DB
 	err = container.Resolve(&db)
 	if err != nil {
 		//logging here
-		panic(err)
+		return false, err
 	}
-	if authService.CheckIfUserExist(user.Login) {
-		// some info in callback idk that user already exists
-		return false
+	isUserExists, err := authService.CheckIfUserExist(user.Login)
+	if err != nil {
+		return false, err
+	}
+	if isUserExists {
+		// logging here
+		return false, nil
 	} else {
 		user.Password = hashPassword(user.Password,
 			c.GetString("passwordSalt"),
@@ -58,10 +68,10 @@ func (authService *AuthService) Registration(user *models.User) bool {
 		request := db.Create(&user)
 		if request.Error != nil {
 			// log error lol
-			return false
+			return false, err
 		}
 	}
-	return true
+	return true, nil
 }
 
 func (authService *AuthService) Authorization(login string, password string) (bool, *models.Tokens) {

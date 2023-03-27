@@ -11,6 +11,7 @@ func NewViperConfigurator() *viper.Viper {
 
 	viperInit.SetConfigName(ConfigName) // name of config file (without extension)
 	viperInit.SetConfigType(ConfigType) // REQUIRED if the config file does not have the extension in the name
+	viperInit.AddConfigPath(BasePath)   // optionally look for config in the root path
 	viperInit.AddConfigPath(ConfigPath) // optionally look for config in the working directory
 
 	err := viperInit.ReadInConfig() // Find and read the config file

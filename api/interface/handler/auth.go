@@ -40,7 +40,10 @@ func (authHandler *AuthHandler) Registration(ctx iris.Context) {
 		panic(err)
 	}
 
-	ok := authService.Registration(&user)
+	ok, err := authService.Registration(&user)
+	if err != nil {
+		//loggine here
+	}
 	response := models.Response{Ok: ok, Message: ""}
 	err = ctx.JSON(response)
 	if err != nil {
