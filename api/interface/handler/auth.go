@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"github.com/AlmazDefourten/goapp/infrastructure/loggerInstance"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/golobby/container/v3"
 	"github.com/kataras/iris/v12"
@@ -29,14 +30,13 @@ func (authHandler *AuthHandler) Registration(ctx iris.Context) {
 	var user models.User
 	err := ctx.ReadJSON(&user)
 	if err != nil {
-		println(err)
-		// logging here
+		loggerInstance.GlobalLogger.Error(err)
 	}
 
 	var authService models.IAuthService
 	err = container.Resolve(&authService)
 	if err != nil {
-		//logging here
+		loggerInstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 
@@ -45,7 +45,7 @@ func (authHandler *AuthHandler) Registration(ctx iris.Context) {
 	err = ctx.JSON(response)
 	if err != nil {
 		println(err)
-		// logging here
+		loggerInstance.GlobalLogger.Error(err)
 	}
 }
 
@@ -64,13 +64,13 @@ func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 	err := ctx.ReadJSON(&user)
 	if err != nil {
 		println(err)
-		// logging here
+		loggerInstance.GlobalLogger.Error(err)
 	}
 
 	var authService models.IAuthService
 	err = container.Resolve(&authService)
 	if err != nil {
-		//logging here
+		loggerInstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 
@@ -88,7 +88,7 @@ func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 	err = ctx.JSON(response)
 	if err != nil {
 		println(err)
-		// logging here
+		loggerInstance.GlobalLogger.Error(err)
 	}
 }
 
@@ -99,7 +99,7 @@ func (authHandler *AuthHandler) AuthMiddleware(ctx iris.Context) {
 	var authService models.IAuthService
 	err := container.Resolve(&authService)
 	if err != nil {
-		//logging here
+		loggerInstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 
@@ -108,7 +108,7 @@ func (authHandler *AuthHandler) AuthMiddleware(ctx iris.Context) {
 		ctx.StopWithStatus(http.StatusUnauthorized)
 		err := ctx.JSON(models.Response{Ok: false, Message: "Пользователь не авторизован"})
 		if err != nil {
-			// logging here lol
+			loggerInstance.GlobalLogger.Error(err)
 			fmt.Println(username)
 		}
 	} else {
@@ -123,7 +123,7 @@ func (authHandler *AuthHandler) RefreshTokens(ctx iris.Context) {
 	var authService models.IAuthService
 	err := container.Resolve(&authService)
 	if err != nil {
-		//logging here
+		loggerInstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 
@@ -132,7 +132,7 @@ func (authHandler *AuthHandler) RefreshTokens(ctx iris.Context) {
 		ctx.StopWithStatus(http.StatusUnauthorized)
 		err := ctx.JSON(models.Response{Ok: false, Message: "Пользователь не авторизован"})
 		if err != nil {
-			// logging here lol
+			loggerInstance.GlobalLogger.Error(err)
 			fmt.Println(err)
 		}
 	} else {
@@ -140,7 +140,7 @@ func (authHandler *AuthHandler) RefreshTokens(ctx iris.Context) {
 		err = ctx.JSON(response)
 		if err != nil {
 			println(err)
-			// logging here
+			loggerInstance.GlobalLogger.Error(err)
 		}
 	}
 }
