@@ -37,7 +37,7 @@ func (postService *PostService) CreatePost(post models.Post) error {
 	err = db.Create(&post).Error
 	if err != nil {
 		// logging here or on another level after return // TODO: think about logging level
-		loggerInstance.ServiceLogger.Error(err)
+		loggerinstance.ServiceLogger.Error(err)
 		return err
 	}
 	return nil

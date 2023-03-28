@@ -31,19 +31,19 @@ func (userInfoHandler *UserInfoHandler) List(ctx iris.Context) {
 	if err != nil {
 		errRet := ctx.JSON(models.Response{Ok: false, Message: "Произошла ошибка, попробуйте позднее"})
 		if errRet != nil {
-			loggerInstance.GlobalLogger.Error(err)
+			loggerinstance.GlobalLogger.Error(err)
 			return
 		}
-		loggerInstance.GlobalLogger.Error(err)
+		loggerinstance.GlobalLogger.Error(err)
 	}
 	data := userService.List()
 	err = ctx.JSON(data)
 	if err != nil {
 		errRet := ctx.JSON(models.Response{Ok: false, Message: "Произошла ошибка, попробуйте позднее"})
 		if errRet != nil {
-			loggerInstance.GlobalLogger.Error(errRet)
+			loggerinstance.GlobalLogger.Error(errRet)
 			return
 		}
-		loggerInstance.GlobalLogger.Error(err)
+		loggerinstance.GlobalLogger.Error(err)
 	}
 }

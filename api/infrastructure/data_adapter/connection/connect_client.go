@@ -16,7 +16,7 @@ func NewGormConnection(viperInit models.Configurator) *gorm.DB {
 	db, err := gorm.Open(postgres.Open(connstring), &gorm.Config{})
 
 	if err != nil {
-		loggerInstance.GlobalLogger.Error(err)
+		loggerinstance.GlobalLogger.Error(err)
 	}
 
 	return db

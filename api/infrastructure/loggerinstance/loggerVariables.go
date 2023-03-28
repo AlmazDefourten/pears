@@ -1,4 +1,4 @@
-package loggerInstance
+package loggerinstance
 
 import "github.com/AlmazDefourten/goapp/models"
 

@@ -23,14 +23,14 @@ func (jwtService *JWTService) SignIn(username string) (*models.Tokens, error) {
 	var db gorm.DB
 	err := container.Resolve(&db)
 	if err != nil {
-		loggerInstance.GlobalLogger.Error(err)
+		loggerinstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 
 	var c models.Configurator
 	err = container.Resolve(&c)
 	if err != nil {
-		loggerInstance.ServiceLogger.Error(err)
+		loggerinstance.ServiceLogger.Error(err)
 		return nil, err
 	}
 	//SIGNING_KEY - key for signing token
@@ -86,7 +86,7 @@ func (jwtService *JWTService) ValidateAndRefreshTokens(refresh_token string) (*m
 	var c models.Configurator
 	err := container.Resolve(&c)
 	if err != nil {
-		loggerInstance.ServiceLogger.Error(err)
+		loggerinstance.ServiceLogger.Error(err)
 		return nil, err
 	}
 

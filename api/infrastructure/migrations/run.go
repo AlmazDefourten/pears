@@ -12,27 +12,27 @@ func RunBaseMigration() {
 	var db gorm.DB
 	err := container.Resolve(&db)
 	if err != nil {
-		loggerInstance.GlobalLogger.Error(err)
+		loggerinstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 	err = db.AutoMigrate(&model.User{})
 	if err != nil {
-		loggerInstance.GlobalLogger.Error(err)
+		loggerinstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 	err = db.AutoMigrate(&model.Post{})
 	if err != nil {
-		loggerInstance.GlobalLogger.Error(err)
+		loggerinstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 	err = db.AutoMigrate(&model.Tag{})
 	if err != nil {
-		loggerInstance.GlobalLogger.Error(err)
+		loggerinstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 	err = db.AutoMigrate(&model.PostTags{})
 	if err != nil {
-		loggerInstance.GlobalLogger.Error(err)
+		loggerinstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 }

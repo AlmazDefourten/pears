@@ -34,20 +34,22 @@ func initializeApp(app *iris.Application) {
 	}
 	err = resolver.RegisterServices()
 	if err != nil {
-		loggerInstance.GlobalLogger.Error(err)
+		loggerinstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 	migrations.RunBaseMigration()
 	routing.InitializeRoutes(app)
 	var c models.Configurator
 	err = container.Resolve(&c)
+	loggerinstance.GlobalLogger.Info("test")
+	loggerinstance.ServiceLogger.Info("test")
 	if err != nil {
-		loggerInstance.GlobalLogger.Error(err)
+		loggerinstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 	err = app.Listen(":" + c.GetString("host_port"))
 	if err != nil {
-		loggerInstance.GlobalLogger.Error(err)
+		loggerinstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 }
