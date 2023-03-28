@@ -41,8 +41,6 @@ func initializeApp(app *iris.Application) {
 	routing.InitializeRoutes(app)
 	var c models.Configurator
 	err = container.Resolve(&c)
-	loggerinstance.GlobalLogger.Info("test")
-	loggerinstance.ServiceLogger.Info("test")
 	if err != nil {
 		loggerinstance.GlobalLogger.Error(err)
 		panic(err)
