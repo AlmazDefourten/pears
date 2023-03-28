@@ -2,9 +2,11 @@ package services
 
 import (
 	"fmt"
+	"github.com/AlmazDefourten/goapp/infrastructure/loggerinstance"
 	"github.com/AlmazDefourten/goapp/models"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/golobby/container/v3"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -18,10 +20,17 @@ func NewJWTService() *JWTService {
 
 // Signin - authorization method
 func (jwtService *JWTService) SignIn(username string) (*models.Tokens, error) {
-	var c models.Configurator
-	err := container.Resolve(&c)
+	var db gorm.DB
+	err := container.Resolve(&db)
 	if err != nil {
-		//logging here
+		loggerinstance.GlobalLogger.Error(err)
+		panic(err)
+	}
+
+	var c models.Configurator
+	err = container.Resolve(&c)
+	if err != nil {
+		loggerinstance.ServiceLogger.Error(err)
 		return nil, err
 	}
 	//SIGNING_KEY - key for signing token
@@ -60,6 +69,9 @@ func (jwtService *JWTService) SignIn(username string) (*models.Tokens, error) {
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
 	refresh, err := refreshToken.SignedString([]byte(SigningKey))
 
+	var user models.User
+	db.Model(&user).Where("login = ?", username).Update("refresh_token", refresh)
+
 	if err != nil {
 		return nil, err
 	}
@@ -70,11 +82,11 @@ func (jwtService *JWTService) SignIn(username string) (*models.Tokens, error) {
 }
 
 // method for refreshing tokens
-func (jwtService *JWTService) RefreshTokens(refresh_token string) (*models.Tokens, error) {
+func (jwtService *JWTService) ValidateAndRefreshTokens(refresh_token string) (*models.Tokens, error) {
 	var c models.Configurator
 	err := container.Resolve(&c)
 	if err != nil {
-		//logging here
+		loggerinstance.ServiceLogger.Error(err)
 		return nil, err
 	}
 

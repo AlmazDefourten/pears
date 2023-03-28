@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/AlmazDefourten/goapp/infrastructure/loggerinstance"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/golobby/container/v3"
 	"gorm.io/gorm"
@@ -36,6 +37,7 @@ func (postService *PostService) CreatePost(post models.Post) error {
 	err = db.Create(&post).Error
 	if err != nil {
 		// logging here or on another level after return // TODO: think about logging level
+		loggerinstance.ServiceLogger.Error(err)
 		return err
 	}
 	return nil
