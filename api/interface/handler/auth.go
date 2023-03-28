@@ -84,7 +84,13 @@ func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 	} else {
 		responseMessage = "Неверный логин или пароль"
 	}
-	response := models.AuthResponse{Ok: ok, Message: responseMessage, Access: token.AccessToken, Refresh: token.RefreshToken}
+	response := models.AuthResponse{Ok: ok, Message: responseMessage, Access: token.AccessToken}
+
+	ctx.SetCookie(&iris.Cookie{
+		Name:     "refreshtoken",
+		Value:    token.RefreshToken,
+		HttpOnly: true,
+	}, iris.CookieAllowSubdomains())
 	err = ctx.JSON(response)
 	if err != nil {
 		println(err)
@@ -136,7 +142,14 @@ func (authHandler *AuthHandler) RefreshTokens(ctx iris.Context) {
 			fmt.Println(err)
 		}
 	} else {
-		response := models.AuthResponse{Ok: ok, Access: tokens.AccessToken, Refresh: tokens.RefreshToken}
+		response := models.AuthResponse{Ok: ok, Access: tokens.AccessToken}
+
+		ctx.SetCookie(&iris.Cookie{
+			Name:     "refreshtoken",
+			Value:    tokens.RefreshToken,
+			HttpOnly: true,
+		}, iris.CookieAllowSubdomains())
+
 		err = ctx.JSON(response)
 		if err != nil {
 			println(err)

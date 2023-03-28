@@ -1,6 +1,6 @@
 module github.com/AlmazDefourten/goapp
 
-replace github.com/AlmazDefourten/goapp => ../goapp/api
+replace github.com/AlmazDefourten/goapp => ../pears/api
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
