@@ -17,7 +17,7 @@ interface IComp{
 
 export const AuthForm = ({setRender}:  IComp) => {
     const { handleSubmit, control} = useForm<ISignInForm>(); // useForm is a custom hook for managing forms with ease. It takes one object as optional argument
-    const onSubmit: SubmitHandler<ISignInForm> = data => fetch("http://localhost:8080/user/authorization",
+    const onSubmit: SubmitHandler<ISignInForm> = data => fetch("http://localhost:8080/api/v1/user/authorization",
         {
             method: 'POST',
             headers: {

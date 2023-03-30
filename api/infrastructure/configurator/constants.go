@@ -4,7 +4,7 @@ import "github.com/iris-contrib/swagger"
 
 const ConfigName = "appconfig"
 const ConfigType = "json"
-const ConfigPath = "./api"
+const ConfigPath = "./"
 
 var SwaggerConfig = swagger.Config{
 	// The url pointing to API definition.

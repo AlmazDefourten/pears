@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import { useForm, Controller, SubmitHandler, useFormState } from 'react-hook-form';
 import '../auth-page.css';
 import { loginValidation, passwordValidation, nickValidation } from '../validation';
+import $api from '../../http';
 
 interface ISignUpForm {
     nick: string;
@@ -18,25 +19,39 @@ interface IComp{
 
 export const RegForm = ({setRender}:  IComp) => {
     const { handleSubmit, control} = useForm<ISignUpForm>(); // useForm is a custom hook for managing forms with ease. It takes one object as optional argument
-    const onSubmit: SubmitHandler<ISignUpForm> = data => fetch("http://localhost:8080/user/registration",
-        {
-            method: 'POST',
-            headers: {
+    const onSubmit: SubmitHandler<ISignUpForm> = data => $api.post('/user/registration/', {
+        headers: {
                 'Content-Type': 'application/json'
             },
-            mode: 'no-cors',
-            body: JSON.stringify({
-                    login: data.login,
-                    password: data.password,
-                    nick: data.nick
-                }
-            )
-        })
-        .then(res => res.json())
-        .then(
-            (result) => {
-                console.log(result.items);
-            });// Validation will trigger on the submit event and inputs will attach onChange event listeners to re-validate them.
+        body: JSON.stringify({
+                login: data.login,
+                password: data.password,
+                nick: data.nick
+            }
+        )
+    })
+    .then(
+        (result) => {
+            console.log(result);
+        });
+    // const onSubmit: SubmitHandler<ISignUpForm> = data => fetch("http://localhost:8080/api/v1/user/registration",
+    //     {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify({
+    //                 login: data.login,
+    //                 password: data.password,
+    //                 nick: data.nick
+    //             }
+    //         )
+    //     })
+    //     // .then(res => res.json())
+    //     .then(
+    //         (result) => {
+    //             console.log(result);
+    //         });// Validation will trigger on the submit event and inputs will attach onChange event listeners to re-validate them.
     const { errors } = useFormState({ // This custom hook allows you to subscribe to each form state, and isolate the re-render at the custom hook level
         control
     })

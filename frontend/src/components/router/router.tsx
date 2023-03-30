@@ -5,14 +5,14 @@ import Profile from "../profile/profile";
 import { AuthPage } from "../auth-page";
 
 interface IFlag{
-    flag: boolean
+    isAuth: boolean
 }
 
-const Router: React.FC<IFlag> = ({flag}) =>{
+const Router: React.FC<IFlag> = ({isAuth}) =>{
 
     return(
         <div>
-            {flag ? 
+            {isAuth ? 
                 <Routes>
                     <Route path="/" element={ <Mainpage /> }/>
                     <Route path="/swipes" element={ <Swipes /> }/>

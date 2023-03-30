@@ -1,5 +1,5 @@
 {
-    "connection": "host=localhost port=5432 user=postgres password=admin dbname=postgres sslmode=disable",
+    "connection": "host=localhost port=5432 user=postgres password=1234 dbname=postgres sslmode=disable",
     "host_port": "8080",
     "debug_mode": true,
     "jwt":{

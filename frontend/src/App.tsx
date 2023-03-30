@@ -1,21 +1,29 @@
 import './App.css';
 import Router  from './components/router/router';
 import Navbar from './components/navbar/navbar';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { change_auth } from './redux/features/userSlice';
+import { IUserReducerState } from './redux/Interfaces';
+
+interface IState{
+  user: IUserReducerState
+}
 
 function App() {
 
-  const IsAccessTokenValid = () => {
-    //let flag = localStorage.getItem('') 
-    let flag: boolean = true;
-    return flag;
-  }
+  const dispatch = useDispatch();
 
-  const flag = IsAccessTokenValid();
+  const isAuth = useSelector((state: IState) => state.user.isAuth)
+
+  useEffect(() =>{
+    dispatch(change_auth(false))
+  }, [dispatch])
 
   return (
     <div>
-      {flag ? <Navbar /> : ''}
-      <Router flag={flag}/>
+      {isAuth ? <Navbar /> : ''}
+      <Router isAuth={isAuth}/>
     </div>
   );
 }
