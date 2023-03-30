@@ -1,8 +1,8 @@
 package models
 
 type IAuthService interface {
-	Registration(user *User) bool
-	CheckIfUserExist(login string) bool
+	Registration(user *User) (bool, error)
+	CheckIfUserExist(login string) (bool, error)
 	Authorization(login string, password string) (bool, *Tokens)
 	AuthCheck(token string) (bool, string)
 	RefreshCheck(token string) (bool, *Tokens)
