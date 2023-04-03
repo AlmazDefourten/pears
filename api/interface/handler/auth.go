@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"github.com/AlmazDefourten/goapp/infrastructure/loggerinstance"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/golobby/container/v3"
 	"github.com/kataras/iris/v12"
@@ -29,23 +30,25 @@ func (authHandler *AuthHandler) Registration(ctx iris.Context) {
 	var user models.User
 	err := ctx.ReadJSON(&user)
 	if err != nil {
-		println(err)
-		// logging here
+		loggerinstance.GlobalLogger.Error(err)
 	}
 
 	var authService models.IAuthService
 	err = container.Resolve(&authService)
 	if err != nil {
-		//logging here
+		loggerinstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 
-	ok := authService.Registration(&user)
+	ok, err := authService.Registration(&user)
+	if err != nil {
+		//loggine here
+	}
 	response := models.Response{Ok: ok, Message: ""}
 	err = ctx.JSON(response)
 	if err != nil {
 		println(err)
-		// logging here
+		loggerinstance.GlobalLogger.Error(err)
 	}
 }
 
@@ -64,13 +67,13 @@ func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 	err := ctx.ReadJSON(&user)
 	if err != nil {
 		println(err)
-		// logging here
+		loggerinstance.GlobalLogger.Error(err)
 	}
 
 	var authService models.IAuthService
 	err = container.Resolve(&authService)
 	if err != nil {
-		//logging here
+		loggerinstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 
@@ -84,23 +87,28 @@ func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 	} else {
 		responseMessage = "Неверный логин или пароль"
 	}
-	//TODO: возвращать токены какие-то
-	response := models.AuthResponse{Ok: ok, Message: responseMessage, Token: token.AccessToken}
+	response := models.AuthResponse{Ok: ok, Message: responseMessage, Access: token.AccessToken}
+
+	ctx.SetCookie(&iris.Cookie{
+		Name:     "refreshtoken",
+		Value:    token.RefreshToken,
+		HttpOnly: true,
+	}, iris.CookieAllowSubdomains())
 	err = ctx.JSON(response)
 	if err != nil {
 		println(err)
-		// logging here
+		loggerinstance.GlobalLogger.Error(err)
 	}
 }
 
 // AuthMiddleware it`s middleware for check if user is authorized
 func (authHandler *AuthHandler) AuthMiddleware(ctx iris.Context) {
-	token := ctx.GetHeader("token")
+	token := ctx.GetHeader("access_token")
 
 	var authService models.IAuthService
 	err := container.Resolve(&authService)
 	if err != nil {
-		//logging here
+		loggerinstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 
@@ -109,10 +117,46 @@ func (authHandler *AuthHandler) AuthMiddleware(ctx iris.Context) {
 		ctx.StopWithStatus(http.StatusUnauthorized)
 		err := ctx.JSON(models.Response{Ok: false, Message: "Пользователь не авторизован"})
 		if err != nil {
-			// logging here lol
+			loggerinstance.GlobalLogger.Error(err)
 			fmt.Println(username)
 		}
 	} else {
 		ctx.Next()
+	}
+}
+
+// RefreshTokens it`s method for check refresh token and refresh tokens
+func (authHandler *AuthHandler) RefreshTokens(ctx iris.Context) {
+	token := ctx.GetHeader("refresh_token")
+
+	var authService models.IAuthService
+	err := container.Resolve(&authService)
+	if err != nil {
+		loggerinstance.GlobalLogger.Error(err)
+		panic(err)
+	}
+
+	ok, tokens := authService.RefreshCheck(token)
+	if ok == false {
+		ctx.StopWithStatus(http.StatusUnauthorized)
+		err := ctx.JSON(models.Response{Ok: false, Message: "Пользователь не авторизован"})
+		if err != nil {
+			loggerinstance.GlobalLogger.Error(err)
+			fmt.Println(err)
+		}
+	} else {
+		response := models.AuthResponse{Ok: ok, Access: tokens.AccessToken}
+
+		ctx.SetCookie(&iris.Cookie{
+			Name:     "refreshtoken",
+			Value:    tokens.RefreshToken,
+			HttpOnly: true,
+		}, iris.CookieAllowSubdomains())
+
+		err = ctx.JSON(response)
+		if err != nil {
+			println(err)
+			loggerinstance.GlobalLogger.Error(err)
+		}
 	}
 }

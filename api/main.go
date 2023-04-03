@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/AlmazDefourten/goapp/infrastructure/loggerinstance"
 	"github.com/AlmazDefourten/goapp/infrastructure/migrations"
 	"github.com/AlmazDefourten/goapp/infrastructure/resolver"
 	"github.com/AlmazDefourten/goapp/interface/routing"
@@ -14,43 +15,39 @@ import (
 // @description Pears API, specification and description
 
 // @host localhost:8080
-// @BasePath /api
+// @BasePath /api/v1
 
 // @securityDefinitions.apikey	JWTToken
 // @in							header
 // @name						token
 // @description				Access token only
+
 func main() {
 	app := iris.New()
-
 	initializeApp(app)
 }
 
 func initializeApp(app *iris.Application) {
 	err := resolver.InitializeContainer()
 	if err != nil {
-		//logging here
 		panic(err)
 	}
 	err = resolver.RegisterServices()
 	if err != nil {
-		//logging here
+		loggerinstance.GlobalLogger.Error(err)
 		panic(err)
 	}
-
 	migrations.RunBaseMigration()
-
 	routing.InitializeRoutes(app)
-
 	var c models.Configurator
 	err = container.Resolve(&c)
 	if err != nil {
-		//logging here
+		loggerinstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 	err = app.Listen(":" + c.GetString("host_port"))
 	if err != nil {
-		// there is logging
+		loggerinstance.GlobalLogger.Error(err)
 		panic(err)
 	}
 }

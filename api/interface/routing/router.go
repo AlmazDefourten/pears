@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	apiPath = "/api"
+	apiPath = "/api/v1"
 )
 
 type Router struct {
@@ -23,9 +23,7 @@ func NewRouter() *Router {
 // UseRoutes main API router
 func (router *Router) UseRoutes(app *iris.Application) {
 	app.UseRouter(CorsHandler)
-
 	AutoDocHandleInit(app)
-
 	var authHandler = handler.NewAuthHandler()
 	// TODO: refactor this by adding new party with apipath
 	userAPI := app.Party(apiPath + "/user")
@@ -67,6 +65,7 @@ func CorsHandler(ctx iris.Context) {
 		ctx.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 		ctx.Header("Access-Control-Allow-Headers",
 			"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		ctx.Header("Access-Control-Allow-Credentials", "true")
 	}
 	// Stop here if its Preflighted OPTIONS request
 	if ctx.Request().Method == "OPTIONS" {

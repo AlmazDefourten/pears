@@ -1,9 +1,10 @@
 module github.com/AlmazDefourten/goapp
 
-replace github.com/AlmazDefourten/goapp => ../goapp/api
+replace github.com/AlmazDefourten/goapp => ../pears/api
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/golobby/container/v3 v3.3.1
 	github.com/iris-contrib/swagger v0.0.0-20221224052940-c40eb7333f26
 	github.com/iris-contrib/swagger/v12 v12.2.0-alpha
 	github.com/kataras/iris/v12 v12.2.0-beta7
@@ -18,7 +19,6 @@ require (
 	github.com/go-openapi/jsonreference v0.20.2 // indirect
 	github.com/go-openapi/spec v0.20.8 // indirect
 	github.com/go-openapi/swag v0.22.3 // indirect
-	github.com/golobby/container/v3 v3.3.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.13.0 // indirect
