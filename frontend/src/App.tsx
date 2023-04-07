@@ -17,7 +17,7 @@ function App() {
   const isAuth = useSelector((state: IState) => state.user.isAuth)
 
   useEffect(() =>{
-    dispatch(change_auth(false))
+    dispatch(change_auth(true))
   }, [dispatch])
 
   return (

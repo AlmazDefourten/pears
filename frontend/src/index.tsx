@@ -8,7 +8,9 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { BrowserRouter } from 'react-router-dom';
+import { createTheme } from '@mui/material/styles';
 import { Provider } from 'react-redux';
+// import { Provider } from 'react-redux';
 import { store } from './redux/store';
 // import store from './redux/store';
 
@@ -24,6 +26,18 @@ root.render(
     </BrowserRouter>
   </Provider>
 );
+
+// const theme = createTheme({
+//   default: '#006C0B';
+// })
+
+// declare module '@mui/material/styles' {
+//   interface Theme {
+//     status: {
+//       danger: React.CSSProperties['color'];
+//     };
+//   }
+// }
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
