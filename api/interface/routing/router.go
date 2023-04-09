@@ -3,7 +3,10 @@ package routing
 import (
 	_ "github.com/AlmazDefourten/goapp/docs"
 	"github.com/AlmazDefourten/goapp/infrastructure/configurator"
+	"github.com/AlmazDefourten/goapp/infrastructure/loggerinstance"
 	"github.com/AlmazDefourten/goapp/interface/handler"
+	"github.com/AlmazDefourten/goapp/models"
+	"github.com/golobby/container/v3"
 	"github.com/iris-contrib/swagger"
 	"github.com/iris-contrib/swagger/v12/swaggerFiles"
 	"github.com/kataras/iris/v12"
@@ -77,8 +80,14 @@ func CorsHandler(ctx iris.Context) {
 
 // AutoDocHandleInit is routing and initializing autodocs
 func AutoDocHandleInit(app *iris.Application) {
+	var c models.Configurator
+	err := container.Resolve(&c)
+	if err != nil {
+		loggerinstance.GlobalLogger.Error(err)
+	}
 	// Configure the swagger UI page.
 	config := configurator.SwaggerConfig
+	config.URL = "http://" + c.GetString("appserver") + ":8080/swagger/doc.json"
 	swaggerUI := swagger.Handler(swaggerFiles.Handler, config)
 
 	// Register on domain:port/swagger

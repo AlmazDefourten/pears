@@ -6,7 +6,6 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8080",
     "basePath": "/api/v1",
     "paths": {
         "/post/create": {
@@ -238,13 +237,16 @@
         "models.AuthResponse": {
             "type": "object",
             "properties": {
+                "access_token": {
+                    "type": "string"
+                },
                 "message": {
                     "type": "string"
                 },
                 "ok": {
                     "type": "boolean"
                 },
-                "token": {
+                "refresh_token": {
                     "type": "string"
                 }
             }
@@ -358,6 +360,10 @@
                 "password": {
                     "type": "string",
                     "example": "mypaSSword123876"
+                },
+                "refresh_token": {
+                    "type": "string",
+                    "example": ""
                 }
             }
         },

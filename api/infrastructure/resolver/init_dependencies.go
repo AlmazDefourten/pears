@@ -38,6 +38,7 @@ func InitializeContainer() error {
 	err = container.Singleton(func() models.Configurator {
 		return configurator.NewViperConfigurator()
 	})
+
 	if err != nil {
 		loggerinstance.GlobalLogger.Error(err)
 		return err

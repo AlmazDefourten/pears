@@ -14,7 +14,6 @@ import (
 // @version 1.0
 // @description Pears API, specification and description
 
-// @host localhost:8080
 // @BasePath /api/v1
 
 // @securityDefinitions.apikey	JWTToken

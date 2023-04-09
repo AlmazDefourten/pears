@@ -2,11 +2,13 @@ basePath: /api/v1
 definitions:
   models.AuthResponse:
     properties:
+      access_token:
+        type: string
       message:
         type: string
       ok:
         type: boolean
-      token:
+      refresh_token:
         type: string
     type: object
   models.Post:
@@ -85,6 +87,9 @@ definitions:
       password:
         example: mypaSSword123876
         type: string
+      refresh_token:
+        example: ""
+        type: string
     type: object
   models.UserAuthInfo:
     properties:
@@ -95,7 +100,6 @@ definitions:
         example: mypaSSword123876
         type: string
     type: object
-host: localhost:8080
 info:
   contact: {}
   description: Pears API, specification and description
