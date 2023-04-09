@@ -77,7 +77,7 @@ func Init(typeLogger resolvers.TypeLogger) *logrus.Entry {
 	if err != nil {
 		panic(err.Error())
 	}
-	err = os.MkdirAll(path.Dir, os.FileMode(access0644))
+	err = os.MkdirAll(path.Dir, os.FileMode(access0777))
 	if err != nil {
 		panic(err)
 	}
