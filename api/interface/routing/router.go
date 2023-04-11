@@ -68,7 +68,7 @@ func CorsHandler(ctx iris.Context) {
 		ctx.Header("Access-Control-Allow-Origin", origin)
 		ctx.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 		ctx.Header("Access-Control-Allow-Headers",
-			"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+			"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, X-Requested-With")
 		ctx.Header("Access-Control-Allow-Credentials", "true")
 	}
 	// Stop here if its Preflighted OPTIONS request
