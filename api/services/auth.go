@@ -30,12 +30,14 @@ func (authService *AuthService) CheckIfUserExist(login string) (bool, error) {
 		loggerinstance.ServiceLogger.Error(err)
 		return defaultUserExistFlagValue, err
 	}
-	request := db.Model(&models.User{}).First(&res, "login = ?", login)
-	if request.Error != nil {
+	//request := db.Model(&models.User{}).First(&res, "login = ?", login)
+	request := db.Model(&models.User{}).Where("login = ?", login).Find(&res)
+
+	if request.Error != nil && !errors.Is(request.Error, gorm.ErrRecordNotFound) {
 		loggerinstance.ServiceLogger.Error(request.Error)
 		return defaultUserExistFlagValue, request.Error
 	}
-	if len(res) > 0 {
+	if request.RowsAffected > 0 {
 		return true, nil
 	}
 	return false, nil
@@ -98,12 +100,14 @@ func (authService *AuthService) Authorization(login string, password string) (bo
 	}
 
 	var user models.User
-	err = db.First(&user, "login = ?", login).Error
+	err = db.Where("login = ?", login).Find(&user).Error
+	//err = db.First(&user, "login = ?", login).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return false, nil
 		}
 	}
+
 	if checkPasswordHash(password, user.Password, c.GetString("passwordSalt")) {
 		jwtToken, err := jwtService.SignIn(login)
 		if err != nil {

@@ -81,19 +81,22 @@ func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 	if !ok {
 		ctx.StatusCode(http.StatusUnauthorized)
 	}
-	var responseMessage string
+	response := &models.AuthResponse{}
 	if ok {
-		responseMessage = "Вы успешно авторизовались"
+		response.Ok = ok
+		response.Message = "Вы успешно авторизовались"
+		response.Access = token.AccessToken
+		ctx.SetCookie(&iris.Cookie{
+			Name:     "refreshtoken",
+			Value:    token.RefreshToken,
+			HttpOnly: true,
+		}, iris.CookieAllowSubdomains())
 	} else {
-		responseMessage = "Неверный логин или пароль"
+		response.Ok = ok
+		response.Message = "Неверный логин или пароль"
 	}
-	response := models.AuthResponse{Ok: ok, Message: responseMessage, Access: token.AccessToken}
+	//response := models.AuthResponse{Ok: ok, Message: responseMessage, Access: token.AccessToken}
 
-	ctx.SetCookie(&iris.Cookie{
-		Name:     "refreshtoken",
-		Value:    token.RefreshToken,
-		HttpOnly: true,
-	}, iris.CookieAllowSubdomains())
 	err = ctx.JSON(response)
 	if err != nil {
 		println(err)
@@ -125,7 +128,16 @@ func (authHandler *AuthHandler) AuthMiddleware(ctx iris.Context) {
 	}
 }
 
-// RefreshTokens it`s method for check refresh token and refresh tokens
+// RefreshTokens godoc
+//
+//	@Summary		RefreshTokens
+//	@Description	method for check refresh token and refresh tokens
+//	@Accept			json
+//	@Produce		json
+//	@Param			body		body		models.Tokens		true	"request body with access and refresh tokens"
+//	@Failure		401	{object}	models.AuthResponse
+//	@Success		200	{object}	models.AuthResponse
+//	@Router			/user/refresh [post]
 func (authHandler *AuthHandler) RefreshTokens(ctx iris.Context) {
 	token := ctx.GetHeader("refresh_token")
 

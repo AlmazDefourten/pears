@@ -68,6 +68,13 @@ definitions:
       ok:
         type: boolean
     type: object
+  models.Tokens:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
   models.User:
     properties:
       age:
@@ -202,6 +209,30 @@ paths:
           schema:
             $ref: '#/definitions/models.AuthResponse'
       summary: Authorization
+  /user/refresh:
+    post:
+      consumes:
+      - application/json
+      description: method for check refresh token and refresh tokens
+      parameters:
+      - description: request body with access and refresh tokens
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.Tokens'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AuthResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.AuthResponse'
+      summary: RefreshTokens
   /user/registration:
     post:
       consumes:
