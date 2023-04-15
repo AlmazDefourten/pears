@@ -8,11 +8,9 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { BrowserRouter } from 'react-router-dom';
-import { createTheme } from '@mui/material/styles';
+// import { createTheme } from '@mui/material/styles';
 import { Provider } from 'react-redux';
-// import { Provider } from 'react-redux';
 import { store } from './redux/store';
-// import store from './redux/store';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
