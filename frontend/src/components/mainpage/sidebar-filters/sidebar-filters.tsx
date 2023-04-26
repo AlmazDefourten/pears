@@ -2,6 +2,7 @@ import { Container, Checkbox, Button, FormGroup, FormControlLabel } from '@mui/m
 
 const formControlLabelStyle = {
     "& .MuiFormControlLabel-label": {
+      fontFamily: 'Ubuntu',
       fontSize: '20px',
       fontWeight: 300,
       lineHeight: '23px',

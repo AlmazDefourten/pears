@@ -23,6 +23,14 @@
     align-items: center;
 }
 
+.event-author-and-name span {
+    font-family: 'IBM Plex Sans';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 31px;
+}
+
 .event-author-img{
     width: 11%;
     height: auto;
@@ -34,6 +42,15 @@
     justify-content: end;
     align-items: center;
     gap: 0.5vw;
+}
+
+.event-time-and-options{
+    font-family: 'Ubuntu';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 24px;
+    letter-spacing: 0.02em;
 }
 
 .event-options-img{
@@ -65,11 +82,30 @@
     margin: 1vh 1vw;
 }
 
+.text-description p {
+    font-family: 'IBM Plex Sans';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 26px;
+    letter-spacing: 0.02em;
+}
+
 .icon-plus-text{
     display: flex;
     align-items: center;
     gap: 0.5vw;
     width: 5vw;
+}
+
+.icon-plus-text p {
+    font-family: 'Ubuntu';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20.7546px;
+    line-height: 24px;
+    text-align: center;
+    letter-spacing: 0.02em;
 }
 
 .social-button-and-tags{
@@ -103,4 +139,14 @@
     background-color: rgba(126, 171, 185, 1);
     border-radius: 10px;
     padding: 3px;
+}
+
+.tags p {
+    font-family: 'IBM Plex Sans';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 20.7546px;
+    line-height: 27px;
+    text-align: center;
+    letter-spacing: 0.02em;
 }
