@@ -10,6 +10,7 @@ import media from './imgs/image_4.png';
 
 const cardHeaderStyle={
     "& .MuiCardHeader-title": {
+        fontFamily: 'IBM Plex Sans',
         fontWeight: 400,
         fontSize: '27.6364px',
         lineHeight: '32px',
@@ -18,6 +19,7 @@ const cardHeaderStyle={
     },
 
     "& .MuiCardHeader-subheader": {
+        fontFamily: 'IBM Plex Sans',
         fontWeight: 400,
         fontSize: '20.7273px',
         lineHeight: '24px',
@@ -54,7 +56,14 @@ const ProjectPost: React.FC = () =>{
                        image={media}
                        alt="ProjectPostImg" />
             <CardContent>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" 
+                            sx={{fontFamily: 'IBM Plex Sans',
+                                 fontStyle: 'normal',
+                                 fontWeight: 300,
+                                 fontSize: '20px',
+                                 lineHeight: '26px',
+                                 letterSpacing: '0.02em'}}
+                            color="text.secondary">
                 🍐Pears - это платформа для совместной проектной деятельности, 
                 поиска команды, мероприятий и нетворкинга - все что нужно для плодотворной командной работы, 
                 новых знакомств и получения мотивации
@@ -82,7 +91,12 @@ const ProjectPost: React.FC = () =>{
                     alignItems: 'center',
                     justifyContent: 'center'
                 }}>
-                    <Typography sx={{backgroundColor: '#7EABB9',
+                    <Typography sx={{fontFamily: 'IBM Plex Sans',
+                                     fontStyle: 'normal',
+                                     fontWeight: 300,
+                                     fontSize: '20.7273px',
+                                     lineHeight: '27px',
+                                     backgroundColor: '#7EABB9',
                                      padding: 0.7,
                                      borderRadius: '15px'}}>Startup, Go, React</Typography>
                 </Box>

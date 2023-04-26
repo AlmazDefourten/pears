@@ -1,15 +1,16 @@
-import { Avatar, Container, Card, CardContent, CardHeader, CardMedia, Typography, CardActions } from "@mui/material";
+import { Avatar, Container, Card, CardContent, CardHeader, Typography, CardActions } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
-// import MoreVertIcon from '@mui/icons-material/MoreVert';
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-// import ShareIcon from '@mui/icons-material/Share';
 import ShareIcon from "@mui/icons-material/Share";
-// import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import VisibilityIcon from '@mui/icons-material/Visibility';
+
 import { Box } from "@mui/system";
 import avatar from './imgs/ava.png';
-import media from './imgs/image_7.png';
+
+import Slider from "./Slider";
+
+
 
 const cardHeaderStyle={
     "& .MuiCardHeader-title": {
@@ -53,10 +54,12 @@ const FriendPost: React.FC = () =>{
                             backgroundColor: '#7EABB9'
                         }}
             />
-            <CardMedia component="img"
+            {/* <CardMedia component="img"
                        height="337"
                        image={media}
-                       alt="ProjectPostImg" />
+                       alt="ProjectPostImg" /> */}
+            <Slider/>
+            
             <CardContent>
                 <Typography variant="body2" color="text.secondary">
                 Для управления зависимостями в проекте, node.js, 
