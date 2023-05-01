@@ -1,0 +1,41 @@
+name: GitHub Action
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install OpenVPN
+        run: |
+          sudo apt update
+          sudo apt install -y openvpn openvpn-systemd-resolved
+      - name: Connect to VPN
+        uses: "kota65535/github-openvpn-connect-action@v2"
+        with:
+          config_file: .github/workflows/client.ovpn
+          username: ${{ secrets.VPN_USERNAME }}
+          password: ${{ secrets.VPN_PASSWORD }}
+      - name: Use SSH
+        uses: appleboy/ssh-action@master
+        with: 
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            export GOROOT=/home/u_studpr/goinst/go
+            export GOPATH=$HOME/go
+            export PATH=$GOPATH/bin:$GOROOT/bin:$PATH    
+            source ~/.bashrc
+            screen -ls | grep -o '[0-9]\+\.' | sed 's/.$//' | xargs -I % sh -c 'screen -S % -X quit'
+            cd app/pears/api
+            git pull
+            go build
+            screen -dmS myapp go run .
+
