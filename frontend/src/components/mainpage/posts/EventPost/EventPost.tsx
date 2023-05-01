@@ -8,6 +8,7 @@ import clock from './imgs/clock.png'
 import like from './imgs/like.png'
 import share from './imgs/share.png'
 import glaz from './imgs/glaz.png'
+
 const EventPost: React.FC = () =>{
     return(
         <div className={styles['event-content']}>
@@ -54,7 +55,7 @@ const EventPost: React.FC = () =>{
                 <div className={styles['social-buttons']}>
                     <div className={styles['icon-plus-text']}>
                         <img src={like} alt="" className={styles['social-button-icon']}/>
-                        <div>123</div>
+                        <p>123</p>
                     </div>
                     <div className={styles['icon-plus-text']}>
                         <img src={share} alt="" className={styles['social-button-icon']}/>

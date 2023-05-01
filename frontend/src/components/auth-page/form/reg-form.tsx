@@ -33,6 +33,10 @@ export const RegForm = ({setRender}:  IComp) => {
     .then(
         (result) => {
             console.log(result);
+            // const {data} = result;
+            // console.log(data)
+            // localStorage.setItem('token', data.access_token)
+            // console.log(localStorage.getItem('token'))
         });
     // const onSubmit: SubmitHandler<ISignUpForm> = data => fetch("http://localhost:8080/api/v1/user/registration",
     //     {

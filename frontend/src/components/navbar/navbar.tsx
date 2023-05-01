@@ -11,7 +11,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 
-
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -168,7 +167,10 @@ const Navbar: React.FC = () =>{
                     variant="h3"
                     noWrap
                     component="div"
-                    sx={{ color: 'black', ml: 1.5, display: { xs: 'none', sm: 'block' } }}
+                    sx={{ fontFamily: 'Duru Sans',
+                          color: 'black',
+                          ml: 1.5,
+                          display: { xs: 'none', sm: 'block' } }}
                 >
                     PEARS
                 </Typography>
