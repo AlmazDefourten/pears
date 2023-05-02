@@ -19,7 +19,7 @@ jobs:
           VPN_PASSWORD: ${{ secrets.VPN_PASSWORD }}
         run: |
           echo 'pty "pptp $VPN_SERVER --nolaunchpppd"' | sudo tee /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'name $VPN_USERNAME' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'user $VPN_USERNAME' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'password $VPN_PASSWORD' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'remotename kai-vpn' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'require-mppe-128' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
