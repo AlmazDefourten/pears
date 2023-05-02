@@ -27,10 +27,13 @@ jobs:
           echo 'noauth' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'debug' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'persist' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'nodeflate' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'maxfail 0' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'defaultroute' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'replacedefaultroute' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'usepeerdns' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'nobsdcomp' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'lock' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
       - name: Connect to VPN
         run: sudo pon kai-vpn
       - name: Checkout
