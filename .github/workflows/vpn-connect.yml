@@ -13,10 +13,14 @@ jobs:
       - name: Install PPTP client
         run: sudo apt-get update && sudo apt-get install -y pptp-linux
       - name: Create VPN config file
+        env:
+          VPN_SERVER: ${{ secrets.VPN_SERVER }}
+          VPN_USERNAME: ${{ secrets.VPN_USERNAME }}
+          VPN_PASSWORD: ${{ secrets.VPN_PASSWORD }}
         run: |
-          echo 'pty "pptp ${{ secrets.VPN_SERVER }} --nolaunchpppd"' | sudo tee /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'name ${{ secrets.VPN_USERNAME }}' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'password ${{ secrets.VPN_PASSWORD }}' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'pty "pptp $VPN_SERVER --nolaunchpppd"' | sudo tee /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'name $VPN_USERNAME' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'password $VPN_PASSWORD' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'remotename kai-vpn' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'require-mppe-128' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'refuse-eap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
