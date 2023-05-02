@@ -50,5 +50,5 @@ jobs:
             cd app/pears/api
             git pull
             go build
-            screen -dmS myapp sh -c 'nohup go run . &> myapp.log &'
+
 
