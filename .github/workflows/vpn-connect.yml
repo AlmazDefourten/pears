@@ -3,7 +3,7 @@ name: GitHub Action
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   deploy:
