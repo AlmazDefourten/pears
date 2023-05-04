@@ -30,8 +30,8 @@ jobs:
         run: sudo pon pptp-vpn
       - name: Check connection status
         run: |
-        while ! ping -c 1 google.com; do sleep 1; done
-        echo "Connected to VPN"
+          while ! ping -c 1 google.com; do sleep 1; done
+          echo "Connected to VPN"
       - name: Checkout
         uses: actions/checkout@v3
       - name: Use SSH
