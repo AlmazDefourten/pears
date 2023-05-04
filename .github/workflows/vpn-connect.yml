@@ -27,7 +27,6 @@ jobs:
           echo "refuse-chap" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
           echo "refuse-mschap" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
           echo "require-mschap-v2" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
-          echo "noipdefault" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
           echo "defaultroute" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
       - name: Start PPTP connection
         run: sudo pon pptp-vpn
