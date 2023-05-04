@@ -1,34 +1,48 @@
-name: Connect to PPTP VPN
+name: GitHub Action
 
-on: [push]
+on:
+  push:
+    branches:
+      - dev
 
 jobs:
-  connect:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Install VPN dependencies
+      - name: Install PPTP client
+        run: sudo apt-get update && sudo apt-get install -y pptp-linux
+      - name: Create VPN config file
         run: |
-          sudo apt-get update
-          sudo apt-get install pptp-linux
-      
-      - name: Configure VPN connection
-        run: |
-          sudo cat > /etc/ppp/peers/vpn <<EOF
-          pty "pptp ${{ secrets.VPN_SERVER }} --nolaunchpppd"
-          name ${{ secrets.VPN_USERNAME }}
-          require-mppe-128
-          refuse-pap
-          refuse-chap
-          refuse-mschap
-          require-mschap-v2
-          refuse-eap
-          nwid "10.0.0.0/24"
-          EOF
-          
+          echo 'pty "pptp ${{ secrets.VPN_SERVER }}"' | sudo tee /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'name ${{ secrets.VPN_USERNAME }}' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'password ${{ secrets.VPN_PASSWORD }}' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'remotename kai-vpn' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'require-mppe-128' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'refuse-eap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'refuse-pap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'refuse-chap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'refuse-mschap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'require-mschap-v2' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
       - name: Connect to VPN
-        run: | 
-          echo "${{ secrets.VPN_PASSWORD }}" | sudo pppd call vpn
-          
-      - name: Check VPN connection status
-        run: |
-          sudo ip r
+        run: sudo pon kai-vpn
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Use SSH
+        uses: appleboy/ssh-action@master
+        with: 
+          host: ${{ secrets.SERVER_HOST }}
+          timeout: 200s
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            export GOROOT=/home/u_studpr/goinst/go
+            export GOPATH=$HOME/go
+            export PATH=$GOPATH/bin:$GOROOT/bin:$PATH    
+            source ~/.bashrc
+            screen -ls | grep -o '[0-9]\+\.' | sed 's/.$//' | xargs -I % sh -c 'screen -S % -X quit'
+            cd app/pears/api
+            git pull
+            go build
+            screen -dmS myapp go run .
+
