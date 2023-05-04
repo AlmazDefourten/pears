@@ -10,28 +10,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install PPTP client
+      - name: Install pptp-linux
         run: sudo apt-get update && sudo apt-get install -y pptp-linux
-      - name: Create VPN config file
+      - name: Create PPTP configuration
         run: |
-          echo 'pty "pptp ${{ secrets.VPN_SERVER }}"' | sudo tee /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'name ${{ secrets.VPN_USERNAME }}' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'password ${{ secrets.VPN_PASSWORD }}' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'remotename kai-vpn' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'require-mppe-128' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'refuse-eap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'refuse-pap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'refuse-chap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'refuse-mschap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'require-mschap-v2' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'nodeflate' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'maxfail 0' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'replacedefaultroute' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'usepeerdns' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'nobsdcomp' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'lock' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-      - name: Connect to VPN
-        run: sudo pon kai-vpn
+          echo "pty \"pptp ${{ secrets.VPN_SERVER }} --nolaunchpppd\"" | sudo tee /etc/ppp/peers/pptp-vpn > /dev/null
+          echo "name ${{ secrets.VPN_USERNAME }}" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
+          echo "password ${{ secrets.VPN_PASSWORD }}" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
+          echo "refuse-pap" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
+          echo "refuse-eap" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
+          echo "refuse-chap" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
+          echo "refuse-mschap" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
+          echo "require-mschap-v2" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
+          echo "require-mppe-128" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
+          echo "mppe-stateful" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
+          echo "noipdefault" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
+          echo "defaultroute" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
+      - name: Start PPTP connection
+        run: sudo pon pptp-vpn
+      - name: Check connection status
+        run: |
+        while ! ping -c 1 google.com; do sleep 1; done
+        echo "Connected to VPN"
       - name: Checkout
         uses: actions/checkout@v3
       - name: Use SSH
@@ -51,4 +51,6 @@ jobs:
             git pull
             go build
             screen -dmS myapp go run .
+      - name: Stop PPTP connection
+        run: sudo poff pptp-vpn
 
