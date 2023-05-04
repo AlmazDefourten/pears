@@ -18,16 +18,18 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y pptp-linux
       - name: Create VPN config file
         run: |
+          sudo nano /etc/ppp/chap-secrets
+          echo -n "$VPN_USERNAME PPTP $VPN_PASSWORD *" | sudo tee -a /etc/ppp/chap-secrets > /dev/null
+          sudo sh -c "echo -n '\x04' >> /etc/ppp/chap-secrets"
           echo 'pty "pptp $VPN_SERVER--nolaunchpppd"' | sudo tee /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'name $VPN_USERNAME' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'password $VPN_PASSWORD' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'remotename kai-vpn' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'refuse-eap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'refuse-pap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'refuse-eap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'require-mppe-128' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'refuse-chap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'refuse-mschap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'require-mschap-v2' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'noauth' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'auth' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'debug' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'maxfail 15' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'defaultroute' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
