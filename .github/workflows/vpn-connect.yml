@@ -13,7 +13,7 @@ jobs:
       
       - name: Configure VPN connection
         run: |
-          cat > /etc/ppp/peers/vpn <<EOF
+          sudo cat > /etc/ppp/peers/vpn <<EOF
           pty "pptp ${{ secrets.VPN_SERVER }} --nolaunchpppd"
           name ${{ secrets.VPN_USERNAME }}
           require-mppe-128
