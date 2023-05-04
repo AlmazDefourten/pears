@@ -34,7 +34,7 @@ jobs:
       - name: Connect to VPN
         run: |
           sudo pon kai-vpn
-          ping 10.0.0.59
+          ping -w 30 -c 1 10.0.0.59 || true
       - name: Checkout
         uses: actions/checkout@v3
       - name: Use SSH
