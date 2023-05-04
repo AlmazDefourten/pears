@@ -23,7 +23,6 @@ jobs:
           echo 'refuse-chap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'refuse-mschap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'require-mschap-v2' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'noauth' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'debug' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'maxfail 10' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'nodefaultroute' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
