@@ -18,7 +18,7 @@ jobs:
       - name: Create PPTP configuration
         run: |
           echo "pty \"pptp $VPN_SERVER --nolaunchpppd\"" | sudo tee /etc/ppp/peers/pptp-vpn > /dev/null
-          echo "user $VPN_USERNAME" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
+          echo "name $VPN_USERNAME" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
           echo "password $VPN_PASSWORD" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
           echo "noauth" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
           echo "debug" | sudo tee -a /etc/ppp/peers/pptp-vpn > /dev/null
