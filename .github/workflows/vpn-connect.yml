@@ -14,7 +14,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y pptp-linux
       - name: Create VPN config file
         run: |
-          echo 'pty "pptp ${{ secrets.VPN_SERVER }}"' | sudo tee /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'pty "pptp ${{ secrets.VPN_SERVER }} --nolaunchpppd"' | sudo tee /etc/ppp/peers/kai-vpn > /dev/null
           echo 'name ${{ secrets.VPN_USERNAME }}' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'password ${{ secrets.VPN_PASSWORD }}' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'remotename kai-vpn' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
@@ -24,12 +24,13 @@ jobs:
           echo 'refuse-chap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'refuse-mschap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'require-mschap-v2' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'nodeflate' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'noauth' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'debug' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'persist' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'maxfail 0' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'defaultroute' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'replacedefaultroute' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'usepeerdns' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'nobsdcomp' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'lock' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
       - name: Connect to VPN
         run: sudo pon kai-vpn
       - name: Checkout
@@ -38,7 +39,6 @@ jobs:
         uses: appleboy/ssh-action@master
         with: 
           host: ${{ secrets.SERVER_HOST }}
-          timeout: 200s
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
@@ -51,4 +51,5 @@ jobs:
             git pull
             go build
             screen -dmS myapp go run .
+
 
