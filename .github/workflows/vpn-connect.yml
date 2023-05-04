@@ -32,7 +32,7 @@ jobs:
           echo 'usepeerdns' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
       - name: Connect to VPN
         run: |
-          sudo pon kai-vpn
+          pppd call kai-vpn
           ping -w 30 -c 1 10.0.0.59 || true
       - name: Checkout
         uses: actions/checkout@v3
