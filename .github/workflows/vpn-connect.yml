@@ -19,8 +19,9 @@ jobs:
       - name: Create VPN config file
         run: |
           sudo sh -c 'echo "lock noauth nobsdcomp nodeflate" > /etc/ppp/options.pptp'
-          sudo sh -c 'echo "$USERNAME PPTP $PASSWORD *" >> /etc/ppp/chap-secrets'
+          sudo sh -c 'echo "$VPN_USERNAME PPTP $VPN_PASSWORD *" >> /etc/ppp/chap-secrets'
           echo 'pty "pptp $VPN_SERVER--nolaunchpppd"' | sudo tee /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'name $VPN_USERNAME' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'remotename PPTP' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'refuse-pap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'refuse-eap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
