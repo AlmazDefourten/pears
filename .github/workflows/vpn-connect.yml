@@ -39,6 +39,7 @@ jobs:
       - name: Connect to VPN
         run: |
           sudo pppd call kai-vpn
+          sudo ip route add 10.0.0.59 via $(ip route show default | awk '/via/ {print $3}') dev $(ip route | awk '/^default/ {print $5}')
           ping -w 30 -c 1 10.0.0.59 || true
       - name: Checkout
         uses: actions/checkout@v3
