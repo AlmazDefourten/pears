@@ -18,18 +18,27 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y pptp-linux
       - name: Create VPN config file
         run: |
-          sudo sh -c 'echo "lock noauth nobsdcomp nodeflate" > /etc/ppp/options.pptp'
           sudo sh -c 'echo "$VPN_USERNAME PPTP $VPN_PASSWORD *" >> /etc/ppp/chap-secrets'
           echo 'pty "pptp $VPN_SERVER--nolaunchpppd"' | sudo tee /etc/ppp/peers/kai-vpn > /dev/null
           echo 'name $VPN_USERNAME' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'remotename PPTP' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'password $VPN_PASSWORD | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'remotename kai-vpn' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'require-mppe-128' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'refuse-eap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'refuse-pap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'refuse-chap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'refuse-mschap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'persist' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'defaultroute' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'replacedefaultroute' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          echo 'usepeerdns' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'require-mschap-v2' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'noauth' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'debug' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
           echo 'maxfail 15' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
       - name: Connect to VPN
         run: |
-          sudo pppd call kai-vpn
+          sudo pon kai-vpn
           sudo ip route add 10.0.0.59 via $(ip route show default | awk '/via/ {print $3}') dev $(ip route | awk '/^default/ {print $5}')
           ping -w 30 -c 1 10.0.0.59 || true
       - name: Checkout
