@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/AlmazDefourten/goapp/infrastructure/loggerinstance"
+	"github.com/AlmazDefourten/goapp/infrastructure/logger_instance"
 	model "github.com/AlmazDefourten/goapp/models"
 	"github.com/golobby/container/v3"
 	"gorm.io/gorm"
@@ -12,27 +12,27 @@ func RunBaseMigration() {
 	var db gorm.DB
 	err := container.Resolve(&db)
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		panic(err)
 	}
 	err = db.AutoMigrate(&model.User{})
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		panic(err)
 	}
 	err = db.AutoMigrate(&model.Post{})
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		panic(err)
 	}
 	err = db.AutoMigrate(&model.Tag{})
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		panic(err)
 	}
 	err = db.AutoMigrate(&model.PostTags{})
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		panic(err)
 	}
 }

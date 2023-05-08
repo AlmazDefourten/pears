@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/AlmazDefourten/goapp/infrastructure/loggerinstance"
+	"github.com/AlmazDefourten/goapp/infrastructure/logger_instance"
 	"github.com/AlmazDefourten/goapp/infrastructure/migrations"
 	"github.com/AlmazDefourten/goapp/infrastructure/resolver"
 	"github.com/AlmazDefourten/goapp/interface/routing"
@@ -33,7 +33,7 @@ func initializeApp(app *iris.Application) {
 	}
 	err = resolver.RegisterServices()
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		panic(err)
 	}
 	migrations.RunBaseMigration()
@@ -41,12 +41,12 @@ func initializeApp(app *iris.Application) {
 	var c models.Configurator
 	err = container.Resolve(&c)
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		panic(err)
 	}
-	err = app.Listen(":" + c.GetString("host_port"))
+	err = app.Listen(c.GetString("appserver") + ":" + c.GetString("host_port"))
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		panic(err)
 	}
 }

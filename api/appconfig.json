@@ -1,6 +1,7 @@
 {
-    "connection": "host=localhost port=5432 user=admin password=123654 dbname=postgres sslmode=disable",
+    "connection": "host=localhost port=5432 user=postgres password=123654 dbname=postgres sslmode=disable",
     "host_port": "8080",
+    "appserver": "localhost",
     "debug_mode": true,
     "jwt":{
         "signing_key": "iewramdlfasdlfadskfrqwerqwerqewr",

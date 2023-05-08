@@ -3,7 +3,7 @@ package resolver
 import (
 	"github.com/AlmazDefourten/goapp/infrastructure/configurator"
 	"github.com/AlmazDefourten/goapp/infrastructure/data_adapter/connection"
-	"github.com/AlmazDefourten/goapp/infrastructure/loggerinstance"
+	"github.com/AlmazDefourten/goapp/infrastructure/logger_instance"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/AlmazDefourten/goapp/pkg/logging/loggers"
 	"github.com/AlmazDefourten/goapp/pkg/logging/resolvers"
@@ -18,20 +18,20 @@ func InitializeContainer() error {
 	err := container.NamedSingleton("GlobalLogger", func() models.Logger {
 		return loggers.Init(resolvers.GlobalLogger)
 	})
-	err = container.NamedResolve(&loggerinstance.GlobalLogger, "GlobalLogger")
+	err = container.NamedResolve(&logger_instance.GlobalLogger, "GlobalLogger")
 	if err != nil {
 		return err
 	}
 	err = container.NamedSingleton("ServiceLogger", func() models.Logger {
 		return loggers.Init(resolvers.ServiceLogger)
 	})
-	err = container.NamedResolve(&loggerinstance.ServiceLogger, "ServiceLogger")
+	err = container.NamedResolve(&logger_instance.ServiceLogger, "ServiceLogger")
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		return err
 	}
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		return err
 	}
 
@@ -40,13 +40,13 @@ func InitializeContainer() error {
 	})
 
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		return err
 	}
 	var c models.Configurator
 	err = container.Resolve(&c)
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		return err
 	}
 
@@ -54,7 +54,7 @@ func InitializeContainer() error {
 		return *connection.NewGormConnection(c)
 	})
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		return err
 	}
 	return nil
@@ -66,7 +66,7 @@ func RegisterServices() error {
 		return services.NewUserService()
 	})
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		return err
 	}
 
@@ -74,7 +74,7 @@ func RegisterServices() error {
 		return services.NewJWTService()
 	})
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		return err
 	}
 
@@ -82,7 +82,7 @@ func RegisterServices() error {
 		return services.NewAuthService()
 	})
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		return err
 	}
 
@@ -91,7 +91,7 @@ func RegisterServices() error {
 	})
 
 	if err != nil {
-		loggerinstance.GlobalLogger.Error(err)
+		logger_instance.GlobalLogger.Error(err)
 		return err
 	}
 
