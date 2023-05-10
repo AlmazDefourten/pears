@@ -8,36 +8,15 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      VPN_SERVER: ${{ secrets.VPN_SERVER }}
-      VPN_USERNAME: ${{ secrets.VPN_USERNAME }}
-      VPN_PASSWORD: ${{ secrets.VPN_PASSWORD }}
-
     steps:
       - name: Install PPTP client
-        run: sudo apt-get update && sudo apt-get install -y pptp-linux
+        run: sudo add-apt-repository ppa:nm-l2tp/network-manager-l2tp && sudo apt install network-manager-l2tp
       - name: Create VPN config file
         run: |
-          echo 'pty "pptp $VPN_SERVER --nolaunchpppd"' | sudo tee /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'name $VPN_USERNAME' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'password $VPN_PASSWORD' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'remotename kai-vpn' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'require-mppe-128' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'refuse-eap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'refuse-pap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'refuse-chap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'refuse-mschap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'persist' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'nodefaultroute' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'replacedefaultroute' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'usepeerdns' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'require-mschap-v2' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'noauth' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'debug' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'maxfail 0' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
+          sudo nmcli connection add connection.id kai con-name kai type VPN vpn-type l2tp ifname -- connection.autoconnect no ipv4.method auto vpn.data "gateway = vpn1.kai.ru, ipsec-enabled = yes, mru = 1400, mtu = 1400, password flags = 0, refuse-chap = yes, refuse-mschap = yes, refuse-pap = no, require-mppe = yes, user = SakhabievAI" vpn.secrets "password=ivcgid72, ipsec-psk = KAI-ALL-KEY"
       - name: Connect to VPN
         run: |
-          sudo pon kai-vpn
+          nmcli c up kai
           ping -w 30 -c 1 10.0.0.59 || true
       - name: Checkout
         uses: actions/checkout@v3
