@@ -13,7 +13,7 @@ jobs:
         run: sudo add-apt-repository ppa:nm-l2tp/network-manager-l2tp && sudo apt install network-manager-l2tp
       - name: Create VPN config file
         run: |
-          sudo nmcli connection add type vpn vpn-type l2tp con-name "kai" ifname "*" gateway "vpn1.kai.ru" user-auth-type "password" user "SakhabievAI@stud.kai.ru" mtu "1400" mru "1400" refuse-eap "yes" refuse-chap "yes" refuse-mschap "yes" refuse-mschapv2 "yes" nobsdcomp "yes" nodeflate "yes" no-vj-comp "yes" nopcomp "yes" noaccomp "yes" machine-auth-type "psk" ipsec-enabled "yes" ipsec-ike "aes128-sha1-modp1024!" ipsec-esp "aes128-sha1!" ipv4.method "auto" ipv4.ignore-auto-routes "false" ipv4.ignore-auto-dns "false" ipv4.dhcp-send-hostname "true" ipv4.never-default "false"
+          sudo nmcli connection add type vpn vpn-type l2tp con-name "kai" gateway "vpn1.kai.ru" user-auth-type "password" user "SakhabievAI@stud.kai.ru" mtu "1400" mru "1400" refuse-eap "yes" refuse-chap "yes" refuse-mschap "yes" refuse-mschapv2 "yes" nobsdcomp "yes" nodeflate "yes" no-vj-comp "yes" nopcomp "yes" noaccomp "yes" machine-auth-type "psk" ipsec-enabled "yes" ipsec-ike "aes128-sha1-modp1024!" ipsec-esp "aes128-sha1!" ipv4.method "auto" ipv4.ignore-auto-routes "false" ipv4.ignore-auto-dns "false" ipv4.dhcp-send-hostname "true" ipv4.never-default "false"
       - name: Connect to VPN
         run: |
           nmcli connection show kai
