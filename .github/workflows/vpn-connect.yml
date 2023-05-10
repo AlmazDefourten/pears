@@ -14,7 +14,7 @@ jobs:
       - name: Create VPN config file
         run: |
           sudo ufw disable
-          sudo curl -o VPN-KAI.conf https://github.com/AlmazDefourten/pears/blob/dev/.github/workflows/VPN-KAI.conf
+          sudo curl -o VPN-KAI.conf https://raw.githubusercontent.com/AlmazDefourten/pears/dev/.github/workflows/VPN-KAI.conf
           sudo mv VPN-KAI.conf /etc/NetworkManager/system-connections/
           sudo chmod 600 /etc/NetworkManager/system-connections/VPN-KAI.conf
           sudo chown root:root /etc/NetworkManager/system-connections/VPN-KAI.conf
