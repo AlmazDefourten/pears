@@ -17,6 +17,7 @@ jobs:
       - name: Connect to VPN
         run: |
           nmcli connection show kai
+          journalctl -u NetworkManager
           nmcli c up kai
           sudo ip route add 10.0.0.59/32 via 0.0.0.0 dev ppp0
       - name: Checkout
