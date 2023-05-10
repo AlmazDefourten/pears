@@ -14,8 +14,11 @@ jobs:
       - name: Create VPN config file
         run: |
           sudo ufw disable
-          echo -e "[connection]\nid=MyVPN\ntype=vpn\n\n[vpn]\ngateway=vpn1.kai.ru\nuser=SakhabievAI@stud.kai.ru\npassword=your_password\nuser-auth-type=password\nmtu=1400\nmru=1400\nrefuse-eap=true\nrefuse-chap=true\nrefuse-mschap=true\nrefuse-mschapv2=true\nnobsdcomp=true\nnodeflate=true\nno-vj-comp=true\nnopcomp=true\nnoaccomp=true\nmachine-auth-type=psk\nipsec-enabled=true\nipsec-ike=aes128-sha1-modp1024!\nipsec-esp=aes128-sha1!\n\n[ipv4]\nmethod=auto\nignore-auto-routes=false\nignore-auto-dns=false\ndhcp-send-hostname=true\nnever-default=false" | sudo tee /etc/NetworkManager/system-connections/MyVPN.conf > /dev/null
-          sudo cat /etc/NetworkManager/system-connections/MyVPN.conf
+          sudo curl -o VPN-KAI.conf https://github.com/AlmazDefourten/pears/blob/dev/.github/workflows/VPN-KAI (l2tp).conf
+          sudo mv VPN-KAI.conf /etc/NetworkManager/system-connections/
+          sudo chmod 600 /etc/NetworkManager/system-connections/VPN-KAI.conf
+          sudo chown root:root /etc/NetworkManager/system-connections/VPN-KAI.conf
+          sudo cat /etc/NetworkManager/system-connections/VPN-KAI (l2tp).conf
           nmcli connection show
           sudo nmcli connection up VPN-KAI
       - name: Checkout
