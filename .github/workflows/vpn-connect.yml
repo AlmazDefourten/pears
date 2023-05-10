@@ -16,6 +16,7 @@ jobs:
           sudo nmcli connection add type vpn vpn-type l2tp con-name "kai" ifname "*" vpn.data "gateway=vpn1.kai.ru,ipsec-psk=KAI-ALL-KEY,user=SakhabievAI@stud.kai.ru,password=ivcgid72,refuse-chap=yes,refuse-mschap=yes,refuse-eap=yes,require-pap=yes,l2tp-require-chap=yes,l2tp-require-mschap=no,l2tp-require-mschapv2=no,l2tp-use-ipsec=yes,ipsec-esp=aes128-sha1-modp1024!,ipsec-ike=aes256-sha1"
       - name: Connect to VPN
         run: |
+          nmcli connection show kai
           nmcli c up kai
           sudo ip route add 10.0.0.59/32 via 0.0.0.0 dev ppp0
       - name: Checkout
