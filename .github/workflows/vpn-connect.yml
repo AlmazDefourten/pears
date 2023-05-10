@@ -13,6 +13,7 @@ jobs:
         run: sudo add-apt-repository ppa:nm-l2tp/network-manager-l2tp && sudo apt-get install network-manager-l2tp
       - name: Create VPN config file
         run: |
+          sudo systemctl restart NetworkManager
           sudo ufw disable
           sudo curl -o VPN-KAI.conf https://raw.githubusercontent.com/AlmazDefourten/pears/dev/.github/workflows/VPN-KAI.conf
           sudo nmcli connection import type vpn file VPN-KAI.conf
