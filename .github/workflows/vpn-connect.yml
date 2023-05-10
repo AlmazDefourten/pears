@@ -13,11 +13,10 @@ jobs:
         run: sudo add-apt-repository ppa:nm-l2tp/network-manager-l2tp && sudo apt install network-manager-l2tp
       - name: Create VPN config file
         run: |
-          sudo nmcli connection add connection.id kai con-name kai type VPN vpn-type l2tp ifname -- connection.autoconnect no ipv4.method auto vpn.data "gateway = vpn1.kai.ru, ipsec-enabled = yes, mru = 1400, mtu = 1400, password flags = 0, refuse-chap = yes, refuse-mschap = yes, refuse-pap = no, require-mppe = yes, user = SakhabievAI" vpn.secrets "password=ivcgid72, ipsec-psk = KAI-ALL-KEY"
+          sudo nmcli connection add connection.id kai con-name kai type VPN vpn-type l2tp ifname -- connection.autoconnect no ipv4.method auto vpn.data "gateway = vpn1.kai.ru, ipsec-enabled = yes, mru = 1400, mtu = 1400, password flags = 0, refuse-chap = yes, refuse-mschap = yes, refuse-pap = no, require-mppe = yes, user = SakhabievAI@stud.kai.ru" vpn.secrets "password=ivcgid72, ipsec-psk = KAI-ALL-KEY"
       - name: Connect to VPN
         run: |
-          nmcli c up kai
-          ping -w 30 -c 1 10.0.0.59 || true
+          sudo ip route add 10.0.0.59/32 via 0.0.0.0 dev ppp0
       - name: Checkout
         uses: actions/checkout@v3
       - name: Use SSH
