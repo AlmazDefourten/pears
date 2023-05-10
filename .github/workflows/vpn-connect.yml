@@ -14,7 +14,7 @@ jobs:
       - name: Create VPN config file
         run: |
           sudo ufw disable
-          echo -e "[connection]\nid=VPN-KAI\ntype=vpn\n\n[vpn]\ngateway=vpn1.kai.ru\nuser=SakhabievAI@stud.kai.ru\npassword=ivcgid72\nuser-auth-type=password\nmtu=1400\nmru=1400\nrefuse-eap=true\nrefuse-chap=true\nrefuse-mschap=true\nrefuse-mschapv2=true\nnobsdcomp=true\nnodeflate=true\nno-vj-comp=true\nnopcomp=true\nnoaccomp=true\nmachine-auth-type=psk\nipsec-enabled=true\nipsec-ike=aes128-sha1-modp1024!\nipsec-esp=aes128-sha1!\n\n[ipv4]\nmethod=auto\nignore-auto-routes=false\nignore-auto-dns=false\ndhcp-send-hostname=true\nnever-default=false" | sudo tee /etc/NetworkManager/system-connections/VPN-KAI > /dev/null
+          echo -e "[connection]\nid=VPN-KAI\ntype=vpn\n\n[vpn]\ngateway=vpn1.kai.ru\nuser=SakhabievAI@stud.kai.ru\npassword=your_password\nuser-auth-type=password\nmtu=1400\nmru=1400\nrefuse-eap=true\nrefuse-chap=true\nrefuse-mschap=true\nrefuse-mschapv2=true\nnobsdcomp=true\nnodeflate=true\nno-vj-comp=true\nnopcomp=true\nnoaccomp=true\nmachine-auth-type=psk\nipsec-enabled=true\nipsec-ike=aes128-sha1-modp1024!\nipsec-esp=aes128-sha1!\n\n[ipv4]\nmethod=auto\nignore-auto-routes=false\nignore-auto-dns=false\ndhcp-send-hostname=true\nnever-default=false" | sudo tee /etc/NetworkManager/system-connections/VPN-KAI.conf > /dev/null && sudo nmcli connection up VPN-KAI
           nmcli connection show
           sudo nmcli connection up VPN-KAI
       - name: Checkout
