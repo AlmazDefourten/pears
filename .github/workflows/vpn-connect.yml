@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install PPTP client
-        run: sudo apt install network-manager-l2tp
+        run: sudo apt-get install network-manager-l2tp
       - name: Create VPN config file
         run: |
           sudo ufw disable
