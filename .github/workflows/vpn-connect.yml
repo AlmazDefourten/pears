@@ -13,7 +13,7 @@ jobs:
         run: sudo add-apt-repository ppa:nm-l2tp/network-manager-l2tp && sudo apt install network-manager-l2tp
       - name: Create VPN config file
         run: |
-          sudo nmcli connection add type vpn vpn-type l2tp con-name "kai" ifname "*" vpn.data "gateway=vpn1.kai.ru,ipsec-psk=KAI-ALL-KEY,user=SakhabievAI@stud.kai.ru,password=ivcgid72,refuse-chap=yes,refuse-mschap=yes,refuse-eap=yes,require-pap=yes,l2tp-require-chap=no,l2tp-require-mschap=no,l2tp-require-mschapv2=no,l2tp-use-ipsec=yes,ipsec-esp=aes128-sha1-modp1024!,ipsec-ike=aes128-sha1!,no-compression=yes"
+          sudo nmcli connection add type vpn vpn-type l2tp con-name "kai" ifname "*" vpn.data "gateway=vpn1.kai.ru,ipsec-psk=KAI-ALL-KEY,user=SakhabievAI@stud.kai.ru,password=ivcgid72,refuse-chap=yes,refuse-mschap=yes,refuse-eap=yes,require-pap=yes,l2tp-require-chap=no,l2tp-require-mschap=no,l2tp-require-mschapv2=no,l2tp-use-ipsec=yes,ipsec-esp=aes128-sha1-modp1024!,ipsec-ike=aes128-sha1!,no-compression=yes
       - name: Connect to VPN
         run: |
           nmcli connection show kai
