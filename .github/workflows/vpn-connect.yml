@@ -16,10 +16,12 @@ jobs:
           sudo curl -o VPN-KAI.conf https://raw.githubusercontent.com/AlmazDefourten/pears/dev/.github/workflows/VPN-KAI.conf
           sudo nmcli connection import type vpn file VPN-KAI.conf
           nmcli connection show
-          sudo nmcli connection up VPN-KAI || true
-          sudo journalctl -u NetworkManager --since "5 minutes ago"
+          sudo nmcli connection up VPN-KAI
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Check for VPN plugin errors
+        always:
+          run: sudo journalctl -u NetworkManager --since "5 minutes ago"
       - name: Use SSH
         uses: appleboy/ssh-action@master
         with: 
