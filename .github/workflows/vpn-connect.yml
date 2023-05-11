@@ -20,8 +20,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Check for VPN plugin errors
-        always:
-          run: sudo journalctl -u NetworkManager --since "5 minutes ago"
+        if: ${{ failure() }}
+        run: sudo journalctl -u NetworkManager --since "5 minutes ago"
       - name: Use SSH
         uses: appleboy/ssh-action@master
         with: 
