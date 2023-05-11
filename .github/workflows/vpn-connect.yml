@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install PPTP client
-        run: sudo add-apt-repository ppa:nm-l2tp/network-manager-l2tp && sudo apt-get install network-manager-l2tp && sudo apt-get install network-manager-l2tp-gnome && sudo apt-get install libstrongswan-standard-plugins && sudo apt-get install libstrongswan-extra-plugins
+        run: sudo add-apt-repository ppa:nm-l2tp/network-manager-l2tp && sudo apt-get install network-manager-l2tp && sudo apt-get install network-manager-l2tp-gnome && sudo apt-get install strongswan
 
       - name: Create VPN config file
         run: |
