@@ -8,39 +8,24 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      VPN_SERVER: ${{ secrets.VPN_SERVER }}
-      VPN_USERNAME: ${{ secrets.VPN_USERNAME }}
-      VPN_PASSWORD: ${{ secrets.VPN_PASSWORD }}
-
     steps:
       - name: Install PPTP client
-        run: sudo apt-get update && sudo apt-get install -y pptp-linux
+        run: sudo add-apt-repository ppa:nm-l2tp/network-manager-l2tp && sudo apt-get install -y network-manager-l2tp && sudo apt-get install -y network-manager-l2tp-gnome && sudo apt-get install -y strongswan && sudo apt-get install -y xl2tpd
       - name: Create VPN config file
         run: |
-          echo 'pty "pptp $VPN_SERVER --nolaunchpppd"' | sudo tee /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'name $VPN_USERNAME' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'password $VPN_PASSWORD' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'remotename kai-vpn' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'require-mppe-128' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'refuse-eap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'refuse-pap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'refuse-chap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'refuse-mschap' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'persist' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'nodefaultroute' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'replacedefaultroute' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'usepeerdns' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'require-mschap-v2' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'noauth' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'debug' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-          echo 'maxfail 0' | sudo tee -a /etc/ppp/peers/kai-vpn > /dev/null
-      - name: Connect to VPN
-        run: |
-          sudo pon kai-vpn
-          ping -w 30 -c 1 10.0.0.59 || true
+          sudo curl -o VPN-KAI.conf https://raw.githubusercontent.com/AlmazDefourten/pears/dev/.github/workflows/VPN-KAI.conf
+          sudo mv VPN-KAI.conf /etc/NetworkManager/system-connections/
+          sudo chmod 600 /etc/NetworkManager/system-connections/VPN-KAI.conf
+          sudo nmcli connection import type vpn file /etc/NetworkManager/system-connections/VPN-KAI.conf
+          nmcli connection show
+          sudo nmcli connection up VPN-KAI
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Check for VPN plugin errors
+        if: ${{ failure() }}
+        run: 
+          nmcli -v
+          sudo journalctl -u NetworkManager --since "5 minutes ago" -e 'failed to find VPN plugin'
       - name: Use SSH
         uses: appleboy/ssh-action@master
         with: 
