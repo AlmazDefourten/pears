@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import { useForm, Controller, SubmitHandler, useFormState } from 'react-hook-form';
 import '../auth-page.css';
 import { loginValidation, passwordValidation } from '../validation';
-import $api from '../../http';
+import $api from '../../../http';
 import { change_auth } from '../../../redux/features/userSlice';
 import { useDispatch } from 'react-redux';
 
@@ -19,8 +19,14 @@ interface IComp{
 }
 
 export const AuthForm = ({setRender}:  IComp) => {
+
     const dispatch = useDispatch();
-    const { handleSubmit, control} = useForm<ISignInForm>(); // useForm is a custom hook for managing forms with ease. It takes one object as optional argument
+    const { handleSubmit, control} = useForm<ISignInForm>({
+    defaultValues: { //without this inputs will be uncontrolled
+        login: "",
+        password: ""
+    },
+    mode: 'onChange'}); // useForm is a custom hook for managing forms with ease. It takes one object as optional argument
     const onSubmit: SubmitHandler<ISignInForm> = data => $api.post("user/authorization/", {
         headers: {
             'Content-Type': 'application/json'
@@ -33,33 +39,12 @@ export const AuthForm = ({setRender}:  IComp) => {
     })
     .then(
         (result) => {
-            // console.log(result);
             const {data} = result;
             console.log(data)
             localStorage.setItem('token', data.access_token)
             dispatch(change_auth(true))
             console.log(localStorage.getItem('token'))
-        });
-    // const onSubmit: SubmitHandler<ISignInForm> = data => fetch("http://localhost:8080/api/v1/user/authorization",
-    //     {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify({
-    //                 login: data.login,
-    //                 password: data.password,
-    //             }
-    //         )
-    //     })
-    //     // .then(res => res.json())
-    //     .then(
-    //         (result) => {
-    //             console.log(result);
-    //         },
-    //         (error) => {
-    //             console.log(error);
-    //         }); // Validation will trigger on the submit event and inputs will attach onChange event listeners to re-validate them.
+        }); // Validation will trigger on the submit event and inputs will attach onChange event listeners to re-validate them.
     const { errors } = useFormState({ // This custom hook allows you to subscribe to each form state, and isolate the re-render at the custom hook level
         control
     })
@@ -86,10 +71,13 @@ export const AuthForm = ({setRender}:  IComp) => {
                         <TextField
                             label="Логин"
                             size="small"
+                            name='login'
                             className="auth-form__input"
                             fullWidth={ true }
                             onChange={(e) => field.onChange(e)}
                             value={ field.value }
+                            // onChange={(e) => setLogin(e.target.value)}
+                            // value={ login }
                             error={ !!errors.login?.message }
                             helperText={ errors?.login?.message }
                         />

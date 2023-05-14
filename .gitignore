@@ -4,3 +4,7 @@ appconfig.js
 /.idea/
 /frontend/node_modules/
 /api/.idea/
+/frontend/node_modules/.cache
+/node_modules/.cache
+/node_modules/
+node_modules/
