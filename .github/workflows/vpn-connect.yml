@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install PPTP client
-        run: sudo add-apt-repository ppa:nm-l2tp/network-manager-l2tp && sudo apt-get install -y network-manager-l2tp && sudo apt-get install -y network-manager-l2tp-gnome && sudo apt-get install -y strongswan && sudo apt-get install -y xl2tpd
+        run: sudo add-apt-repository ppa:nm-l2tp/network-manager-l2tp && sudo apt-get install -y network-manager-l2tp && sudo apt-get install -y network-manager-l2tp-gnome && sudo apt-get install -y strongswan && sudo apt-get install -y xl2tpd 
       - name: Create VPN config file
         run: |
           sudo curl -o VPN-KAI.conf https://raw.githubusercontent.com/AlmazDefourten/pears/dev/.github/workflows/VPN-KAI.conf
@@ -25,7 +25,7 @@ jobs:
         if: ${{ failure() }}
         run: 
           nmcli -v
-          sudo journalctl -u NetworkManager --since "5 minutes ago" -e 'failed to find VPN plugin'
+          sudo journalctl -u NetworkManager --since "5 minutes ago"
       - name: Use SSH
         uses: appleboy/ssh-action@master
         with: 
