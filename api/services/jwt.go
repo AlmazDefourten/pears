@@ -92,6 +92,10 @@ func (jwtService *JWTService) ValidateAndRefreshTokens(refresh_token string) (*m
 
 	SigningKey := c.GetString("jwt.signing_key")
 
+	if refresh_token == "" {
+		return nil, fmt.Errorf("empty token")
+	}
+
 	// Parse takes the token string and a function for looking up the key
 	token, err := jwt.Parse(refresh_token, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -105,13 +109,13 @@ func (jwtService *JWTService) ValidateAndRefreshTokens(refresh_token string) (*m
 		username := claims.Username
 		newTokenPair, err := jwtService.SignIn(username)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("token refresh error: %v", err)
 		}
 
 		return newTokenPair, err
 	}
 
-	return nil, err
+	return nil, fmt.Errorf("invalid token")
 }
 
 // ParseToken - parse token method
