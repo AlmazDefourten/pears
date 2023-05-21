@@ -20,6 +20,7 @@ jobs:
           ip route show | grep default | awk '{print $3}'
           sudo sed -i 's/managed=false/managed=true/g' /etc/NetworkManager/NetworkManager.conf
           sudo cat /etc/NetworkManager/NetworkManager.conf
+          sudo systemctl restart NetworkManager.service
           sudo nmcli connection up VPN-KAI
       - name: Checkout
         uses: actions/checkout@v3
