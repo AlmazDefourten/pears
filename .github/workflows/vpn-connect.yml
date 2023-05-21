@@ -19,6 +19,7 @@ jobs:
           sudo nmcli connection import type l2tp file /etc/NetworkManager/system-connections/VPN-KAI.conf
           cd /etc/netplan
           ls
+          sudo cat 50-cloud-init.yaml
           sudo nmcli connection up VPN-KAI
       - name: Checkout
         uses: actions/checkout@v3
