@@ -25,8 +25,8 @@ jobs:
           sudo nmcli connection import type l2tp file /etc/NetworkManager/system-connections/VPN-KAI.conf
           ip route show | grep default | awk '{print $3}'
           sudo nmcli connection up VPN-KAI --ask
-          expect "Password (vpn.secrets.password):" { send "ivcgid72\r" }
-          expect "IPsec secret:" { send "KAI-ALL-KEY\r" }
+          echo "ivcgid72
+          echo "KAI-ALL-KEY
       - name: Checkout
         uses: actions/checkout@v3
       - name: Check for VPN plugin errors
