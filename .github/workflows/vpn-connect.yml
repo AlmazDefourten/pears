@@ -33,8 +33,7 @@ jobs:
       - name: Check for VPN plugin errors
         if: ${{ failure() }}
         run: 
-          nmcli -v
-          sudo journalctl --since "5 minutes ago"
+          journalctl -xe NM_CONNECTION=9fc45fca-88de-4120-abf9-244285077727 + NM_DEVICE=eth0
       - name: Use SSH
         uses: appleboy/ssh-action@master
         with: 
