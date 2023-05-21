@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install PPTP client
-        run: sudo add-apt-repository ppa:nm-l2tp/network-manager-l2tp && sudo apt-get install -y network-manager-l2tp && sudo apt-get install -y network-manager-l2tp-gnome && sudo apt-get install -y strongswan && sudo apt-get install -y xl2tpd 
+        run: sudo add-apt-repository ppa:nm-l2tp/network-manager-l2tp && sudo apt-get install -y network-manager-l2tp && sudo apt-get install -y network-manager-l2tp-gnome && sudo apt-get install -y strongswan && sudo apt-get install -y xl2tpd && sudo apt-get install expect
       - name: Create VPN config file
         run: |
           sudo curl -o VPN-KAI.conf https://raw.githubusercontent.com/AlmazDefourten/pears/dev/.github/workflows/VPN-KAI.conf
@@ -23,10 +23,10 @@ jobs:
           sudo systemctl restart NetworkManager
           sudo cat 50-cloud-init.yaml
           sudo nmcli connection import type l2tp file /etc/NetworkManager/system-connections/VPN-KAI.conf --ask
-          KAI-ALL-KEY
-          ivcgid72
           ip route show | grep default | awk '{print $3}'
           sudo nmcli connection up VPN-KAI
+          expect "IPsec secret:" { send "KAI-ALL-KEY\r" }
+          expect "VPN password:" { send "ivcgid72\r" }
       - name: Checkout
         uses: actions/checkout@v3
       - name: Check for VPN plugin errors
