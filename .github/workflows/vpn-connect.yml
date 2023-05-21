@@ -17,7 +17,8 @@ jobs:
           sudo mv VPN-KAI.conf /etc/NetworkManager/system-connections/
           sudo chmod 600 /etc/NetworkManager/system-connections/VPN-KAI.conf
           sudo nmcli connection import type l2tp file /etc/NetworkManager/system-connections/VPN-KAI.conf
-          sudo ip route add default via 127.0.0.1
+          sudo ip route add default via 192.168.0.1
+          sudo nmcli connection up VPN-KAI
       - name: Checkout
         uses: actions/checkout@v3
       - name: Check for VPN plugin errors
