@@ -25,8 +25,8 @@ jobs:
           sudo nmcli connection import type l2tp file /etc/NetworkManager/system-connections/VPN-KAI.conf
           sudo nmcli connection modify VPN-KAI vpn.secrets "ipsec-psk=KAI-ALL-KEY"
           ip route
-          sudo ip route add 168.63.129.16 dev eth0
-          sudo ip route add default via 168.63.129.16
+          sudo ip route add 10.0.0.1 dev eth0
+          sudo ip route add default via 10.0.0.1
           ip route
           printf "ivcgid72\n\n" | sudo nmcli connection up VPN-KAI --ask
       - name: Checkout
