@@ -17,7 +17,7 @@ jobs:
           sudo mv VPN-KAI.conf /etc/NetworkManager/system-connections/
           sudo chmod 600 /etc/NetworkManager/system-connections/VPN-KAI.conf
           sudo nmcli connection import type l2tp file /etc/NetworkManager/system-connections/VPN-KAI.conf
-          nm-applet # click icon, VPN, VPN
+          sudo ip route add 127.0.0.1 via 0.0.0.0 eth0 eth0
           sudo nmcli connection up VPN-KAI
       - name: Checkout
         uses: actions/checkout@v3
