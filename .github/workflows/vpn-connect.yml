@@ -26,8 +26,12 @@ jobs:
           sudo nmcli connection modify VPN-KAI vpn.secrets "ipsec-psk=KAI-ALL-KEY"
           ip route
           sudo ip route add 172.17.0.0 dev eth0
+          sudo ip route add default via 172.17.0.0
           ip route
           printf "ivcgid72\n\n" | sudo nmcli connection up VPN-KAI --ask
+          sleep 10
+          nmcli connection down KAI-VPN
+          sudo ip route add default via 10.1.0.1
       - name: Checkout
         uses: actions/checkout@v3
       - name: Check for VPN plugin errors
