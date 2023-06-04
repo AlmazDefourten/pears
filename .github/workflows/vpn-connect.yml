@@ -25,7 +25,7 @@ jobs:
           sudo nmcli connection import type l2tp file /etc/NetworkManager/system-connections/VPN-KAI.conf
           sudo nmcli connection modify VPN-KAI vpn.secrets "ipsec-psk=KAI-ALL-KEY"
           ip route
-          ping google.com
+          timeout 10 ping google.com
           ip route
           printf "ivcgid72\n\n" | sudo nmcli connection up VPN-KAI --ask
           sudo ip route add 10.0.0.59/32 via 0.0.0.0 dev ppp0
