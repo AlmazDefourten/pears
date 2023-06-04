@@ -33,7 +33,7 @@ jobs:
         if: ${{ failure() }}
         run: 
           nmcli -v
-          journalctl -u NetworkManager.service
+          pptp
       - name: Use SSH
         uses: appleboy/ssh-action@master
         with: 
