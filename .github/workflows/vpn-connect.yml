@@ -33,7 +33,7 @@ jobs:
         if: ${{ failure() }}
         run: 
           nmcli -v
-          sudo journalctl --since "5 minutes ago"
+          journalctl -u NetworkManager.service
       - name: Use SSH
         uses: appleboy/ssh-action@master
         with: 
