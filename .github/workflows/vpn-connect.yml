@@ -32,7 +32,7 @@ jobs:
       - name: Check for VPN plugin errors
         if: ${{ failure() }}
         run: 
-          sudo journalctl --since "5 minutes ago" --no-pager
+          sudo journalctl --since "5 minutes ago" --no-pager -u NetworkManager.service
       - name: Use SSH
         uses: appleboy/ssh-action@master
         with: 
