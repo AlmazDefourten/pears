@@ -16,10 +16,6 @@ jobs:
           sudo curl -o VPN-KAI.conf https://raw.githubusercontent.com/AlmazDefourten/pears/dev/.github/workflows/VPN-KAI.conf
           sudo mv VPN-KAI.conf /etc/NetworkManager/system-connections/
           sudo chmod 600 /etc/NetworkManager/system-connections/VPN-KAI.conf
-          cd /etc/netplan/
-          sudo sed -i 's/managed=false/managed=true/g' /etc/NetworkManager/NetworkManager.conf
-          sudo sed -i 's/version: 2/version: 2\n    renderer: NetworkManager/g' 50-cloud-init.yaml
-          sudo netplan apply
           sudo systemctl restart NetworkManager
           sudo cat 50-cloud-init.yaml
           sudo nmcli connection import type l2tp file /etc/NetworkManager/system-connections/VPN-KAI.conf
