@@ -25,7 +25,6 @@ jobs:
           sudo nmcli connection import type l2tp file /etc/NetworkManager/system-connections/VPN-KAI.conf
           sudo nmcli connection modify VPN-KAI vpn.secrets "ipsec-psk=KAI-ALL-KEY"
           ip route
-          sudo ufw disable
           printf "ivcgid72\n\n" | sudo nmcli connection up VPN-KAI --ask
           sudo ip route add 10.0.0.59/32 via 0.0.0.0 dev ppp0
       - name: Checkout
@@ -33,9 +32,7 @@ jobs:
       - name: Check for VPN plugin errors
         if: ${{ failure() }}
         run: 
-          nmcli -v
           sudo journalctl --since "5 minutes ago" --no-pager
-          pptp
       - name: Use SSH
         uses: appleboy/ssh-action@master
         with: 
