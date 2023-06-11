@@ -24,11 +24,12 @@ jobs:
           sudo cat 50-cloud-init.yaml
           sudo nmcli connection import type l2tp file /etc/NetworkManager/system-connections/VPN-KAI.conf
           ip route
+          set timeout -1
+          spawn sudo nmcli connection up VPN-KAI --ask
           expect "Password (vpn.secrets.password):"
           send "ivcgid72\r"
           expect "Pre-shared key (PSK) (vpn.secrets.ipsec-psk):"
           send "KAI-ALL-KEY\r"
-          sudo nmcli connection up VPN-KAI --ask
           sudo ip route add 10.0.0.59/32 via 0.0.0.0 dev ppp0
       - name: Checkout
         uses: actions/checkout@v3
