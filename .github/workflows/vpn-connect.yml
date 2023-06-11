@@ -23,9 +23,12 @@ jobs:
           sudo systemctl restart NetworkManager
           sudo cat 50-cloud-init.yaml
           sudo nmcli connection import type l2tp file /etc/NetworkManager/system-connections/VPN-KAI.conf
-          sudo nmcli connection modify VPN-KAI vpn.secrets "ipsec-psk=KAI-ALL-KEY"
           ip route
-          sudo nmcli connection up VPN-KAI
+          except "Password (vpn.secrets.password):"
+          send "ivcgid72\r"
+          except "Pre-shared key (PSK) (vpn.secrets.ipsec-psk):"
+          send "KAI-ALL-KEY\r"
+          sudo nmcli connection up VPN-KAI --ask
           sudo ip route add 10.0.0.59/32 via 0.0.0.0 dev ppp0
       - name: Checkout
         uses: actions/checkout@v3
