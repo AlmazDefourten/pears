@@ -19,6 +19,10 @@ func NewAuthService() *AuthService {
 
 const (
 	defaultUserExistFlagValue = false
+	regAnswerIfUserExist      = "Пользователь с таким именем уже существует"
+	regAnswerSuccessful       = "Регистрация прошла успешно"
+	authAnswerSuccessful      = "Авторизация прошла успешно"
+	authAnswerFailed          = "Неправильный логин или пароль"
 )
 
 func (authService *AuthService) CheckIfUserExist(login string) (bool, error) {
@@ -42,60 +46,59 @@ func (authService *AuthService) CheckIfUserExist(login string) (bool, error) {
 	return false, nil
 }
 
-func (authService *AuthService) Registration(user *models.User) (bool, error) {
+func (authService *AuthService) Registration(user *models.User) (bool, string) {
 	var c models.Configurator
 	err := container.Resolve(&c)
 	if err != nil {
 		logger_instance.ServiceLogger.Error(err)
-		return false, err
+		return false, models.StandardAnswerOnError
 	}
 	var db gorm.DB
 	err = container.Resolve(&db)
 	if err != nil {
 		logger_instance.ServiceLogger.Error(err)
-		return false, err
+		return false, models.StandardAnswerOnError
 	}
 	isUserExists, err := authService.CheckIfUserExist(user.Login)
 	if err != nil {
 		logger_instance.ServiceLogger.Error(err)
-		return false, err
+		return false, models.StandardAnswerOnError
 	}
 	if isUserExists {
-		logger_instance.ServiceLogger.Error(err)
-		return false, nil
+		return false, regAnswerIfUserExist
 	} else {
 		user.Password = hashPassword(user.Password,
 			c.GetString("passwordSalt"),
 			c.GetInt("hashingCost"))
 		request := db.Create(&user)
 		if request.Error != nil {
-			// log error lol
-			return false, err
+			logger_instance.ServiceLogger.Error(err)
+			return false, models.StandardAnswerOnError
 		}
 	}
-	return true, nil
+	return true, regAnswerSuccessful
 }
 
-func (authService *AuthService) Authorization(login string, password string) (bool, *models.Tokens) {
+func (authService *AuthService) Authorization(login string, password string) (bool, *models.Tokens, string) {
 	var db gorm.DB
 	err := container.Resolve(&db)
 	if err != nil {
 		logger_instance.ServiceLogger.Error(err)
-		panic(err)
+		return false, nil, models.StandardAnswerOnError
 	}
 
 	var c models.Configurator
 	err = container.Resolve(&c)
 	if err != nil {
 		logger_instance.ServiceLogger.Error(err)
-		panic(err)
+		return false, nil, models.StandardAnswerOnError
 	}
 
 	var jwtService models.IJWTService
 	err = container.Resolve(&jwtService)
 	if err != nil {
 		logger_instance.ServiceLogger.Error(err)
-		panic(err)
+		return false, nil, models.StandardAnswerOnError
 	}
 
 	var user models.User
@@ -103,7 +106,7 @@ func (authService *AuthService) Authorization(login string, password string) (bo
 	//err = db.First(&user, "login = ?", login).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return false, nil
+			return false, nil, models.StandardAnswerOnError
 		}
 	}
 
@@ -111,10 +114,11 @@ func (authService *AuthService) Authorization(login string, password string) (bo
 		jwtToken, err := jwtService.SignIn(login)
 		if err != nil {
 			logger_instance.ServiceLogger.Error(err)
+			return false, nil, authAnswerFailed
 		}
-		return true, jwtToken
+		return true, jwtToken, authAnswerSuccessful
 	} else {
-		return false, nil
+		return false, nil, authAnswerFailed
 	}
 }
 

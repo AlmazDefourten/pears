@@ -1,9 +1,9 @@
 package models
 
 type IAuthService interface {
-	Registration(user *User) (bool, error)
+	Registration(user *User) (bool, string)
 	CheckIfUserExist(login string) (bool, error)
-	Authorization(login string, password string) (bool, *Tokens)
+	Authorization(login string, password string) (bool, *Tokens, string)
 	AuthCheck(token string) (bool, string)
 	RefreshCheck(token string) (bool, *Tokens)
 }
@@ -13,5 +13,4 @@ type AuthResponse struct {
 	Ok      bool   `json:"ok"`
 	Message string `json:"message"`
 	Access  string `json:"access_token"`
-	Refresh string `json:"refresh_token"`
 }

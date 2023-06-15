@@ -5,3 +5,7 @@ type Response struct {
 	Ok      bool   `json:"ok"`
 	Message string `json:"message"`
 }
+
+const (
+	StandardAnswerOnError = "Произошла ошибка при выполнении операции, попробуйте позже"
+)

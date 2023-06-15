@@ -40,11 +40,9 @@ func (authHandler *AuthHandler) Registration(ctx iris.Context) {
 		panic(err)
 	}
 
-	ok, err := authService.Registration(&user)
-	if err != nil {
-		//loggine here
-	}
-	response := models.Response{Ok: ok, Message: ""}
+	ok, msg := authService.Registration(&user)
+
+	response := models.Response{Ok: ok, Message: msg}
 	err = ctx.JSON(response)
 	if err != nil {
 		println(err)
@@ -77,14 +75,14 @@ func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 		panic(err)
 	}
 
-	ok, token := authService.Authorization(user.Login, user.Password)
+	ok, token, msg := authService.Authorization(user.Login, user.Password)
 	if !ok {
 		ctx.StatusCode(http.StatusUnauthorized)
 	}
 	response := &models.AuthResponse{}
 	if ok {
 		response.Ok = ok
-		response.Message = "Вы успешно авторизовались"
+		response.Message = msg
 		response.Access = token.AccessToken
 		ctx.SetCookie(&iris.Cookie{
 			Name:     "refreshtoken",
