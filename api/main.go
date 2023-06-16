@@ -36,6 +36,11 @@ func initializeApp(app *iris.Application) {
 		logger_instance.GlobalLogger.Error(err)
 		panic(err)
 	}
+	err = dependencies_registration.InitializeRepositories()
+	if err != nil {
+		logger_instance.GlobalLogger.Error(err)
+		panic(err)
+	}
 	migrations.RunBaseMigration()
 	routing.InitializeRoutes(app)
 	var c util_adapters.Configurator
