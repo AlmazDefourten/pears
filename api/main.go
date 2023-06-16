@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/AlmazDefourten/goapp/infrastructure/logger_instance"
-	"github.com/AlmazDefourten/goapp/infrastructure/migrations"
-	"github.com/AlmazDefourten/goapp/infrastructure/resolver"
+	"github.com/AlmazDefourten/goapp/infra/dependencies_registration"
+	"github.com/AlmazDefourten/goapp/infra/logger_instance"
+	"github.com/AlmazDefourten/goapp/infra/migrations"
 	"github.com/AlmazDefourten/goapp/interface/routing"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/golobby/container/v3"
@@ -27,11 +27,11 @@ func main() {
 }
 
 func initializeApp(app *iris.Application) {
-	err := resolver.InitializeContainer()
+	err := dependencies_registration.InitializeContainer()
 	if err != nil {
 		panic(err)
 	}
-	err = resolver.RegisterServices()
+	err = dependencies_registration.RegisterServices()
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
 		panic(err)

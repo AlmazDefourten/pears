@@ -2,7 +2,7 @@ package services
 
 import (
 	"fmt"
-	"github.com/AlmazDefourten/goapp/infrastructure/logger_instance"
+	"github.com/AlmazDefourten/goapp/infra/logger_instance"
 	"github.com/AlmazDefourten/goapp/models"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/golobby/container/v3"

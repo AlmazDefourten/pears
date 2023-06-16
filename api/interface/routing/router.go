@@ -2,8 +2,8 @@ package routing
 
 import (
 	_ "github.com/AlmazDefourten/goapp/docs"
-	"github.com/AlmazDefourten/goapp/infrastructure/configurator"
-	"github.com/AlmazDefourten/goapp/infrastructure/logger_instance"
+	"github.com/AlmazDefourten/goapp/infra/configurator"
+	"github.com/AlmazDefourten/goapp/infra/logger_instance"
 	"github.com/AlmazDefourten/goapp/interface/handler"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/golobby/container/v3"

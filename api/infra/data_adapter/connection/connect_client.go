@@ -1,7 +1,7 @@
 package connection
 
 import (
-	"github.com/AlmazDefourten/goapp/infrastructure/logger_instance"
+	"github.com/AlmazDefourten/goapp/infra/logger_instance"
 	"github.com/AlmazDefourten/goapp/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

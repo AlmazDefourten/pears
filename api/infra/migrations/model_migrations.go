@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/AlmazDefourten/goapp/infrastructure/logger_instance"
+	"github.com/AlmazDefourten/goapp/infra/logger_instance"
 	model "github.com/AlmazDefourten/goapp/models"
 	"github.com/golobby/container/v3"
 	"gorm.io/gorm"

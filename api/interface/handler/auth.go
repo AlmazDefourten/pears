@@ -2,7 +2,7 @@ package handler
 
 import (
 	"fmt"
-	"github.com/AlmazDefourten/goapp/infrastructure/logger_instance"
+	"github.com/AlmazDefourten/goapp/infra/logger_instance"
 	"github.com/AlmazDefourten/goapp/models"
 	"github.com/golobby/container/v3"
 	"github.com/kataras/iris/v12"
