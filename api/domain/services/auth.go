@@ -2,7 +2,9 @@ package services
 
 import (
 	"github.com/AlmazDefourten/goapp/infra/logger_instance"
-	"github.com/AlmazDefourten/goapp/models"
+	"github.com/AlmazDefourten/goapp/models/requests_models"
+	"github.com/AlmazDefourten/goapp/models/user_models"
+	"github.com/AlmazDefourten/goapp/models/util_adapters"
 	"github.com/golobby/container/v3"
 	"github.com/kataras/iris/v12/x/errors"
 	"golang.org/x/crypto/bcrypt"
@@ -26,7 +28,7 @@ const (
 )
 
 func (authService *AuthService) CheckIfUserExist(login string) (bool, error) {
-	var res []models.User
+	var res []user_models.User
 	var db gorm.DB
 	err := container.Resolve(&db)
 	if err != nil {
@@ -34,7 +36,7 @@ func (authService *AuthService) CheckIfUserExist(login string) (bool, error) {
 		return defaultUserExistFlagValue, err
 	}
 	//request := db.Model(&models.User{}).First(&res, "login = ?", login)
-	request := db.Model(&models.User{}).Where("login = ?", login).Find(&res)
+	request := db.Model(&user_models.User{}).Where("login = ?", login).Find(&res)
 
 	if request.Error != nil && !errors.Is(request.Error, gorm.ErrRecordNotFound) {
 		logger_instance.ServiceLogger.Error(request.Error)
@@ -46,23 +48,23 @@ func (authService *AuthService) CheckIfUserExist(login string) (bool, error) {
 	return false, nil
 }
 
-func (authService *AuthService) Registration(user *models.User) (bool, string) {
-	var c models.Configurator
+func (authService *AuthService) Registration(user *user_models.User) (bool, string) {
+	var c util_adapters.Configurator
 	err := container.Resolve(&c)
 	if err != nil {
 		logger_instance.ServiceLogger.Error(err)
-		return false, models.StandardAnswerOnError
+		return false, requests_models.StandardAnswerOnError
 	}
 	var db gorm.DB
 	err = container.Resolve(&db)
 	if err != nil {
 		logger_instance.ServiceLogger.Error(err)
-		return false, models.StandardAnswerOnError
+		return false, requests_models.StandardAnswerOnError
 	}
 	isUserExists, err := authService.CheckIfUserExist(user.Login)
 	if err != nil {
 		logger_instance.ServiceLogger.Error(err)
-		return false, models.StandardAnswerOnError
+		return false, requests_models.StandardAnswerOnError
 	}
 	if isUserExists {
 		return false, regAnswerIfUserExist
@@ -73,40 +75,40 @@ func (authService *AuthService) Registration(user *models.User) (bool, string) {
 		request := db.Create(&user)
 		if request.Error != nil {
 			logger_instance.ServiceLogger.Error(err)
-			return false, models.StandardAnswerOnError
+			return false, requests_models.StandardAnswerOnError
 		}
 	}
 	return true, regAnswerSuccessful
 }
 
-func (authService *AuthService) Authorization(login string, password string) (bool, *models.Tokens, string) {
+func (authService *AuthService) Authorization(login string, password string) (bool, *user_models.Tokens, string) {
 	var db gorm.DB
 	err := container.Resolve(&db)
 	if err != nil {
 		logger_instance.ServiceLogger.Error(err)
-		return false, nil, models.StandardAnswerOnError
+		return false, nil, requests_models.StandardAnswerOnError
 	}
 
-	var c models.Configurator
+	var c util_adapters.Configurator
 	err = container.Resolve(&c)
 	if err != nil {
 		logger_instance.ServiceLogger.Error(err)
-		return false, nil, models.StandardAnswerOnError
+		return false, nil, requests_models.StandardAnswerOnError
 	}
 
-	var jwtService models.IJWTService
+	var jwtService user_models.IJWTService
 	err = container.Resolve(&jwtService)
 	if err != nil {
 		logger_instance.ServiceLogger.Error(err)
-		return false, nil, models.StandardAnswerOnError
+		return false, nil, requests_models.StandardAnswerOnError
 	}
 
-	var user models.User
+	var user user_models.User
 	err = db.Where("login = ?", login).Find(&user).Error
 	//err = db.First(&user, "login = ?", login).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return false, nil, models.StandardAnswerOnError
+			return false, nil, requests_models.StandardAnswerOnError
 		}
 	}
 
@@ -123,7 +125,7 @@ func (authService *AuthService) Authorization(login string, password string) (bo
 }
 
 func (authService *AuthService) AuthCheck(token string) (bool, string) {
-	var c models.Configurator
+	var c util_adapters.Configurator
 	err := container.Resolve(&c)
 
 	username, err := ParseToken(token, []byte(c.GetString("jwt.signing_key")))
@@ -134,20 +136,20 @@ func (authService *AuthService) AuthCheck(token string) (bool, string) {
 	return true, username
 }
 
-func (authService *AuthService) RefreshCheck(token string) (bool, *models.Tokens) {
+func (authService *AuthService) RefreshCheck(token string) (bool, *user_models.Tokens) {
 	var db gorm.DB
 	err := container.Resolve(&db)
 	if err != nil {
 		panic(err)
 	}
 
-	var user models.User
+	var user user_models.User
 	err = db.First(&user, "refresh_token = ?", token).Error
 	if err != nil {
 		return false, nil
 	}
 
-	var jwtService models.IJWTService
+	var jwtService user_models.IJWTService
 	err = container.Resolve(&jwtService)
 	if err != nil {
 		panic(err)

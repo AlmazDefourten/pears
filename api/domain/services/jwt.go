@@ -3,7 +3,8 @@ package services
 import (
 	"fmt"
 	"github.com/AlmazDefourten/goapp/infra/logger_instance"
-	"github.com/AlmazDefourten/goapp/models"
+	"github.com/AlmazDefourten/goapp/models/user_models"
+	"github.com/AlmazDefourten/goapp/models/util_adapters"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/golobby/container/v3"
 	"gorm.io/gorm"
@@ -19,7 +20,7 @@ func NewJWTService() *JWTService {
 }
 
 // Signin - authorization method
-func (jwtService *JWTService) SignIn(username string) (*models.Tokens, error) {
+func (jwtService *JWTService) SignIn(username string) (*user_models.Tokens, error) {
 	var db gorm.DB
 	err := container.Resolve(&db)
 	if err != nil {
@@ -27,7 +28,7 @@ func (jwtService *JWTService) SignIn(username string) (*models.Tokens, error) {
 		panic(err)
 	}
 
-	var c models.Configurator
+	var c util_adapters.Configurator
 	err = container.Resolve(&c)
 	if err != nil {
 		logger_instance.ServiceLogger.Error(err)
@@ -42,7 +43,7 @@ func (jwtService *JWTService) SignIn(username string) (*models.Tokens, error) {
 	if err != nil {
 		return nil, err
 	}
-	aClaims := models.Claims{
+	aClaims := user_models.Claims{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(accessAddTime).Unix(),
 		},
@@ -60,7 +61,7 @@ func (jwtService *JWTService) SignIn(username string) (*models.Tokens, error) {
 	if err != nil {
 		return nil, err
 	}
-	refreshClaims := models.Claims{
+	refreshClaims := user_models.Claims{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(refreshAddTime).Unix(),
 		},
@@ -69,21 +70,21 @@ func (jwtService *JWTService) SignIn(username string) (*models.Tokens, error) {
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
 	refresh, err := refreshToken.SignedString([]byte(SigningKey))
 
-	var user models.User
+	var user user_models.User
 	db.Model(&user).Where("login = ?", username).Update("refresh_token", refresh)
 
 	if err != nil {
 		return nil, err
 	}
-	return &models.Tokens{
+	return &user_models.Tokens{
 		AccessToken:  access,
 		RefreshToken: refresh,
 	}, nil
 }
 
 // method for refreshing tokens
-func (jwtService *JWTService) ValidateAndRefreshTokens(refresh_token string) (*models.Tokens, error) {
-	var c models.Configurator
+func (jwtService *JWTService) ValidateAndRefreshTokens(refresh_token string) (*user_models.Tokens, error) {
+	var c util_adapters.Configurator
 	err := container.Resolve(&c)
 	if err != nil {
 		logger_instance.ServiceLogger.Error(err)
@@ -105,7 +106,7 @@ func (jwtService *JWTService) ValidateAndRefreshTokens(refresh_token string) (*m
 		return SigningKey, nil
 	})
 
-	if claims, ok := token.Claims.(*models.Claims); ok && token.Valid {
+	if claims, ok := token.Claims.(*user_models.Claims); ok && token.Valid {
 		username := claims.Username
 		newTokenPair, err := jwtService.SignIn(username)
 		if err != nil {
@@ -120,7 +121,7 @@ func (jwtService *JWTService) ValidateAndRefreshTokens(refresh_token string) (*m
 
 // ParseToken - parse token method
 func ParseToken(accessToken string, signingKey []byte) (string, error) {
-	token, err := jwt.ParseWithClaims(accessToken, &models.Claims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(accessToken, &user_models.Claims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
@@ -131,7 +132,7 @@ func ParseToken(accessToken string, signingKey []byte) (string, error) {
 		return "", err
 	}
 
-	if claims, ok := token.Claims.(*models.Claims); ok && token.Valid {
+	if claims, ok := token.Claims.(*user_models.Claims); ok && token.Valid {
 		return claims.Username, nil
 	}
 

@@ -1,7 +1,7 @@
 package services
 
 import (
-	models "github.com/AlmazDefourten/goapp/models"
+	models "github.com/AlmazDefourten/goapp/models/user_models"
 	"github.com/golobby/container/v3"
 	"gorm.io/gorm"
 )

@@ -1,4 +1,4 @@
-package models
+package swagger_help_models
 
 // UserAuthInfo it`s swagger only struct to describe body of queries with auth user
 type UserAuthInfo struct {

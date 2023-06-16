@@ -1,4 +1,4 @@
-package models
+package requests_models
 
 // Response is sent as a response with information about the success of the request
 type Response struct {

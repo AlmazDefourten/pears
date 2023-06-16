@@ -2,7 +2,8 @@ package handler
 
 import (
 	"github.com/AlmazDefourten/goapp/infra/logger_instance"
-	"github.com/AlmazDefourten/goapp/models"
+	"github.com/AlmazDefourten/goapp/models/post_models"
+	"github.com/AlmazDefourten/goapp/models/requests_models"
 	"github.com/golobby/container/v3"
 	"github.com/kataras/iris/v12"
 )
@@ -26,11 +27,11 @@ func NewPostHandler() *PostHandler {
 //	@Router			/post/list [get]
 //  @Security 		JWTToken
 func (postHandler *PostHandler) List(ctx iris.Context) {
-	var postService models.IPostService
+	var postService post_models.IPostService
 	err := container.Resolve(&postService)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
-		err = ctx.JSON(models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
+		err = ctx.JSON(requests_models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
 		if err != nil {
 			logger_instance.GlobalLogger.Error(err)
 		}
@@ -39,7 +40,7 @@ func (postHandler *PostHandler) List(ctx iris.Context) {
 	data, err := postService.ListPosts()
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
-		err = ctx.JSON(models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
+		err = ctx.JSON(requests_models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
 		if err != nil {
 			logger_instance.GlobalLogger.Error(err)
 		}
@@ -64,11 +65,11 @@ func (postHandler *PostHandler) List(ctx iris.Context) {
 //	@Router			/post/get/{id} [get]
 //  @Security 		JWTToken
 func (postHandler *PostHandler) Get(ctx iris.Context) {
-	var postService models.IPostService
+	var postService post_models.IPostService
 	err := container.Resolve(&postService)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
-		err = ctx.JSON(models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
+		err = ctx.JSON(requests_models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
 		if err != nil {
 			logger_instance.GlobalLogger.Error(err)
 		}
@@ -78,13 +79,13 @@ func (postHandler *PostHandler) Get(ctx iris.Context) {
 	id, err := ctx.URLParamInt("id")
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
-		err = ctx.JSON(models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
+		err = ctx.JSON(requests_models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
 		return
 	}
 	data, err := postService.GetPost(id)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
-		err = ctx.JSON(models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
+		err = ctx.JSON(requests_models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
 		if err != nil {
 			logger_instance.GlobalLogger.Error(err)
 		}
@@ -109,34 +110,34 @@ func (postHandler *PostHandler) Get(ctx iris.Context) {
 //	@Router			/post/create [post]
 //  @Security 		JWTToken
 func (postHandler *PostHandler) Create(ctx iris.Context) {
-	var postService models.IPostService
+	var postService post_models.IPostService
 	err := container.Resolve(&postService)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
-		err = ctx.JSON(models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
+		err = ctx.JSON(requests_models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
 		if err != nil {
 			logger_instance.GlobalLogger.Error(err)
 		}
 		return
 	}
 
-	var post models.Post
+	var post post_models.Post
 	err = ctx.ReadJSON(&post)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
-		err = ctx.JSON(models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
+		err = ctx.JSON(requests_models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
 		return
 	}
 	err = postService.CreatePost(post)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
-		err = ctx.JSON(models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
+		err = ctx.JSON(requests_models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
 		if err != nil {
 			logger_instance.GlobalLogger.Error(err)
 		}
 		return
 	}
-	err = ctx.JSON(models.Response{Ok: true, Message: "Пост успешно создан"})
+	err = ctx.JSON(requests_models.Response{Ok: true, Message: "Пост успешно создан"})
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
 		panic(err)

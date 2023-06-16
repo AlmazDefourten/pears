@@ -1,6 +1,8 @@
 package logger_instance
 
-import "github.com/AlmazDefourten/goapp/models"
+import (
+	"github.com/AlmazDefourten/goapp/models/util_adapters"
+)
 
-var GlobalLogger models.Logger
-var ServiceLogger models.Logger
+var GlobalLogger util_adapters.Logger
+var ServiceLogger util_adapters.Logger

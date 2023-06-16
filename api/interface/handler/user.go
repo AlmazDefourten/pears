@@ -2,7 +2,8 @@ package handler
 
 import (
 	"github.com/AlmazDefourten/goapp/infra/logger_instance"
-	"github.com/AlmazDefourten/goapp/models"
+	"github.com/AlmazDefourten/goapp/models/requests_models"
+	"github.com/AlmazDefourten/goapp/models/user_models"
 	"github.com/golobby/container/v3"
 	"github.com/kataras/iris/v12"
 )
@@ -26,10 +27,10 @@ func NewUserInfoHandler() *UserInfoHandler {
 //	@Router			/userinfo/list [get]
 //  @Security 		JWTToken
 func (userInfoHandler *UserInfoHandler) List(ctx iris.Context) {
-	var userService models.IUserService
+	var userService user_models.IUserService
 	err := container.Resolve(&userService)
 	if err != nil {
-		errRet := ctx.JSON(models.Response{Ok: false, Message: "Произошла ошибка, попробуйте позднее"})
+		errRet := ctx.JSON(requests_models.Response{Ok: false, Message: "Произошла ошибка, попробуйте позднее"})
 		if errRet != nil {
 			logger_instance.GlobalLogger.Error(err)
 			return
@@ -39,7 +40,7 @@ func (userInfoHandler *UserInfoHandler) List(ctx iris.Context) {
 	data := userService.List()
 	err = ctx.JSON(data)
 	if err != nil {
-		errRet := ctx.JSON(models.Response{Ok: false, Message: "Произошла ошибка, попробуйте позднее"})
+		errRet := ctx.JSON(requests_models.Response{Ok: false, Message: "Произошла ошибка, попробуйте позднее"})
 		if errRet != nil {
 			logger_instance.GlobalLogger.Error(errRet)
 			return

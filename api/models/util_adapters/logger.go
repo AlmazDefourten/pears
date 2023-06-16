@@ -1,4 +1,4 @@
-package models
+package util_adapters
 
 type Logger interface {
 	Trace(args ...interface{})

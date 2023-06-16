@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	model "github.com/AlmazDefourten/goapp/models"
+	model "github.com/AlmazDefourten/goapp/models/user_models"
 	"gorm.io/gorm"
 )
 

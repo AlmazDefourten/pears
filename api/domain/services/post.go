@@ -2,7 +2,7 @@ package services
 
 import (
 	"github.com/AlmazDefourten/goapp/infra/logger_instance"
-	"github.com/AlmazDefourten/goapp/models"
+	"github.com/AlmazDefourten/goapp/models/post_models"
 	"github.com/golobby/container/v3"
 	"gorm.io/gorm"
 )
@@ -14,8 +14,8 @@ func NewPostService() *PostService {
 	return &PostService{}
 }
 
-func (postService *PostService) ListPosts() ([]models.Post, error) {
-	var posts []models.Post
+func (postService *PostService) ListPosts() ([]post_models.Post, error) {
+	var posts []post_models.Post
 	var db gorm.DB
 	err := container.Resolve(&db)
 	if err != nil {
@@ -28,7 +28,7 @@ func (postService *PostService) ListPosts() ([]models.Post, error) {
 	return posts, nil
 }
 
-func (postService *PostService) CreatePost(post models.Post) error {
+func (postService *PostService) CreatePost(post post_models.Post) error {
 	var db gorm.DB
 	err := container.Resolve(&db)
 	if err != nil {
@@ -43,13 +43,13 @@ func (postService *PostService) CreatePost(post models.Post) error {
 	return nil
 }
 
-func (postService *PostService) GetPost(id int) (models.Post, error) {
+func (postService *PostService) GetPost(id int) (post_models.Post, error) {
 	var db gorm.DB
 	err := container.Resolve(&db)
 	if err != nil {
-		return models.Post{}, err
+		return post_models.Post{}, err
 	}
-	var post models.Post
+	var post post_models.Post
 	err = db.Where("id = ?", id).First(post).Error
 	if err != nil {
 		return post, err

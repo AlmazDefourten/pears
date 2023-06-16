@@ -3,7 +3,9 @@ package handler
 import (
 	"fmt"
 	"github.com/AlmazDefourten/goapp/infra/logger_instance"
-	"github.com/AlmazDefourten/goapp/models"
+	"github.com/AlmazDefourten/goapp/models/auth_models"
+	"github.com/AlmazDefourten/goapp/models/requests_models"
+	"github.com/AlmazDefourten/goapp/models/user_models"
 	"github.com/golobby/container/v3"
 	"github.com/kataras/iris/v12"
 	"net/http"
@@ -27,13 +29,13 @@ func NewAuthHandler() *AuthHandler {
 //	@Success		200	{object}	models.Response
 //	@Router			/user/registration [post]
 func (authHandler *AuthHandler) Registration(ctx iris.Context) {
-	var user models.User
+	var user user_models.User
 	err := ctx.ReadJSON(&user)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
 	}
 
-	var authService models.IAuthService
+	var authService auth_models.IAuthService
 	err = container.Resolve(&authService)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
@@ -42,7 +44,7 @@ func (authHandler *AuthHandler) Registration(ctx iris.Context) {
 
 	ok, msg := authService.Registration(&user)
 
-	response := models.Response{Ok: ok, Message: msg}
+	response := requests_models.Response{Ok: ok, Message: msg}
 	err = ctx.JSON(response)
 	if err != nil {
 		println(err)
@@ -61,14 +63,14 @@ func (authHandler *AuthHandler) Registration(ctx iris.Context) {
 //	@Success		200	{object}	models.AuthResponse
 //	@Router			/user/authorization [post]
 func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
-	var user models.User
+	var user user_models.User
 	err := ctx.ReadJSON(&user)
 	if err != nil {
 		println(err)
 		logger_instance.GlobalLogger.Error(err)
 	}
 
-	var authService models.IAuthService
+	var authService auth_models.IAuthService
 	err = container.Resolve(&authService)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
@@ -79,7 +81,7 @@ func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 	if !ok {
 		ctx.StatusCode(http.StatusUnauthorized)
 	}
-	response := &models.AuthResponse{}
+	response := &auth_models.AuthResponse{}
 	if ok {
 		response.Ok = ok
 		response.Message = msg
@@ -106,7 +108,7 @@ func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 func (authHandler *AuthHandler) AuthMiddleware(ctx iris.Context) {
 	token := ctx.GetHeader("access_token")
 
-	var authService models.IAuthService
+	var authService auth_models.IAuthService
 	err := container.Resolve(&authService)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
@@ -116,7 +118,7 @@ func (authHandler *AuthHandler) AuthMiddleware(ctx iris.Context) {
 	ok, username := authService.AuthCheck(token)
 	if ok == false {
 		ctx.StopWithStatus(http.StatusUnauthorized)
-		err := ctx.JSON(models.Response{Ok: false, Message: "Пользователь не авторизован"})
+		err := ctx.JSON(requests_models.Response{Ok: false, Message: "Пользователь не авторизован"})
 		if err != nil {
 			logger_instance.GlobalLogger.Error(err)
 			fmt.Println(username)
@@ -139,7 +141,7 @@ func (authHandler *AuthHandler) AuthMiddleware(ctx iris.Context) {
 func (authHandler *AuthHandler) RefreshTokens(ctx iris.Context) {
 	token := ctx.GetHeader("refresh_token")
 
-	var authService models.IAuthService
+	var authService auth_models.IAuthService
 	err := container.Resolve(&authService)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
@@ -149,13 +151,13 @@ func (authHandler *AuthHandler) RefreshTokens(ctx iris.Context) {
 	ok, tokens := authService.RefreshCheck(token)
 	if ok == false {
 		ctx.StopWithStatus(http.StatusUnauthorized)
-		err := ctx.JSON(models.Response{Ok: false, Message: "Пользователь не авторизован"})
+		err := ctx.JSON(requests_models.Response{Ok: false, Message: "Пользователь не авторизован"})
 		if err != nil {
 			logger_instance.GlobalLogger.Error(err)
 			fmt.Println(err)
 		}
 	} else {
-		response := models.AuthResponse{Ok: ok, Access: tokens.AccessToken}
+		response := auth_models.AuthResponse{Ok: ok, Access: tokens.AccessToken}
 
 		ctx.SetCookie(&iris.Cookie{
 			Name:     "refreshtoken",

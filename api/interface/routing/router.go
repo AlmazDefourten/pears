@@ -5,7 +5,7 @@ import (
 	"github.com/AlmazDefourten/goapp/infra/configurator"
 	"github.com/AlmazDefourten/goapp/infra/logger_instance"
 	"github.com/AlmazDefourten/goapp/interface/handler"
-	"github.com/AlmazDefourten/goapp/models"
+	"github.com/AlmazDefourten/goapp/models/util_adapters"
 	"github.com/golobby/container/v3"
 	"github.com/iris-contrib/swagger"
 	"github.com/iris-contrib/swagger/v12/swaggerFiles"
@@ -80,7 +80,7 @@ func CorsHandler(ctx iris.Context) {
 
 // AutoDocHandleInit is routing and initializing autodocs
 func AutoDocHandleInit(app *iris.Application) {
-	var c models.Configurator
+	var c util_adapters.Configurator
 	err := container.Resolve(&c)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
