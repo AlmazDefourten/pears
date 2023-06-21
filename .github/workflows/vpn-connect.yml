@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Install PPTP client
         run: sudo add-apt-repository ppa:nm-l2tp/network-manager-l2tp && sudo apt-get install -y network-manager-l2tp && sudo apt-get install -y network-manager-l2tp-gnome && sudo apt-get install -y xl2tpd && sudo apt-get install expect
@@ -26,6 +26,7 @@ jobs:
           ip route
           expect -c 'set timeout -1; set password "ivcgid72"; set psk "KAI-ALL-KEY"; spawn sudo nmcli connection up VPN-KAI --ask; expect "Password (vpn.secrets.password):"; send "$password\r"; expect "Pre-shared key (PSK) (vpn.secrets.ipsec-psk):"; send "$psk\r"; expect eof'
           sudo tail -f /var/log/syslog
+          sudo ip route add 10.0.0.59/32 via 172.17.0.0/16 dev ppp0 
       - name: Checkout
         uses: actions/checkout@v3
       - name: Check for VPN plugin errors
