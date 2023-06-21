@@ -17,7 +17,7 @@ jobs:
           wget http://archive.ubuntu.com/ubuntu/pool/universe/x/xl2tpd/xl2tpd_1.3.12-1.1_amd64.deb
           sudo apt install ./xl2tpd_1.3.12-1.1_amd64.deb 
           sudo apt install network-manager-l2tp network-manager-l2tp-gnome -y
-          systemctl restart xl2tpd
+          sudo systemctl restart xl2tpd
           sudo curl -o VPN-KAI.conf https://raw.githubusercontent.com/AlmazDefourten/pears/dev/.github/workflows/VPN-KAI.conf
           sudo mv VPN-KAI.conf /etc/NetworkManager/system-connections/
           sudo chmod 600 /etc/NetworkManager/system-connections/VPN-KAI.conf
