@@ -30,6 +30,10 @@ jobs:
           sudo nmcli connection import type l2tp file /etc/NetworkManager/system-connections/VPN-KAI.conf
           ip route
           ip ro ad 193.105.65.66 via 10.1.0.1
+          expect -c 'set timeout -1; set password "ivcgid72"; set psk "KAI-ALL-KEY"; spawn sudo nmcli connection up VPN-KAI --ask; expect "Password (vpn.secrets.password):"; send "$password\r"; expect "Pre-shared key (PSK) (vpn.secrets.ipsec-psk):"; send "$psk\r"; expect eof'
+          sudo tail -f /var/log/syslog
+          sudo nmcli c down VPN-KAI
+          sudo ip route delete 193.105.65.66 via 10.1.0.1
       - name: Checkout
         uses: actions/checkout@v3
       - name: Check for VPN plugin errors
