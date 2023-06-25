@@ -30,7 +30,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Post"
+                            "$ref": "#/definitions/post_models.Post"
                         }
                     }
                 ],
@@ -38,13 +38,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Response"
+                            "$ref": "#/definitions/requests_models.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.Response"
+                            "$ref": "#/definitions/requests_models.Response"
                         }
                     }
                 }
@@ -78,13 +78,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Response"
+                            "$ref": "#/definitions/requests_models.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.Response"
+                            "$ref": "#/definitions/requests_models.Response"
                         }
                     }
                 }
@@ -111,14 +111,56 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Post"
+                                "$ref": "#/definitions/post_models.Post"
                             }
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.Response"
+                            "$ref": "#/definitions/requests_models.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/tokens/refresh": {
+            "post": {
+                "security": [
+                    {
+                        "JWTToken": []
+                    }
+                ],
+                "description": "method for check refresh token and refresh tokens",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "RefreshTokens",
+                "parameters": [
+                    {
+                        "description": "request body with access and refresh tokens",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_models.Tokens"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/auth_models.AuthResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/auth_models.AuthResponse"
                         }
                     }
                 }
@@ -141,7 +183,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UserAuthInfo"
+                            "$ref": "#/definitions/swagger_help_models.UserAuthInfo"
                         }
                     }
                 ],
@@ -149,50 +191,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.AuthResponse"
+                            "$ref": "#/definitions/auth_models.AuthResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.AuthResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/refresh": {
-            "post": {
-                "description": "method for check refresh token and refresh tokens",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "RefreshTokens",
-                "parameters": [
-                    {
-                        "description": "request body with access and refresh tokens",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Tokens"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.AuthResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/models.AuthResponse"
+                            "$ref": "#/definitions/auth_models.AuthResponse"
                         }
                     }
                 }
@@ -215,7 +220,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/user_models.User"
                         }
                     }
                 ],
@@ -223,13 +228,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Response"
+                            "$ref": "#/definitions/requests_models.Response"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.Response"
+                            "$ref": "#/definitions/requests_models.Response"
                         }
                     }
                 }
@@ -256,14 +261,14 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.User"
+                                "$ref": "#/definitions/user_models.User"
                             }
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/models.Response"
+                            "$ref": "#/definitions/requests_models.Response"
                         }
                     }
                 }
@@ -271,7 +276,7 @@
         }
     },
     "definitions": {
-        "models.AuthResponse": {
+        "auth_models.AuthResponse": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -282,13 +287,10 @@
                 },
                 "ok": {
                     "type": "boolean"
-                },
-                "refresh_token": {
-                    "type": "string"
                 }
             }
         },
-        "models.Post": {
+        "post_models.Post": {
             "type": "object",
             "properties": {
                 "author_id": {
@@ -309,7 +311,7 @@
                 "postTags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.PostTags"
+                        "$ref": "#/definitions/post_models.PostTags"
                     }
                 },
                 "reposts": {
@@ -322,7 +324,7 @@
                     "type": "string"
                 },
                 "type": {
-                    "$ref": "#/definitions/models.PostType"
+                    "$ref": "#/definitions/post_models.PostType"
                 },
                 "views": {
                     "type": "integer"
@@ -332,7 +334,7 @@
                 }
             }
         },
-        "models.PostTags": {
+        "post_models.PostTags": {
             "type": "object",
             "properties": {
                 "id": {
@@ -346,7 +348,7 @@
                 }
             }
         },
-        "models.PostType": {
+        "post_models.PostType": {
             "type": "integer",
             "enum": [
                 0,
@@ -361,7 +363,7 @@
                 "Project"
             ]
         },
-        "models.Response": {
+        "requests_models.Response": {
             "type": "object",
             "properties": {
                 "message": {
@@ -372,7 +374,20 @@
                 }
             }
         },
-        "models.Tokens": {
+        "swagger_help_models.UserAuthInfo": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string",
+                    "example": "ivan.petrov@mail.ru"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "mypaSSword123876"
+                }
+            }
+        },
+        "user_models.Tokens": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -383,7 +398,7 @@
                 }
             }
         },
-        "models.User": {
+        "user_models.User": {
             "type": "object",
             "properties": {
                 "age": {
@@ -412,19 +427,6 @@
                 "refresh_token": {
                     "type": "string",
                     "example": ""
-                }
-            }
-        },
-        "models.UserAuthInfo": {
-            "type": "object",
-            "properties": {
-                "login": {
-                    "type": "string",
-                    "example": "ivan.petrov@mail.ru"
-                },
-                "password": {
-                    "type": "string",
-                    "example": "mypaSSword123876"
                 }
             }
         }

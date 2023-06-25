@@ -1,6 +1,6 @@
 basePath: /api/v1
 definitions:
-  models.AuthResponse:
+  auth_models.AuthResponse:
     properties:
       access_token:
         type: string
@@ -8,10 +8,8 @@ definitions:
         type: string
       ok:
         type: boolean
-      refresh_token:
-        type: string
     type: object
-  models.Post:
+  post_models.Post:
     properties:
       author_id:
         type: integer
@@ -25,7 +23,7 @@ definitions:
         type: string
       postTags:
         items:
-          $ref: '#/definitions/models.PostTags'
+          $ref: '#/definitions/post_models.PostTags'
         type: array
       reposts:
         type: integer
@@ -34,13 +32,13 @@ definitions:
       time_start:
         type: string
       type:
-        $ref: '#/definitions/models.PostType'
+        $ref: '#/definitions/post_models.PostType'
       views:
         type: integer
       where:
         type: string
     type: object
-  models.PostTags:
+  post_models.PostTags:
     properties:
       id:
         type: integer
@@ -49,7 +47,7 @@ definitions:
       tag_id:
         type: integer
     type: object
-  models.PostType:
+  post_models.PostType:
     enum:
     - 0
     - 1
@@ -61,21 +59,30 @@ definitions:
     - People
     - Community
     - Project
-  models.Response:
+  requests_models.Response:
     properties:
       message:
         type: string
       ok:
         type: boolean
     type: object
-  models.Tokens:
+  swagger_help_models.UserAuthInfo:
+    properties:
+      login:
+        example: ivan.petrov@mail.ru
+        type: string
+      password:
+        example: mypaSSword123876
+        type: string
+    type: object
+  user_models.Tokens:
     properties:
       access_token:
         type: string
       refresh_token:
         type: string
     type: object
-  models.User:
+  user_models.User:
     properties:
       age:
         example: 24
@@ -98,15 +105,6 @@ definitions:
         example: ""
         type: string
     type: object
-  models.UserAuthInfo:
-    properties:
-      login:
-        example: ivan.petrov@mail.ru
-        type: string
-      password:
-        example: mypaSSword123876
-        type: string
-    type: object
 info:
   contact: {}
   description: Pears API, specification and description
@@ -124,18 +122,18 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/models.Post'
+          $ref: '#/definitions/post_models.Post'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/requests_models.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/requests_models.Response'
       security:
       - JWTToken: []
       summary: Create new post
@@ -156,11 +154,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/requests_models.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/requests_models.Response'
       security:
       - JWTToken: []
       summary: Get a post
@@ -176,15 +174,41 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Post'
+              $ref: '#/definitions/post_models.Post'
             type: array
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/requests_models.Response'
       security:
       - JWTToken: []
       summary: List of posts
+  /tokens/refresh:
+    post:
+      consumes:
+      - application/json
+      description: method for check refresh token and refresh tokens
+      parameters:
+      - description: request body with access and refresh tokens
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_models.Tokens'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth_models.AuthResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/auth_models.AuthResponse'
+      security:
+      - JWTToken: []
+      summary: RefreshTokens
   /user/authorization:
     post:
       consumes:
@@ -196,43 +220,19 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/models.UserAuthInfo'
+          $ref: '#/definitions/swagger_help_models.UserAuthInfo'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.AuthResponse'
+            $ref: '#/definitions/auth_models.AuthResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/models.AuthResponse'
+            $ref: '#/definitions/auth_models.AuthResponse'
       summary: Authorization
-  /user/refresh:
-    post:
-      consumes:
-      - application/json
-      description: method for check refresh token and refresh tokens
-      parameters:
-      - description: request body with access and refresh tokens
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/models.Tokens'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.AuthResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/models.AuthResponse'
-      summary: RefreshTokens
   /user/registration:
     post:
       consumes:
@@ -244,18 +244,18 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/user_models.User'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/requests_models.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/requests_models.Response'
       summary: Registration
   /userinfo/list:
     get:
@@ -269,12 +269,12 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.User'
+              $ref: '#/definitions/user_models.User'
             type: array
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/models.Response'
+            $ref: '#/definitions/requests_models.Response'
       security:
       - JWTToken: []
       summary: List of users
