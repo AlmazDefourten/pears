@@ -48,7 +48,7 @@ func (router *Router) UseRoutes(app *iris.Application) {
 
 		var userInfoHandler = handler.NewUserInfoHandler()
 
-		userInfoAPI.Get("/list", userInfoHandler.List)
+		userInfoAPI.Get("/listd", userInfoHandler.List)
 	}
 	postAPI := app.Party(apiPath + "/post")
 	{
