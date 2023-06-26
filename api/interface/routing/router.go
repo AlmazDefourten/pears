@@ -33,7 +33,7 @@ func (router *Router) UseRoutes(app *iris.Application) {
 	{
 		userAPI.Use(iris.Compression)
 
-		userAPI.Post("/registration", authHandler.Registration)
+		userAPI.Post("/registrationn", authHandler.Registration)
 		userAPI.Post("/authorization", authHandler.Authorization)
 	}
 	tokensAPI := app.Party(apiPath + "/tokens")
@@ -48,7 +48,7 @@ func (router *Router) UseRoutes(app *iris.Application) {
 
 		var userInfoHandler = handler.NewUserInfoHandler()
 
-		userInfoAPI.Get("/listd", userInfoHandler.List)
+		userInfoAPI.Get("/list", userInfoHandler.List)
 	}
 	postAPI := app.Party(apiPath + "/post")
 	{
