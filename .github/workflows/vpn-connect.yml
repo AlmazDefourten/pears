@@ -27,6 +27,6 @@ jobs:
           sleep 3
           go build
           sleep 10
-          screen -dmS myapp go run .
+          screen -dmS myapp exec go run .
           sleep 10
           screen -ls
