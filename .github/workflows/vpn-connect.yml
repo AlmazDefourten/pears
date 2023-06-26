@@ -12,21 +12,12 @@ jobs:
       - name: deploy
         run: |
           export GOROOT=/home/u_studpr/goinst/go
-          sleep 1
           export GOPATH=$HOME/go
-          sleep 1
           export PATH=$GOPATH/bin:$GOROOT/bin:$PATH    
-          sleep 1
           source ~/.bashrc
-          sleep 1
           screen -ls | grep -o 'myapp' | sed 's/.$//' | xargs -I % sh -c 'screen -S % -X quit'
-          sleep 3
           cd ~/app/pears/api
-          sleep 1
           git pull --no-edit
-          sleep 3
           go build
-          sleep 10
-          screen -dmS myapp exec go run .
-          sleep 10
+          RUNNER_TRACKING_ID="" && screen -dmS myapp go run .
           screen -ls
