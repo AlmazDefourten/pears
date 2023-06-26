@@ -17,7 +17,10 @@ jobs:
           export PATH=$GOPATH/bin:$GOROOT/bin:$PATH    
           source ~/.bashrc
           screen -ls | grep -o 'myapp' | sed 's/.$//' | xargs -I % sh -c 'screen -S % -X quit'
+          sleep 3
           cd ~/app/pears/api
           git pull --no-edit
           go build
+          sleep 10
           screen -dmS myapp go run .
+          sleep 10
