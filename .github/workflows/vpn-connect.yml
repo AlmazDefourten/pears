@@ -9,10 +9,9 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Install PPTP client
-        run: sudo apt-get install expect
-      - name: Create VPN config file
+      - name: deploy
         run: |
+          echo zed
           export GOROOT=/home/u_studpr/goinst/go
           export GOPATH=$HOME/go
           export PATH=$GOPATH/bin:$GOROOT/bin:$PATH    
