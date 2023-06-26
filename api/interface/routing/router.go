@@ -35,7 +35,12 @@ func (router *Router) UseRoutes(app *iris.Application) {
 
 		userAPI.Post("/registration", authHandler.Registration)
 		userAPI.Post("/authorization", authHandler.Authorization)
-		userAPI.Post("/refresh", authHandler.RefreshTokens)
+	}
+	tokensAPI := app.Party(apiPath + "/tokens")
+	{
+		tokensAPI.UseRouter(authHandler.AuthMiddleware)
+
+		tokensAPI.Post("/refresh", authHandler.RefreshTokens)
 	}
 	userInfoAPI := app.Party(apiPath + "/userinfo")
 	{

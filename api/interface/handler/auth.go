@@ -18,15 +18,19 @@ func NewAuthHandler() *AuthHandler {
 	return &AuthHandler{}
 }
 
+const (
+	refreshTokenFailedMessage = "Не удалось обновить токен авторизации"
+)
+
 // Registration ShowAccount godoc
 //
 //	@Summary		Registration
 //	@Description	add new user to the database
 //	@Accept			json
 //	@Produce		json
-//	@Param			body		body		models.User		true	"request body with info about user"
-//	@Failure		401	{object}	models.Response
-//	@Success		200	{object}	models.Response
+//	@Param			body		body		user_models.User		true	"request body with info about user"
+//	@Failure		401	{object}	requests_models.Response
+//	@Success		200	{object}	requests_models.Response
 //	@Router			/user/registration [post]
 func (authHandler *AuthHandler) Registration(ctx iris.Context) {
 	var user user_models.User
@@ -58,9 +62,9 @@ func (authHandler *AuthHandler) Registration(ctx iris.Context) {
 //	@Description	authorization and take a token
 //	@Accept			json
 //	@Produce		json
-//	@Param			body		body		models.UserAuthInfo		true	"request body with login and password"
-//	@Failure		401	{object}	models.AuthResponse
-//	@Success		200	{object}	models.AuthResponse
+//	@Param			body		body		swagger_help_models.UserAuthInfo		true	"request body with login and password"
+//	@Failure		401	{object}	auth_models.AuthResponse
+//	@Success		200	{object}	auth_models.AuthResponse
 //	@Router			/user/authorization [post]
 func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 	var user user_models.User
@@ -106,7 +110,7 @@ func (authHandler *AuthHandler) Authorization(ctx iris.Context) {
 
 // AuthMiddleware it`s middleware for check if user is authorized
 func (authHandler *AuthHandler) AuthMiddleware(ctx iris.Context) {
-	token := ctx.GetHeader("access_token")
+	token := ctx.GetHeader("token")
 
 	var authService auth_models.IAuthService
 	err := container.Resolve(&authService)
@@ -134,12 +138,15 @@ func (authHandler *AuthHandler) AuthMiddleware(ctx iris.Context) {
 //	@Description	method for check refresh token and refresh tokens
 //	@Accept			json
 //	@Produce		json
-//	@Param			body		body		models.Tokens		true	"request body with access and refresh tokens"
-//	@Failure		401	{object}	models.AuthResponse
-//	@Success		200	{object}	models.AuthResponse
-//	@Router			/user/refresh [post]
+//	@Param			body		body		user_models.Tokens		true	"request body with access and refresh tokens"
+//	@Failure		401	{object}	auth_models.AuthResponse
+//	@Success		200	{object}	auth_models.AuthResponse
+//	@Router			/tokens/refresh [post]
+//  @Security 		JWTToken
 func (authHandler *AuthHandler) RefreshTokens(ctx iris.Context) {
-	token := ctx.GetHeader("refresh_token")
+	token := ctx.GetCookie("refreshtoken", iris.CookieHTTPOnly(true))
+	f := func(x, y string) { println(x, y) }
+	ctx.VisitAllCookies(f)
 
 	var authService auth_models.IAuthService
 	err := container.Resolve(&authService)
@@ -150,11 +157,10 @@ func (authHandler *AuthHandler) RefreshTokens(ctx iris.Context) {
 
 	ok, tokens := authService.RefreshCheck(token)
 	if ok == false {
-		ctx.StopWithStatus(http.StatusUnauthorized)
-		err := ctx.JSON(requests_models.Response{Ok: false, Message: "Пользователь не авторизован"})
+		ctx.StopWithStatus(http.StatusOK)
+		err := ctx.JSON(requests_models.Response{Ok: false, Message: refreshTokenFailedMessage})
 		if err != nil {
 			logger_instance.GlobalLogger.Error(err)
-			fmt.Println(err)
 		}
 	} else {
 		response := auth_models.AuthResponse{Ok: ok, Access: tokens.AccessToken}

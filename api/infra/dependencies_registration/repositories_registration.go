@@ -8,7 +8,7 @@ import (
 )
 
 func InitializeRepositories() error {
-	err := container.NamedSingleton("UserRepository", func() repo_models.UserRepository {
+	err := container.Singleton(func() repo_models.UserRepository {
 		return user_repository.NewUserRepository()
 	})
 	if err != nil {

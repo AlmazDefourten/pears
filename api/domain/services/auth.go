@@ -113,7 +113,7 @@ func (authService *AuthService) Authorization(login string, password string) (bo
 	}
 
 	if checkPasswordHash(password, user.Password, c.GetString("passwordSalt")) {
-		jwtToken, err := jwtService.SignIn(login)
+		jwtToken, err := jwtService.SignIn(user.Id)
 		if err != nil {
 			logger_instance.ServiceLogger.Error(err)
 			return false, nil, authAnswerFailed

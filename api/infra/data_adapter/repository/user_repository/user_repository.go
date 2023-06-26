@@ -25,6 +25,7 @@ func (repo UserRepo) List() []models.User {
 }
 
 func (repo UserRepo) Get(id int) (models.User, bool, string) {
+	//TODO: реализовать методы
 	return models.User{}, false, ""
 }
 

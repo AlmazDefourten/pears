@@ -22,8 +22,8 @@ func NewPostHandler() *PostHandler {
 //	@Description	takes array of posts
 //	@Accept			json
 //	@Produce		json
-//	@Failure		401	{object}	models.Response
-//	@Success		200	{object}	[]models.Post
+//	@Failure		401	{object}	requests_models.Response
+//	@Success		200	{object}	[]post_models.Post
 //	@Router			/post/list [get]
 //  @Security 		JWTToken
 func (postHandler *PostHandler) List(ctx iris.Context) {
@@ -31,7 +31,7 @@ func (postHandler *PostHandler) List(ctx iris.Context) {
 	err := container.Resolve(&postService)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
-		err = ctx.JSON(requests_models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
+		err = ctx.JSON(requests_models.Response{Ok: false, Message: requests_models.StandardAnswerOnError})
 		if err != nil {
 			logger_instance.GlobalLogger.Error(err)
 		}
@@ -40,7 +40,7 @@ func (postHandler *PostHandler) List(ctx iris.Context) {
 	data, err := postService.ListPosts()
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
-		err = ctx.JSON(requests_models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
+		err = ctx.JSON(requests_models.Response{Ok: false, Message: requests_models.StandardAnswerOnError})
 		if err != nil {
 			logger_instance.GlobalLogger.Error(err)
 		}
@@ -60,8 +60,8 @@ func (postHandler *PostHandler) List(ctx iris.Context) {
 //	@Accept			json
 //	@Produce		json
 //  @Param        	id   	path      int  	true  "post ID"
-//	@Failure		401	{object}	models.Response
-//	@Success		200	{object}	models.Response
+//	@Failure		401	{object}	requests_models.Response
+//	@Success		200	{object}	requests_models.Response
 //	@Router			/post/get/{id} [get]
 //  @Security 		JWTToken
 func (postHandler *PostHandler) Get(ctx iris.Context) {
@@ -69,7 +69,7 @@ func (postHandler *PostHandler) Get(ctx iris.Context) {
 	err := container.Resolve(&postService)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
-		err = ctx.JSON(requests_models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
+		err = ctx.JSON(requests_models.Response{Ok: false, Message: requests_models.StandardAnswerOnError})
 		if err != nil {
 			logger_instance.GlobalLogger.Error(err)
 		}
@@ -79,13 +79,13 @@ func (postHandler *PostHandler) Get(ctx iris.Context) {
 	id, err := ctx.URLParamInt("id")
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
-		err = ctx.JSON(requests_models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
+		err = ctx.JSON(requests_models.Response{Ok: false, Message: requests_models.StandardAnswerOnError})
 		return
 	}
 	data, err := postService.GetPost(id)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
-		err = ctx.JSON(requests_models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
+		err = ctx.JSON(requests_models.Response{Ok: false, Message: requests_models.StandardAnswerOnError})
 		if err != nil {
 			logger_instance.GlobalLogger.Error(err)
 		}
@@ -104,9 +104,9 @@ func (postHandler *PostHandler) Get(ctx iris.Context) {
 //	@Description	creating a new post with body parameters
 //	@Accept			json
 //	@Produce		json
-//	@Param			body		body		models.Post		true	"request body with info about post"
-//	@Failure		401	{object}	models.Response
-//	@Success		200	{object}	models.Response
+//	@Param			body		body		post_models.Post		true	"request body with info about post"
+//	@Failure		401	{object}	requests_models.Response
+//	@Success		200	{object}	requests_models.Response
 //	@Router			/post/create [post]
 //  @Security 		JWTToken
 func (postHandler *PostHandler) Create(ctx iris.Context) {
@@ -114,7 +114,7 @@ func (postHandler *PostHandler) Create(ctx iris.Context) {
 	err := container.Resolve(&postService)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
-		err = ctx.JSON(requests_models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
+		err = ctx.JSON(requests_models.Response{Ok: false, Message: requests_models.StandardAnswerOnError})
 		if err != nil {
 			logger_instance.GlobalLogger.Error(err)
 		}
@@ -125,13 +125,13 @@ func (postHandler *PostHandler) Create(ctx iris.Context) {
 	err = ctx.ReadJSON(&post)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
-		err = ctx.JSON(requests_models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
+		err = ctx.JSON(requests_models.Response{Ok: false, Message: requests_models.StandardAnswerOnError})
 		return
 	}
 	err = postService.CreatePost(post)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
-		err = ctx.JSON(requests_models.Response{Ok: false, Message: "Не удалось получить список постов, попробуйте позднее"})
+		err = ctx.JSON(requests_models.Response{Ok: false, Message: requests_models.StandardAnswerOnError})
 		if err != nil {
 			logger_instance.GlobalLogger.Error(err)
 		}

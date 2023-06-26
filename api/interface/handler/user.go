@@ -22,8 +22,8 @@ func NewUserInfoHandler() *UserInfoHandler {
 //	@Description	take list of all users
 //	@Accept			json
 //	@Produce		json
-//	@Failure		401	{object}	models.Response
-//	@Success		200	{object}	[]models.User
+//	@Failure		401	{object}	requests_models.Response
+//	@Success		200	{object}	[]user_models.User
 //	@Router			/userinfo/list [get]
 //  @Security 		JWTToken
 func (userInfoHandler *UserInfoHandler) List(ctx iris.Context) {

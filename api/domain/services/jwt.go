@@ -8,6 +8,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/golobby/container/v3"
 	"gorm.io/gorm"
+	"strconv"
 	"time"
 )
 
@@ -20,13 +21,17 @@ func NewJWTService() *JWTService {
 }
 
 // Signin - authorization method
-func (jwtService *JWTService) SignIn(username string) (*user_models.Tokens, error) {
+func (jwtService *JWTService) SignIn(id int) (*user_models.Tokens, error) {
 	var db gorm.DB
 	err := container.Resolve(&db)
 	if err != nil {
 		logger_instance.GlobalLogger.Error(err)
 		panic(err)
 	}
+
+	var user user_models.User
+	db.First(&user)
+	username := user.Login
 
 	var c util_adapters.Configurator
 	err = container.Resolve(&c)
@@ -46,6 +51,7 @@ func (jwtService *JWTService) SignIn(username string) (*user_models.Tokens, erro
 	aClaims := user_models.Claims{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(accessAddTime).Unix(),
+			Id:        strconv.Itoa(user.Id),
 		},
 		Username: username,
 	}
@@ -64,22 +70,39 @@ func (jwtService *JWTService) SignIn(username string) (*user_models.Tokens, erro
 	refreshClaims := user_models.Claims{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(refreshAddTime).Unix(),
+			Id:        strconv.Itoa(user.Id),
 		},
 		Username: username,
 	}
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
 	refresh, err := refreshToken.SignedString([]byte(SigningKey))
-
-	var user user_models.User
-	db.Model(&user).Where("login = ?", username).Update("refresh_token", refresh)
-
 	if err != nil {
 		return nil, err
 	}
+
+	err = jwtService.RememberRefreshToken(user, refresh)
+	if err != nil {
+		logger_instance.GlobalLogger.Error(err)
+		return nil, err
+	}
+
 	return &user_models.Tokens{
 		AccessToken:  access,
 		RefreshToken: refresh,
 	}, nil
+}
+
+func (jwtService *JWTService) RememberRefreshToken(user user_models.User, refreshToken string) error {
+	var db gorm.DB
+	err := container.Resolve(&db)
+	if err != nil {
+		logger_instance.GlobalLogger.Error(err)
+		return err
+	}
+	db.First(&user)
+	user.Refresh_token = refreshToken
+	db.Save(&user)
+	return nil
 }
 
 // method for refreshing tokens
@@ -107,8 +130,12 @@ func (jwtService *JWTService) ValidateAndRefreshTokens(refresh_token string) (*u
 	})
 
 	if claims, ok := token.Claims.(*user_models.Claims); ok && token.Valid {
-		username := claims.Username
-		newTokenPair, err := jwtService.SignIn(username)
+		id, err := strconv.Atoi(claims.Id)
+		if err != nil {
+			logger_instance.GlobalLogger.Error(err)
+			return nil, err
+		}
+		newTokenPair, err := jwtService.SignIn(id)
 		if err != nil {
 			return nil, fmt.Errorf("token refresh error: %v", err)
 		}
