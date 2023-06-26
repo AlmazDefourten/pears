@@ -12,12 +12,3 @@ jobs:
       - name: deploy
         run: |
           echo zed
-          export GOROOT=/home/u_studpr/goinst/go
-          export GOPATH=$HOME/go
-          export PATH=$GOPATH/bin:$GOROOT/bin:$PATH    
-          source ~/.bashrc
-          screen -ls | grep -o '[0-9]\+\.' | sed 's/.$//' | xargs -I % sh -c 'screen -S % -X quit'
-          cd app/pears/api
-          git pull
-          go build
-          screen -dmS myapp go run .
